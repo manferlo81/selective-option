@@ -22,7 +22,7 @@ export function resolveObject<K extends string, S extends string, V>(
   let specialData: Array<[K[], V]> | undefined;
   let keysData: Array<[K, V]> | undefined;
 
-  const { length: len } = objectKeys;
+  const len = objectKeys.length;
   for (let i = 0; i < len; i++) {
 
     const key = objectKeys[i];
@@ -54,22 +54,20 @@ export function resolveObject<K extends string, S extends string, V>(
   );
 
   if (specialData) {
-    const { length: len } = specialData;
-    for (let i = 0; i < len; i++) {
-      const [regularKeys, value] = specialData[i];
+    const slen = specialData.length;
+    for (let s = 0; s < slen; s++) {
       keysToObject(
-        regularKeys,
-        value,
+        specialData[s][0],
+        specialData[s][1],
         result,
       );
     }
   }
 
   if (keysData) {
-    const { length: len } = keysData;
-    for (let i = 0; i < len; i++) {
-      const [key, value] = keysData[i];
-      result[key] = value;
+    const klen = keysData.length;
+    for (let k = 0; k < klen; k++) {
+      result[keysData[k][0]] = keysData[k][1];
     }
   }
 

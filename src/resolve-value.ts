@@ -1,5 +1,5 @@
 import { keysToObject } from './extend';
-import { SelectiveResolved, TypeCheckFunction } from './types';
+import type { SelectiveResolved, TypeCheckFunction } from './types';
 
 export function resolveValue<K extends string, V>(
   value: unknown,

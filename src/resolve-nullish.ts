@@ -1,5 +1,5 @@
 import { keysToObject } from './extend';
-import { SelectiveResolved } from './types';
+import type { SelectiveResolved } from './types';
 
 export function resolveNullish<K extends string, V>(
   value: unknown,
