@@ -1,0 +1,63 @@
+import { resolveArray } from '../src';
+
+describe('Resolve Bool Strings', () => {
+
+  type K = 'a' | 'b' | 'c' | 'd';
+  type S = 'first' | 'last';
+
+  const keys: K[] = ['a', 'b', 'c', 'd'];
+  const isKey = (value: unknown): value is K => keys.includes(value as never);
+
+  const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
+  const isSpecialKey = (value: unknown): value is S => Object.keys(special).includes(value as never);
+
+  const resolve = (value: unknown) => resolveArray<K, S>(
+    value,
+    keys,
+    isKey,
+    special,
+    isSpecialKey,
+  );
+
+  test('Should throw on invalid input', () => {
+    expect(() => resolve(['invalid'])).toThrow();
+  });
+
+  test('Should resolve array', () => {
+    expect(resolve([])).toEqual({
+      a: false,
+      b: false,
+      c: false,
+      d: false,
+    });
+  });
+
+  test('Should resolve array with keys', () => {
+    expect(resolve(['a', 'c'])).toEqual({
+      a: true,
+      b: false,
+      c: true,
+      d: false,
+    });
+  });
+
+  test('Should resolve array with special keys', () => {
+    expect(resolve(['first'])).toEqual({
+      a: true,
+      b: true,
+      c: false,
+      d: false,
+    });
+    expect(resolve(['last'])).toEqual({
+      a: false,
+      b: false,
+      c: true,
+      d: true,
+    });
+  });
+
+  test('Should resolve to undefined if not array', () => {
+    expect(resolve('invalid')).toBeUndefined();
+  });
+
+});
