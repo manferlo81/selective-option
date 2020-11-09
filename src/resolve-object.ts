@@ -2,15 +2,15 @@ import { keysToObject } from './extend';
 import { isArray, isObject } from './type-check';
 import type { SelectiveResolved, TypeCheckFunction } from './types';
 
-export function resolveObject<K extends string, S extends string, V>(
+export function resolveObject<K extends string, S extends string, V, D = V>(
   object: unknown,
   keys: K[],
   isKey: TypeCheckFunction<K>,
   special: Record<S, K[]>,
   isSpecialKey: TypeCheckFunction<S>,
   isValidValue: TypeCheckFunction<V>,
-  defaultValue: V,
-): SelectiveResolved<K, V> {
+  defaultValue: D,
+): SelectiveResolved<K, V | D> {
 
   if (!isObject(object) || isArray(object)) {
     throw new Error(`${object} is not a valid value`);
