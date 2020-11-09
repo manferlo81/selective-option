@@ -13,7 +13,7 @@ export function resolveObject<K extends string, S extends string, V>(
 ): SelectiveResolved<K, V> {
 
   if (!isObject(object) || isArray(object)) {
-    throw new Error();
+    throw new Error(`${object} is not a valid value`);
   }
 
   const objectKeys = Object.keys(object);
@@ -31,7 +31,7 @@ export function resolveObject<K extends string, S extends string, V>(
     if (value != null) {
 
       if (!isValidValue(value)) {
-        throw new Error('Invalid object value');
+        throw new Error(`${value} is not a valid value`);
       }
 
       if (key === 'default') {
@@ -41,7 +41,7 @@ export function resolveObject<K extends string, S extends string, V>(
       } else if (isKey(key)) {
         (keysData || (keysData = [])).push([key, value]);
       } else {
-        throw new Error('Invalid object key');
+        throw new Error(`"${key}" is not a valid key`);
       }
 
     }
