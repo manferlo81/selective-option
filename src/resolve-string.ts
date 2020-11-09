@@ -1,4 +1,3 @@
-import { applyKey } from './apply-key';
 import { keysToObject } from './extend';
 import type { SelectiveResolved, TypeCheckFunction } from './types';
 
@@ -9,15 +8,25 @@ export function resolveString<K extends string, S extends string>(
   special: Record<S, K[]>,
   isSpecialKey: TypeCheckFunction<S>,
 ): SelectiveResolved<K, boolean> | void {
-  return applyKey(
-    value,
-    true,
-    keysToObject(
+
+  if (isKey(value)) {
+    const result = keysToObject(
       keys,
       false,
-    ),
-    isKey,
-    special,
-    isSpecialKey,
-  );
+    );
+    result[value] = true;
+    return result;
+  }
+
+  if (isSpecialKey(value)) {
+    return keysToObject(
+      special[value],
+      true,
+      keysToObject(
+        keys,
+        false,
+      ),
+    );
+  }
+
 }
