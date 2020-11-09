@@ -8,18 +8,18 @@
   "types": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "test": "jest --color",
-    "test:watch": "jest --color --watch-all",
-    "dev": "bundlib -dw",
-    "build": "bundlib -d",
     "clean:cache": "rimraf node_modules/.cache/{jest,bundlib}",
     "clean:build": "rimraf dist coverage",
     "clean": "run-p clean:*",
     "lint:test": "eslint __test__/**/*.ts",
     "lint:src": "eslint src/**/*.ts",
     "lint": "run-p lint:*",
+    "test": "jest --color",
+    "test:watch": "jest --color --watch-all",
+    "build": "bundlib -d",
+    "dev": "bundlib -dw",
     "prerelease": "run-s clean lint test build",
-    "release": "echo release"
+    "release": "standard-version"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
@@ -33,6 +33,7 @@
     "jest": "^26.6.3",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
+    "standard-version": "^9.0.0",
     "ts-jest": "^26.4.4",
     "typescript": "^4.0.5"
   },
