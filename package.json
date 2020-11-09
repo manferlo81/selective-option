@@ -6,19 +6,35 @@
   "module": "dist/index.mjs",
   "browser": "dist/index.umd.js",
   "types": "dist/index.d.ts",
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.6.0",
-    "@typescript-eslint/parser": "^4.6.0",
-    "bundlib": "^0.18.1",
-    "eslint": "^7.12.1",
-    "jest": "^26.6.1",
-    "ts-jest": "^26.4.3",
-    "typescript": "^4.0.5"
-  },
+  "typings": "dist/index.d.ts",
   "scripts": {
     "test": "jest --color",
+    "test:watch": "jest --color --watch-all",
     "dev": "bundlib -dw",
-    "build": "bundlib -d"
+    "build": "bundlib -d",
+    "clean:cache": "rimraf node_modules/.cache/{jest,bundlib}",
+    "clean:build": "rimraf dist coverage",
+    "clean": "run-p clean:*",
+    "lint:test": "eslint __test__/**/*.ts",
+    "lint:src": "eslint src/**/*.ts",
+    "lint": "run-p lint:*",
+    "prerelease": "run-s clean lint test build",
+    "release": "echo release"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.6",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
+    "bundlib": "^0.18.1",
+    "eslint": "^7.13.0",
+    "jest": "^26.6.3",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.4.4",
+    "typescript": "^4.0.5"
   },
   "repository": {
     "type": "git",
