@@ -1,4 +1,4 @@
-import { keysToObject } from './extend';
+import { createResult } from './create-result';
 import type { SelectiveResolved, TypeCheckFunction } from './types';
 
 export function resolveString<K extends string, S extends string>(
@@ -9,24 +9,24 @@ export function resolveString<K extends string, S extends string>(
   isSpecialKey: TypeCheckFunction<S>,
 ): SelectiveResolved<K, boolean> | void {
 
+  if (isSpecialKey(value)) {
+    return createResult(
+      special[value],
+      true,
+      createResult(
+        keys,
+        false,
+      ),
+    );
+  }
+
   if (isKey(value)) {
-    const result = keysToObject(
+    const result = createResult(
       keys,
       false,
     );
     result[value] = true;
     return result;
-  }
-
-  if (isSpecialKey(value)) {
-    return keysToObject(
-      special[value],
-      true,
-      keysToObject(
-        keys,
-        false,
-      ),
-    );
   }
 
 }

@@ -1,4 +1,4 @@
-import { keysToObject } from './extend';
+import { createResult } from './create-result';
 import type { SelectiveResolved, TypeCheckFunction } from './types';
 
 export function resolveValue<K extends string, V>(
@@ -7,7 +7,7 @@ export function resolveValue<K extends string, V>(
   isValidValue: TypeCheckFunction<V>,
 ): SelectiveResolved<K, V> | void {
   if (isValidValue(value)) {
-    return keysToObject(
+    return createResult(
       keys,
       value,
     );

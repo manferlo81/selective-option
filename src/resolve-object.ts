@@ -1,4 +1,4 @@
-import { keysToObject } from './extend';
+import { createResult } from './create-result';
 import { isArray, isObject } from './type-check';
 import type { SelectiveResolved, TypeCheckFunction } from './types';
 
@@ -48,7 +48,7 @@ export function resolveObject<K extends string, S extends string, V, D = V>(
 
   }
 
-  const result = keysToObject(
+  const result = createResult(
     keys,
     overrideValue ? overrideValue[0] : defaultValue,
   );
@@ -56,7 +56,7 @@ export function resolveObject<K extends string, S extends string, V, D = V>(
   if (specialData) {
     const slen = specialData.length;
     for (let s = 0; s < slen; s++) {
-      keysToObject(
+      createResult(
         specialData[s][0],
         specialData[s][1],
         result,

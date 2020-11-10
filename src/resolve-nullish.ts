@@ -1,4 +1,4 @@
-import { keysToObject } from './extend';
+import { createResult } from './create-result';
 import type { SelectiveResolved } from './types';
 
 export function resolveNullish<K extends string, D>(
@@ -7,7 +7,7 @@ export function resolveNullish<K extends string, D>(
   defaultValue: D,
 ): SelectiveResolved<K, D> | void {
   if (value == null) {
-    return keysToObject(
+    return createResult(
       keys,
       defaultValue,
     );

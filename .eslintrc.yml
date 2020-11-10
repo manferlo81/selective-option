@@ -43,5 +43,5 @@ rules:
 
   "@typescript-eslint/array-type":
     - error
-    - default: "array-simple"
-      readonly: "array-simple"
+    - default: array-simple
+      readonly: array-simple
