@@ -1,7 +1,6 @@
-import { resolveArray } from './resolve-array';
 import { resolveNullish } from './resolve-nullish';
 import { resolveObject } from './resolve-object';
-import { resolveString } from './resolve-string';
+import { resolveArray, resolveString } from './resolve-strings';
 import { resolveValue } from './resolve-value';
 import type { SelectiveResolved, TypeCheckFunction } from './types';
 
