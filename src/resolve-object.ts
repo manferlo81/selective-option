@@ -1,5 +1,5 @@
 import { createResult } from './create-result';
-import { isArray, isObject } from './type-check';
+import { isArray } from './type-check';
 import type { SelectiveResolved, TypeCheckFunction } from './types';
 
 export function resolveObject<K extends string, S extends string, V, D = V>(
@@ -12,7 +12,7 @@ export function resolveObject<K extends string, S extends string, V, D = V>(
   defaultValue: D,
 ): SelectiveResolved<K, V | D> {
 
-  if (!isObject(object) || isArray(object)) {
+  if (typeof object !== 'object' || !object || isArray(object)) {
     throw new Error(`${object} is not a valid value`);
   }
 
@@ -26,7 +26,7 @@ export function resolveObject<K extends string, S extends string, V, D = V>(
   for (let i = 0; i < len; i++) {
 
     const key = objectKeys[i];
-    const value = object[key];
+    const value = object[key as never];
 
     if (value != null) {
 
