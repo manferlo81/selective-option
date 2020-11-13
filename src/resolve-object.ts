@@ -10,67 +10,67 @@ export function resolveObject<K extends string, S extends string, V, D = V>(
   isSpecialKey: TypeCheckFunction<S>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
-): SelectiveResolved<K, V | D> {
+): SelectiveResolved<K, V | D> | void {
 
-  if (typeof object !== 'object' || !object || isArray(object)) {
-    throw new Error(`${object} is not a valid value`);
-  }
+  if (typeof object === 'object' && object && !isArray(object)) {
 
-  const objectKeys = Object.keys(object);
+    const objectKeys = Object.keys(object);
 
-  let overrideValue: [V] | undefined;
-  let specialData: Array<[K[], V]> | undefined;
-  let keysData: Array<[K, V]> | undefined;
+    let overrideValue: [V] | undefined;
+    let specialData: Array<[K[], V]> | undefined;
+    let keysData: Array<[K, V]> | undefined;
 
-  const len = objectKeys.length;
-  for (let i = 0; i < len; i++) {
+    const len = objectKeys.length;
+    for (let i = 0; i < len; i++) {
 
-    const key = objectKeys[i];
-    const value = object[key as never];
+      const key = objectKeys[i];
+      const value = object[key as never];
 
-    if (value != null) {
+      if (value != null) {
 
-      if (!isValidValue(value)) {
-        throw new Error(`${value} is not a valid value`);
+        if (!isValidValue(value)) {
+          throw new Error(`${value} is not a valid value`);
+        }
+
+        if (key === 'default') {
+          overrideValue = [value];
+        } else if (isSpecialKey(key)) {
+          (specialData || (specialData = [])).push([special[key], value]);
+        } else if (isKey(key)) {
+          (keysData || (keysData = [])).push([key, value]);
+        } else {
+          throw new Error(`"${key}" is not a valid key`);
+        }
+
       }
 
-      if (key === 'default') {
-        overrideValue = [value];
-      } else if (isSpecialKey(key)) {
-        (specialData || (specialData = [])).push([special[key], value]);
-      } else if (isKey(key)) {
-        (keysData || (keysData = [])).push([key, value]);
-      } else {
-        throw new Error(`"${key}" is not a valid key`);
+    }
+
+    const result = createResult(
+      keys,
+      overrideValue ? overrideValue[0] : defaultValue,
+    );
+
+    if (specialData) {
+      const slen = specialData.length;
+      for (let s = 0; s < slen; s++) {
+        createResult(
+          specialData[s][0],
+          specialData[s][1],
+          result,
+        );
       }
-
     }
 
-  }
-
-  const result = createResult(
-    keys,
-    overrideValue ? overrideValue[0] : defaultValue,
-  );
-
-  if (specialData) {
-    const slen = specialData.length;
-    for (let s = 0; s < slen; s++) {
-      createResult(
-        specialData[s][0],
-        specialData[s][1],
-        result,
-      );
+    if (keysData) {
+      const klen = keysData.length;
+      for (let k = 0; k < klen; k++) {
+        result[keysData[k][0]] = keysData[k][1];
+      }
     }
-  }
 
-  if (keysData) {
-    const klen = keysData.length;
-    for (let k = 0; k < klen; k++) {
-      result[keysData[k][0]] = keysData[k][1];
-    }
-  }
+    return result;
 
-  return result;
+  }
 
 }

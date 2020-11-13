@@ -25,13 +25,13 @@ describe('Resolve Object', () => {
     defaultValue,
   );
 
-  test('Should throw on non object', () => {
-    expect(() => resolve(10)).toThrow();
-    expect(() => resolve([])).toThrow();
-  });
-
   test('Should throw on invalid key', () => {
     expect(() => resolve({ invalid: true })).toThrow();
+  });
+
+  test('Should return undefined on non object', () => {
+    expect(resolve(10)).toBeUndefined();
+    expect(resolve([])).toBeUndefined();
   });
 
   test('Should throw on invalid default value', () => {

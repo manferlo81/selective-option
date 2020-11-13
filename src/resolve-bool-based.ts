@@ -1,3 +1,4 @@
+import { resolveFailed } from './resolve-failed';
 import { resolveNullish } from './resolve-nullish';
 import { resolveObject } from './resolve-object';
 import { resolveArray, resolveString } from './resolve-strings';
@@ -18,6 +19,7 @@ export function resolveBoolBased<K extends string, S extends string, V, D = V>(
     resolveNullish(value, keys, defaultValue) ||
     resolveString(value, keys, isKey, special, isSpecialKey) ||
     resolveArray(value, keys, isKey, special, isSpecialKey) ||
-    resolveObject(value, keys, isKey, special, isSpecialKey, isValidValue, defaultValue)
+    resolveObject(value, keys, isKey, special, isSpecialKey, isValidValue, defaultValue) ||
+    resolveFailed(value)
   );
 }

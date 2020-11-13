@@ -25,6 +25,10 @@ describe('Resolve Bool Based', () => {
     defaultValue,
   );
 
+  test('Should throw on invalid value', () => {
+    expect(() => resolve(true)).toThrow();
+  });
+
   test('Should resolve null value', () => {
     expect(resolve(null)).toEqual({
       a: defaultValue,

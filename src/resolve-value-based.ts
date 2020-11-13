@@ -1,3 +1,4 @@
+import { resolveFailed } from './resolve-failed';
 import { resolveNullish } from './resolve-nullish';
 import { resolveObject } from './resolve-object';
 import { resolveValue } from './resolve-value';
@@ -15,6 +16,7 @@ export function resolveValueBased<K extends string, S extends string, V, D = V>(
   return (
     resolveValue(value, keys, isValidValue) ||
     resolveNullish(value, keys, defaultValue) ||
-    resolveObject(value, keys, isKey, special, isSpecialKey, isValidValue, defaultValue)
+    resolveObject(value, keys, isKey, special, isSpecialKey, isValidValue, defaultValue) ||
+    resolveFailed(value)
   );
 }
