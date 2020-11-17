@@ -2,12 +2,12 @@ import { createResult } from './create-result';
 import { isArray } from './type-check';
 import type { SelectiveResolved, TypeCheckFunction } from './types';
 
-export function resolveObject<K extends string, S extends string, V, D = V>(
+export function resolveObject<K extends string, SK extends string, V, D = V>(
   object: unknown,
   keys: K[],
   isKey: TypeCheckFunction<K>,
-  special: Record<S, K[]>,
-  isSpecialKey: TypeCheckFunction<S>,
+  special: Record<SK, K[]>,
+  isSpecialKey: TypeCheckFunction<SK>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
 ): SelectiveResolved<K, V | D> | void {
