@@ -2,11 +2,16 @@
   "name": "selective-option",
   "version": "0.0.0",
   "description": "A simple selective option resolver",
-  "main": "dist/selective.js",
-  "module": "dist/selective.mjs",
-  "browser": "dist/selective.umd.js",
-  "types": "dist/types/index.d.ts",
-  "typings": "dist/types/index.d.ts",
+  "type": "commonjs",
+  "main": "./dist/selective.cjs",
+  "module": "./dist/selective.mjs",
+  "exports": {
+    "import": "./dist/selective.mjs",
+    "default": "./dist/selective.cjs"
+  },
+  "browser": "./dist/selective.umd.js",
+  "types": "./dist/types/index.d.ts",
+  "typings": "./dist/types/index.d.ts",
   "scripts": {
     "clean:cache": "rimraf node_modules/.cache/{jest,bundlib}",
     "clean:build": "rimraf dist coverage",
