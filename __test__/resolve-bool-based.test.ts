@@ -3,24 +3,21 @@ import { resolveBoolBased } from '../src';
 describe('Resolve Bool Based', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
-  type S = 'first' | 'last';
   type T = number;
 
   const keys: K[] = ['a', 'b', 'c', 'd'];
   const isKey = (value: unknown): value is K => keys.includes(value as never);
 
-  const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
-  const isSpecialKey = (value: unknown): value is S => Object.keys(special).includes(value as never);
+  const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
   const isValidValue = (value: unknown): value is T => typeof value === 'number';
   const defaultValue = 0;
 
-  const resolve = (value: unknown) => resolveBoolBased<K, S, T>(
+  const resolve = (value: unknown) => resolveBoolBased<K, T>(
     value,
     keys,
     isKey,
     special,
-    isSpecialKey,
     isValidValue,
     defaultValue,
   );

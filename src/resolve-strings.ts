@@ -2,40 +2,43 @@ import { createResult } from './create-result';
 import { isArray } from './type-check';
 import type { SelectiveResolved, TypeCheckFunction } from './types';
 
-export function resolveString<K extends string, SK extends string>(
+export function resolveString<K extends string>(
   value: unknown,
   keys: K[],
   isKey: TypeCheckFunction<K>,
-  special: Record<SK, K[]>,
-  isSpecialKey: TypeCheckFunction<SK>,
+  special: Record<string, K[]>,
   input?: SelectiveResolved<K, boolean>,
 ): SelectiveResolved<K, boolean> | void {
 
-  if (isSpecialKey(value)) {
-    return resolveArray(
-      special[value],
-      keys,
-      isKey,
-      special,
-      isSpecialKey,
-      input || createResult(keys, false),
-    );
-  }
+  if (typeof value === 'string') {
 
-  if (isKey(value)) {
-    const result = input || createResult(keys, false);
-    result[value] = true;
-    return result;
+    const specialKeys = special[value] as K[] | undefined;
+
+    if (specialKeys) {
+      return resolveArray(
+        specialKeys,
+        keys,
+        isKey,
+        special,
+        input || createResult(keys, false),
+      );
+    }
+
+    if (isKey(value)) {
+      const result = input || createResult(keys, false);
+      result[value] = true;
+      return result;
+    }
+
   }
 
 }
 
-export function resolveArray<K extends string, S extends string>(
+export function resolveArray<K extends string>(
   value: unknown,
   keys: K[],
   isKey: TypeCheckFunction<K>,
-  special: Record<S, K[]>,
-  isSpecialKey: TypeCheckFunction<S>,
+  special: Record<string, K[]>,
   input?: SelectiveResolved<K, boolean>,
 ): SelectiveResolved<K, boolean> | void {
 
@@ -53,7 +56,6 @@ export function resolveArray<K extends string, S extends string>(
           keys,
           isKey,
           special,
-          isSpecialKey,
           result,
         )
       ) {

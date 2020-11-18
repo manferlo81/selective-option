@@ -3,20 +3,17 @@ import { resolveArray } from '../src';
 describe('Resolve Bool Strings', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
-  type S = 'first' | 'last';
 
   const keys: K[] = ['a', 'b', 'c', 'd'];
   const isKey = (value: unknown): value is K => keys.includes(value as never);
 
-  const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
-  const isSpecialKey = (value: unknown): value is S => Object.keys(special).includes(value as never);
+  const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
-  const resolve = (value: unknown) => resolveArray<K, S>(
+  const resolve = (value: unknown) => resolveArray<K>(
     value,
     keys,
     isKey,
     special,
-    isSpecialKey,
   );
 
   test('Should throw on invalid input', () => {

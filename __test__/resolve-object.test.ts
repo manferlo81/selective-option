@@ -3,24 +3,21 @@ import { resolveObject } from '../src';
 describe('Resolve Object', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
-  type S = 'first' | 'last';
   type V = string | boolean;
 
   const keys: K[] = ['a', 'b', 'c', 'd'];
   const isKey = (value: unknown): value is K => keys.includes(value as never);
 
-  const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
-  const isSpecialKey = (value: unknown): value is S => Object.keys(special).includes(value as never);
+  const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
   const isValidValue = (value: unknown): value is V => ['string', 'boolean'].includes(typeof value);
   const defaultValue = 'default-value';
 
-  const resolve = (value: unknown) => resolveObject<K, S, V>(
+  const resolve = (value: unknown) => resolveObject<K, V>(
     value,
     keys,
     isKey,
     special,
-    isSpecialKey,
     isValidValue,
     defaultValue,
   );

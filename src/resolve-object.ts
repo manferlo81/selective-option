@@ -2,12 +2,11 @@ import { createResult } from './create-result';
 import { isArray } from './type-check';
 import type { SelectiveResolved, TypeCheckFunction } from './types';
 
-export function resolveObject<K extends string, SK extends string, V, D = V>(
+export function resolveObject<K extends string, V, D = V>(
   object: unknown,
   keys: K[],
   isKey: TypeCheckFunction<K>,
-  special: Record<SK, K[]>,
-  isSpecialKey: TypeCheckFunction<SK>,
+  special: Record<string, K[]>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
 ): SelectiveResolved<K, V | D> | void {
@@ -34,12 +33,15 @@ export function resolveObject<K extends string, SK extends string, V, D = V>(
 
         if (key === 'default') {
           overrideValue = [value];
-        } else if (isSpecialKey(key)) {
-          (specialData || (specialData = [])).push([special[key], value]);
-        } else if (isKey(key)) {
-          (keysData || (keysData = [])).push([key, value]);
         } else {
-          throw new Error(`"${key}" is not a valid key`);
+          const specialKeys = special[key];
+          if (specialKeys) {
+            (specialData || (specialData = [])).push([specialKeys, value]);
+          } else if (isKey(key)) {
+            (keysData || (keysData = [])).push([key, value]);
+          } else {
+            throw new Error(`"${key}" is not a valid key`);
+          }
         }
 
       }
