@@ -1,12 +1,12 @@
 import { createResult } from './create-result';
 import { isArray } from './type-check';
-import type { SelectiveResolved, TypeCheckFunction } from './types';
+import type { Nullable, SelectiveResolved, TypeCheckFunction } from './types';
 
 export function resolveObject<K extends string, V, D = V>(
   object: unknown,
   keys: K[],
   isKey: TypeCheckFunction<K>,
-  special: Record<string, K[]>,
+  special: Nullable<Record<string, K[]>>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
 ): SelectiveResolved<K, V | D> | void {
@@ -34,7 +34,7 @@ export function resolveObject<K extends string, V, D = V>(
         if (key === 'default') {
           overrideValue = [value];
         } else {
-          const specialKeys = special[key];
+          const specialKeys: Nullable<K[]> = special && special[key];
           if (specialKeys) {
             (specialData || (specialData = [])).push([specialKeys, value]);
           } else if (isKey(key)) {
