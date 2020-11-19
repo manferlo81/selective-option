@@ -15,11 +15,7 @@ describe('Resolve Object', () => {
 
   const resolve = (value: unknown) => resolveObject<K, V>(
     value,
-    keys,
-    isKey,
-    special,
-    isValidValue,
-    defaultValue,
+    { keys, isKey, special, isValidValue, defaultValue },
   );
 
   test('Should throw on invalid key', () => {

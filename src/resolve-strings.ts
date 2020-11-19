@@ -1,14 +1,14 @@
 import { createResult } from './create-result';
 import { isArray } from './type-check';
-import type { Nullable, SelectiveResolved, TypeCheckFunction } from './types';
+import type { Nullable, ResolveStringOptions, SelectiveResolved } from './types';
 
 export function resolveString<K extends string>(
   value: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special: Nullable<Record<string, K[]>>,
+  options: ResolveStringOptions<K>,
   input?: SelectiveResolved<K, boolean>,
 ): SelectiveResolved<K, boolean> | void {
+
+  const { keys, isKey, special } = options;
 
   if (typeof value === 'string') {
 
@@ -17,9 +17,7 @@ export function resolveString<K extends string>(
     if (specialKeys) {
       return resolveArray(
         specialKeys,
-        keys,
-        isKey,
-        special,
+        options,
         input || createResult(keys, false),
       );
     }
@@ -36,11 +34,11 @@ export function resolveString<K extends string>(
 
 export function resolveArray<K extends string>(
   value: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special: Nullable<Record<string, K[]>>,
+  options: ResolveStringOptions<K>,
   input?: SelectiveResolved<K, boolean>,
 ): SelectiveResolved<K, boolean> | void {
+
+  const { keys } = options;
 
   if (isArray(value)) {
 
@@ -53,9 +51,7 @@ export function resolveArray<K extends string>(
       if (
         !resolveString(
           key,
-          keys,
-          isKey,
-          special,
+          options,
           result,
         )
       ) {

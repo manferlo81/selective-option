@@ -3,22 +3,18 @@ import { resolveNullish } from './resolve-nullish';
 import { resolveObject } from './resolve-object';
 import { resolveArray, resolveString } from './resolve-strings';
 import { resolveValue } from './resolve-value';
-import type { SelectiveResolved, TypeCheckFunction } from './types';
+import type { ResolveObjectOptions, SelectiveResolved } from './types';
 
 export function resolveBoolBased<K extends string, V, D = V>(
   value: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special: Record<string, K[]>,
-  isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
+  options: ResolveObjectOptions<K, V | boolean, D>,
 ): SelectiveResolved<K, V | D | boolean> {
   return (
-    resolveValue(value, keys, isValidValue) ||
-    resolveNullish(value, keys, defaultValue) ||
-    resolveString(value, keys, isKey, special) ||
-    resolveArray(value, keys, isKey, special) ||
-    resolveObject(value, keys, isKey, special, isValidValue, defaultValue) ||
+    resolveValue(value, options) ||
+    resolveNullish(value, options) ||
+    resolveString(value, options) ||
+    resolveArray(value, options) ||
+    resolveObject(value, options) ||
     resolveFailed(value)
   );
 }

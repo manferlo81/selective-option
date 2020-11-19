@@ -11,9 +11,7 @@ describe('Resolve Bool Strings', () => {
 
   const resolve = (value: unknown) => resolveArray<K>(
     value,
-    keys,
-    isKey,
-    special,
+    { keys, isKey, special },
   );
 
   test('Should throw on invalid input', () => {

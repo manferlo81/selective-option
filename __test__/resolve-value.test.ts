@@ -10,8 +10,7 @@ describe('Resolve Value', () => {
 
   const resolve = (value: unknown) => resolveValue<K, V>(
     value,
-    keys,
-    isValidValue,
+    { keys, isValidValue },
   );
 
   test('Should resolve valid value', () => {

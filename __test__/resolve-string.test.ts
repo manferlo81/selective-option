@@ -11,9 +11,7 @@ describe('Resolve Bool Strings', () => {
 
   const resolve = (value: unknown) => resolveString<K>(
     value,
-    keys,
-    isKey,
-    special,
+    { keys, isKey, special },
   );
 
   test('Should resolve key', () => {

@@ -10,8 +10,7 @@ describe('Resolve Nullish', () => {
 
   const resolve = (value: unknown) => resolveNullish<K, V>(
     value,
-    keys,
-    defaultValue,
+    { keys, defaultValue },
   );
 
   test('Should resolve null value', () => {

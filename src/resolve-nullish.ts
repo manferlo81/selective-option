@@ -1,12 +1,12 @@
 import { createResult } from './create-result';
-import type { SelectiveResolved } from './types';
+import type { ResolveNullishOptions, SelectiveResolved } from './types';
 
 export function resolveNullish<K extends string, D>(
   value: unknown,
-  keys: K[],
-  defaultValue: D,
+  options: ResolveNullishOptions<K, D>,
 ): SelectiveResolved<K, D> | void {
   if (value == null) {
+    const { keys, defaultValue } = options;
     return createResult(
       keys,
       defaultValue,

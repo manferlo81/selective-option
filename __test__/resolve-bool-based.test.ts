@@ -15,11 +15,7 @@ describe('Resolve Bool Based', () => {
 
   const resolve = (value: unknown) => resolveBoolBased<K, T>(
     value,
-    keys,
-    isKey,
-    special,
-    isValidValue,
-    defaultValue,
+    { keys, isKey, special, isValidValue, defaultValue },
   );
 
   test('Should throw on invalid value', () => {

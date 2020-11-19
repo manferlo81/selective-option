@@ -22,6 +22,8 @@ npm i selective-option
 
 ### resolveObject
 
+### resolveFailed
+
 ## License
 
 [MIT](LICENSE) &copy; 2020 [Manuel Fernández](https://github.com/manferlo81)

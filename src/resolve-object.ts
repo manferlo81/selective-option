@@ -1,15 +1,13 @@
 import { createResult } from './create-result';
 import { isArray } from './type-check';
-import type { Nullable, SelectiveResolved, TypeCheckFunction } from './types';
+import type { Nullable, ResolveObjectOptions, SelectiveResolved } from './types';
 
 export function resolveObject<K extends string, V, D = V>(
   object: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special: Nullable<Record<string, K[]>>,
-  isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
+  options: ResolveObjectOptions<K, V, D>,
 ): SelectiveResolved<K, V | D> | void {
+
+  const { keys, isKey, special, isValidValue, defaultValue } = options;
 
   if (typeof object === 'object' && object && !isArray(object)) {
 

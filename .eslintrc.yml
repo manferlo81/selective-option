@@ -21,9 +21,9 @@ rules:
     - error
     - single
 
-  indent:
+  linebreak-style:
     - error
-    - 2
+    - windows
 
   comma-dangle:
     - error
@@ -41,7 +41,14 @@ rules:
   semi: "off"
   "@typescript-eslint/semi": error
 
+  indent: "off"
+  "@typescript-eslint/indent":
+    - error
+    - 2
+
   "@typescript-eslint/array-type":
     - error
     - default: array-simple
       readonly: array-simple
+
+  "@typescript-eslint/member-delimiter-style": error

@@ -9,6 +9,10 @@ export { resolveValueBased } from './resolve-value-based';
 export type {
   BoolBasedSelectiveOption,
   ObjectOption,
+  ResolveNullishOptions,
+  ResolveObjectOptions,
+  ResolveStringOptions,
+  ResolveValueOptions,
   SelectiveResolved,
   StringOption,
   ValueBasedSelectiveOption,
