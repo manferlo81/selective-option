@@ -29,10 +29,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: echo "::set-output name=dir::$(npm config get cache)"
+        name: Get npm cache folder
+        id: npm-cache
+
       - uses: actions/cache@v2
         name: Cache
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
         with:
           path: ${{ steps.npm-cache.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -66,10 +68,12 @@ jobs:
           node-version: 12
           registry-url: https://registry.npmjs.org/
 
+      - run: echo "::set-output name=dir::$(npm config get cache)"
+        name: Get npm cache folder
+        id: npm-cache
+
       - uses: actions/cache@v2
         name: Cache
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
         with:
           path: ${{ steps.npm-cache.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -102,10 +106,12 @@ jobs:
           node-version: 12
           registry-url: https://npm.pkg.github.com/
 
+      - run: echo "::set-output name=dir::$(npm config get cache)"
+        name: Get npm cache folder
+        id: npm-cache
+
       - uses: actions/cache@v2
         name: Cache
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
         with:
           path: ${{ steps.npm-cache.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
