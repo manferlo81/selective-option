@@ -16,6 +16,8 @@ describe('Resolve Bool Strings', () => {
 
   test('Should throw on invalid input', () => {
     expect(() => resolve(['invalid'])).toThrow();
+    expect(() => resolve(['a', true])).toThrow();
+    expect(() => resolve(['a', 10])).toThrow();
   });
 
   test('Should resolve array', () => {
