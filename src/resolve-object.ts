@@ -3,9 +3,9 @@ import { errorInvalidKey, errorInvalidValue } from './errors';
 import { isArray } from './type-check';
 import type { Nullable, ResolveObjectOptions, SelectiveResolved } from './types';
 
-export function resolveObject<K extends string, V, D = V>(
+export function resolveObject<K extends string, V, D = V, DK extends string = 'default'>(
   object: unknown,
-  options: ResolveObjectOptions<K, V, D>,
+  options: ResolveObjectOptions<K, V, D, DK>,
 ): SelectiveResolved<K, V | D> | void {
 
   if (typeof object === 'object' && object && !isArray(object)) {
@@ -28,7 +28,9 @@ export function resolveObject<K extends string, V, D = V>(
           throw errorInvalidValue(value);
         }
 
-        if (key === 'default') {
+        const defaultKey = options.defaultKey || 'default';
+
+        if (key === defaultKey) {
           overrideValue = [value];
         } else {
           const { special } = options;

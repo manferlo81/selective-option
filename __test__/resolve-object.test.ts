@@ -13,9 +13,9 @@ describe('Resolve Object', () => {
   const isValidValue = (value: unknown): value is V => ['string', 'boolean'].includes(typeof value);
   const defaultValue = 'default-value';
 
-  const resolve = (value: unknown) => resolveObject<K, V>(
+  const resolve = (value: unknown) => resolveObject(
     value,
-    { keys, isKey, special, isValidValue, defaultValue },
+    { keys, isKey, special, isValidValue, defaultValue, defaultKey: 'override' },
   );
 
   test('Should throw on invalid key', () => {
@@ -28,8 +28,8 @@ describe('Resolve Object', () => {
   });
 
   test('Should throw on invalid default value', () => {
-    expect(() => resolve({ default: [] })).toThrow();
-    expect(() => resolve({ default: 10 })).toThrow();
+    expect(() => resolve({ override: [] })).toThrow();
+    expect(() => resolve({ override: 10 })).toThrow();
   });
 
   test('Should throw on invalid key value', () => {
@@ -52,7 +52,7 @@ describe('Resolve Object', () => {
   });
 
   test('Should ignore nullish values', () => {
-    expect(resolve({ default: null })).toEqual({
+    expect(resolve({ override: null })).toEqual({
       a: defaultValue,
       b: defaultValue,
       c: defaultValue,
@@ -74,7 +74,7 @@ describe('Resolve Object', () => {
 
   test('Should override default value', () => {
     const newDefaultValue = 'new-default-value';
-    expect(resolve({ default: newDefaultValue })).toEqual({
+    expect(resolve({ override: newDefaultValue })).toEqual({
       a: newDefaultValue,
       b: newDefaultValue,
       c: newDefaultValue,
@@ -105,7 +105,7 @@ describe('Resolve Object', () => {
 
   test('Should set default and simple keys', () => {
     const newDefaultValue = 'new-default-value';
-    expect(resolve({ default: newDefaultValue, a: true, c: false })).toEqual({
+    expect(resolve({ override: newDefaultValue, a: true, c: false })).toEqual({
       a: true,
       b: newDefaultValue,
       c: false,
@@ -115,7 +115,7 @@ describe('Resolve Object', () => {
 
   test('Should set default and special keys', () => {
     const newDefaultValue = 'new-default-value';
-    expect(resolve({ default: newDefaultValue, first: true })).toEqual({
+    expect(resolve({ override: newDefaultValue, first: true })).toEqual({
       a: true,
       b: true,
       c: newDefaultValue,

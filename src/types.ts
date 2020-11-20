@@ -2,7 +2,7 @@ export type Nullable<T> = T | null | undefined | void;
 export type Dictionary<V> = Record<string | number, V>;
 export type TypeCheckFunction<T> = (value: unknown) => value is T;
 
-export type ObjectOption<K extends string, V> = Partial<Record<K | 'default', Nullable<V>>>;
+export type ObjectOption<K extends string, V, DK extends string = 'default'> = Partial<Record<K | DK, Nullable<V>>>;
 
 export type StringOption<K extends string> = K | K[];
 
@@ -34,10 +34,11 @@ export interface ResolveStringOptions<K extends string> extends
   special?: Nullable<Record<string, K[]>>;
 }
 
-export interface ResolveObjectOptions<K extends string, V, D = V> extends
+export interface ResolveObjectOptions<K extends string, V, D = V, DK extends string = 'default'> extends
   ResolveValueOptions<K, V>,
   ResolveNullishOptions<K, D>,
   ResolveStringOptions<K> {
+  defaultKey?: DK;
 }
 
 export type SelectiveResolved<K extends string, V> = Record<K, V>;
