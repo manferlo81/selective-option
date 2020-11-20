@@ -5,7 +5,7 @@ on:
     types: [created]
 
 jobs:
-  build:
+  run_test:
     name: Lint, Test and Build
 
     strategy:
@@ -55,7 +55,7 @@ jobs:
   publish-npm:
     name: Publish to npm registry
 
-    needs: build
+    needs: run_test
     runs-on: ubuntu-latest
 
     steps:
@@ -93,7 +93,7 @@ jobs:
   publish-gpr:
     name: Publish to Github Packages
 
-    needs: build
+    needs: run_test
     runs-on: ubuntu-latest
 
     steps:
