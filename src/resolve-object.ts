@@ -1,4 +1,5 @@
 import { createResult } from './create-result';
+import { errorInvalidKey, errorInvalidValue } from './errors';
 import { isArray } from './type-check';
 import type { Nullable, ResolveObjectOptions, SelectiveResolved } from './types';
 
@@ -26,7 +27,7 @@ export function resolveObject<K extends string, V, D = V>(
       if (value != null) {
 
         if (!isValidValue(value)) {
-          throw new Error(`${value} is not a valid value`);
+          throw errorInvalidValue(value);
         }
 
         if (key === 'default') {
@@ -38,7 +39,7 @@ export function resolveObject<K extends string, V, D = V>(
           } else if (isKey(key)) {
             (keysData || (keysData = [])).push([key, value]);
           } else {
-            throw new Error(`"${key}" is not a valid key`);
+            throw errorInvalidKey(key);
           }
         }
 

@@ -1,1 +1,1 @@
-export const { isArray } = Array as { isArray: (value: unknown) => value is unknown[] };
+export const { isArray } = Array as { isArray: <T = unknown>(value: unknown) => value is T[] };

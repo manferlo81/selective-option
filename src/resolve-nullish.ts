@@ -6,10 +6,9 @@ export function resolveNullish<K extends string, D>(
   options: ResolveNullishOptions<K, D>,
 ): SelectiveResolved<K, D> | void {
   if (value == null) {
-    const { keys, defaultValue } = options;
     return createResult(
-      keys,
-      defaultValue,
+      options.keys,
+      options.defaultValue,
     );
   }
 }

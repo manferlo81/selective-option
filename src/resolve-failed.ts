@@ -1,5 +1,7 @@
+import { errorInvalidValue } from './errors';
+
 export function resolveFailed(
-  object: unknown,
+  value: unknown,
 ): never {
-  throw new Error(`${object} is not a valid value`);
+  throw errorInvalidValue(value);
 }

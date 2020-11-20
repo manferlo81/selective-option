@@ -5,10 +5,9 @@ export function resolveValue<K extends string, V>(
   value: unknown,
   options: ResolveValueOptions<K, V>,
 ): SelectiveResolved<K, V> | void {
-  const { keys, isValidValue } = options;
-  if (isValidValue(value)) {
+  if (options.isValidValue(value)) {
     return createResult(
-      keys,
+      options.keys,
       value,
     );
   }

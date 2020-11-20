@@ -1,8 +1,9 @@
 import { createResult } from './create-result';
+import { errorInvalidKey } from './errors';
 import { isArray } from './type-check';
 import type { Nullable, ResolveStringOptions, SelectiveResolved, TypeCheckFunction } from './types';
 
-function __resolveString<K extends string>(
+function processString<K extends string>(
   key: string,
   keys: K[],
   isKey: TypeCheckFunction<K>,
@@ -14,8 +15,9 @@ function __resolveString<K extends string>(
 
   if (specialKeys) {
     const result = input || createResult(keys, false);
-    for (const key of specialKeys) {
-      result[key] = true;
+    const { length: len } = specialKeys;
+    for (let i = 0; i < len; i++) {
+      result[specialKeys[i]] = true;
     }
     return result;
   }
@@ -32,20 +34,14 @@ export function resolveString<K extends string>(
   value: unknown,
   options: ResolveStringOptions<K>,
 ): SelectiveResolved<K, boolean> | void {
-
   if (typeof value === 'string') {
-
-    const { keys, isKey, special } = options;
-
-    return __resolveString(
+    return processString(
       value,
-      keys,
-      isKey,
-      special,
+      options.keys,
+      options.isKey,
+      options.special,
     );
-
   }
-
 }
 
 export function resolveArray<K extends string>(
@@ -55,27 +51,22 @@ export function resolveArray<K extends string>(
 
   if (isArray(value)) {
 
-    const { keys, isKey, special } = options;
-
-    const result = createResult(keys, false);
+    const result = createResult(options.keys, false);
 
     for (let i = 0; i < value.length; i++) {
-
       const key = value[i];
-
       if (
-        typeof key !== 'string' ||
-        !__resolveString(
+        (typeof key !== 'string') ||
+        !processString(
           key,
-          keys,
-          isKey,
-          special,
+          options.keys,
+          options.isKey,
+          options.special,
           result,
         )
       ) {
-        throw new Error(`"${key}" is not a valid key`);
+        throw errorInvalidKey(key);
       }
-
     }
 
     return result;
