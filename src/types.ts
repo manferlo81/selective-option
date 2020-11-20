@@ -31,7 +31,7 @@ export interface ResolveNullishOptions<K extends string, D> extends
 export interface ResolveStringOptions<K extends string> extends
   ResolveOptionsBase<K> {
   isKey: TypeCheckFunction<K>;
-  special: Nullable<Record<string, K[]>>;
+  special?: Nullable<Record<string, K[]>>;
 }
 
 export interface ResolveObjectOptions<K extends string, V, D = V> extends
