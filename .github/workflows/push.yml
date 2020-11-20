@@ -54,7 +54,7 @@ jobs:
         name: Build
 
   coverage:
-    name: Upload coverage
+    name: Upload Coverage
 
     needs: run_test
     runs-on: ubuntu-latest
