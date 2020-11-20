@@ -8,8 +8,6 @@ export function resolveObject<K extends string, V, D = V>(
   options: ResolveObjectOptions<K, V, D>,
 ): SelectiveResolved<K, V | D> | void {
 
-  const { keys, isKey, special, isValidValue, defaultValue } = options;
-
   if (typeof object === 'object' && object && !isArray(object)) {
 
     const objectKeys = Object.keys(object);
@@ -26,17 +24,18 @@ export function resolveObject<K extends string, V, D = V>(
 
       if (value != null) {
 
-        if (!isValidValue(value)) {
+        if (!options.isValidValue(value)) {
           throw errorInvalidValue(value);
         }
 
         if (key === 'default') {
           overrideValue = [value];
         } else {
+          const { special } = options;
           const specialKeys: Nullable<K[]> = special && special[key];
           if (specialKeys) {
             (specialData || (specialData = [])).push([specialKeys, value]);
-          } else if (isKey(key)) {
+          } else if (options.isKey(key)) {
             (keysData || (keysData = [])).push([key, value]);
           } else {
             throw errorInvalidKey(key);
@@ -48,8 +47,8 @@ export function resolveObject<K extends string, V, D = V>(
     }
 
     const result = createResult(
-      keys,
-      overrideValue ? overrideValue[0] : defaultValue,
+      options.keys,
+      overrideValue ? overrideValue[0] : options.defaultValue,
     );
 
     if (specialData) {
