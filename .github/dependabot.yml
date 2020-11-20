@@ -1,0 +1,13 @@
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      timezone: "Asia/Jakarta"
+      time: "07:00"
+    assignees:
+      - "manferlo81"
+    versioning-strategy: "increase"
+    open-pull-requests-limit: 10
