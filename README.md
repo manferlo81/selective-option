@@ -1,5 +1,7 @@
 # Selective Option
 
+[![codecov](https://codecov.io/gh/manferlo81/selective-option/branch/main/graph/badge.svg?token=U0GIRWISBJ)](https://codecov.io/gh/manferlo81/selective-option)
+
 ## Install
 
 ```bash
