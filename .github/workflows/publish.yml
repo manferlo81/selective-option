@@ -1,0 +1,76 @@
+name: Node.js Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    name: Lint, Test and Build
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+        node-version:
+          - 10
+          - 12
+          - 14
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout code
+      - uses: actions/setup-node@v1
+        name: Setup Node.js ${{ matrix.node-version }}
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+        name: Install dependencies
+      - run: npm run lint
+        name: Lint code
+      - run: npm test
+        name: Run tests
+      - run: npm run build
+        name: Build
+
+  publish-npm:
+    name: Publish to npm registry
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout code
+      - uses: actions/setup-node@v1
+        name: Setup Node.js 12
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+        name: Install dependencies
+      - run: npm run build
+        name: Build
+      - run: npm publish
+        name: Publish package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-gpr:
+    name: Publish to Github Packages
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout code
+      - uses: actions/setup-node@v1
+        name: Setup Node.js 12
+        with:
+          node-version: 12
+          registry-url: https://npm.pkg.github.com/
+      - run: npm ci
+        name: Install dependencies
+      - run: npm run build
+        name: Build
+      - run: npm publish
+        name: Publish package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
