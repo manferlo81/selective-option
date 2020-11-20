@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - main
@@ -11,6 +12,7 @@ on:
 jobs:
   build:
     name: Lint, Test and Build
+
     strategy:
       matrix:
         os:
@@ -20,19 +22,35 @@ jobs:
           - 10
           - 12
           - 14
+
     runs-on: ${{ matrix.os }}
+
     steps:
       - uses: actions/checkout@v2
         name: Checkout code
+
       - uses: actions/setup-node@v1
         name: Setup Node.js ${{ matrix.node-version }}
         with:
           node-version: ${{ matrix.node-version }}
+
+      - uses: actions/cache@v2
+        name: Cache
+        id: npm-cache
+        run: echo "::set-output name=dir::$(npm config get cache)"
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
       - run: npm ci
         name: Install dependencies
+
       - run: npm run lint
         name: Lint code
+
       - run: npm test
         name: Run tests
+
       - run: npm run build
         name: Build
