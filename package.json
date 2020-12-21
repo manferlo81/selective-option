@@ -2,9 +2,15 @@
   "name": "selective-option",
   "version": "0.0.1",
   "description": "A simple selective option resolver",
-  "type": "commonjs",
+  "keywords": [
+    "option",
+    "options",
+    "selective"
+  ],
   "main": "./dist/selective.cjs",
   "module": "./dist/selective.mjs",
+  "jsnext:main": "./dist/selective.mjs",
+  "type": "commonjs",
   "exports": {
     "import": "./dist/selective.mjs",
     "default": "./dist/selective.cjs"
@@ -42,15 +48,17 @@
     "ts-jest": "^26.4.4",
     "typescript": "^4.1.3"
   },
+  "author": {
+    "name": "Manuel Fernandez",
+    "email": "manferlo81@gmail.com"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/manferlo81/selective-option.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/manferlo81/selective-option/issues"
   },
-  "homepage": "https://github.com/manferlo81/selective-option#readme"
+  "homepage": "https://github.com/manferlo81/selective-option#readme",
+  "license": "MIT"
 }
