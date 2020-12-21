@@ -6,39 +6,16 @@ export type ObjectOption<K extends string, V, DK extends string = 'default'> = P
 
 export type StringOption<K extends string> = K | K[];
 
-export type ValueBasedSelectiveOption<K extends string, V> =
+export type ValueBasedSelectiveOption<K extends string, V, DK extends string = 'default'> =
   | Nullable<V>
-  | ObjectOption<K, V>;
+  | ObjectOption<K, V, DK>;
 
 export type BoolBasedSelectiveOption<K extends string, V> =
   | StringOption<K>
   | ValueBasedSelectiveOption<K, V>;
 
-interface ResolveOptionsBase<K extends string> {
-  keys: K[];
-}
-
-export interface ResolveValueOptions<K extends string, V> extends
-  ResolveOptionsBase<K> {
-  isValidValue: TypeCheckFunction<V>;
-}
-
-export interface ResolveNullishOptions<K extends string, D> extends
-  ResolveOptionsBase<K> {
-  defaultValue: D;
-}
-
-export interface ResolveStringOptions<K extends string> extends
-  ResolveOptionsBase<K> {
-  isKey: TypeCheckFunction<K>;
-  special?: Nullable<Record<string, K[]>>;
-}
-
-export interface ResolveObjectOptions<K extends string, V, D = V, DK extends string = 'default'> extends
-  ResolveValueOptions<K, V>,
-  ResolveNullishOptions<K, D>,
-  ResolveStringOptions<K> {
-  defaultKey?: DK;
-}
-
 export type SelectiveResolved<K extends string, V> = Record<K, V>;
+
+export type ResolverBase<R> = (value: unknown) => R;
+export type PotentialResolver<K extends string, V> = ResolverBase<SelectiveResolved<K, V> | void>;
+export type Resolver<K extends string, V> = ResolverBase<SelectiveResolved<K, V>>;

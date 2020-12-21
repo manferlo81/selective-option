@@ -1,14 +1,28 @@
 import { createResult } from './create-result';
-import type { ResolveValueOptions, SelectiveResolved } from './types';
+import type { PotentialResolver, SelectiveResolved, TypeCheckFunction } from './types';
 
+export function createValueResolver<K extends string, V>(
+  keys: K[],
+  isValidValue: TypeCheckFunction<V>,
+): PotentialResolver<K, V> {
+  return (value) => {
+    if (isValidValue(value)) {
+      return createResult(
+        keys,
+        value,
+      );
+    }
+  };
+}
+
+/** @deprecated */
 export function resolveValue<K extends string, V>(
   value: unknown,
-  options: ResolveValueOptions<K, V>,
+  keys: K[],
+  isValidValue: TypeCheckFunction<V>,
 ): SelectiveResolved<K, V> | void {
-  if (options.isValidValue(value)) {
-    return createResult(
-      options.keys,
-      value,
-    );
-  }
+  return createValueResolver(
+    keys,
+    isValidValue,
+  )(value);
 }

@@ -1,4 +1,4 @@
-import { resolveNullish } from '../src';
+import { createNullishResolver } from '../src';
 
 describe('Resolve Nullish', () => {
 
@@ -8,9 +8,9 @@ describe('Resolve Nullish', () => {
   const keys: K[] = ['a', 'b', 'c', 'd'];
   const defaultValue = true;
 
-  const resolve = (value: unknown) => resolveNullish<K, V>(
-    value,
-    { keys, defaultValue },
+  const resolve = createNullishResolver<K, V>(
+    keys,
+    defaultValue,
   );
 
   test('Should resolve null value', () => {

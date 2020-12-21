@@ -1,19 +1,18 @@
 export { createResult } from './create-result';
-export { resolveBoolBased } from './resolve-bool-based';
+export { createBoolBasedResolver, resolveBoolBased } from './resolve-bool-based';
 export { resolveFailed } from './resolve-failed';
-export { resolveNullish } from './resolve-nullish';
-export { resolveObject } from './resolve-object';
-export { resolveArray, resolveString } from './resolve-strings';
-export { resolveValue } from './resolve-value';
-export { resolveValueBased } from './resolve-value-based';
+export { createNullishResolver, resolveNullish } from './resolve-nullish';
+export { createObjectResolver, resolveObject } from './resolve-object';
+export { createArrayResolver, createStringResolver, resolveArray, resolveString } from './resolve-strings';
+export { createValueResolver, resolveValue } from './resolve-value';
+export { createValueBasedResolver, resolveValueBased } from './resolve-value-based';
 export type {
   BoolBasedSelectiveOption,
   ObjectOption,
-  ResolveNullishOptions,
-  ResolveObjectOptions,
-  ResolveStringOptions,
-  ResolveValueOptions,
+  PotentialResolver,
+  Resolver,
   SelectiveResolved,
   StringOption,
+  TypeCheckFunction,
   ValueBasedSelectiveOption,
 } from './types';

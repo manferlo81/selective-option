@@ -1,4 +1,4 @@
-import { resolveValue } from '../src';
+import { createValueResolver } from '../src';
 
 describe('Resolve Value', () => {
 
@@ -8,9 +8,9 @@ describe('Resolve Value', () => {
   const keys: K[] = ['a', 'b', 'c', 'd'];
   const isValidValue = (value: unknown): value is V => [true, false, 'auto'].includes(value as never);
 
-  const resolve = (value: unknown) => resolveValue<K, V>(
-    value,
-    { keys, isValidValue },
+  const resolve = createValueResolver<K, V>(
+    keys,
+    isValidValue,
   );
 
   test('Should resolve valid value', () => {

@@ -1,4 +1,4 @@
-import { resolveString } from '../src';
+import { createStringResolver } from '../src';
 
 describe('Resolve Bool Strings', () => {
 
@@ -9,9 +9,10 @@ describe('Resolve Bool Strings', () => {
 
   const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
-  const resolve = (value: unknown) => resolveString<K>(
-    value,
-    { keys, isKey, special },
+  const resolve = createStringResolver<K>(
+    keys,
+    isKey,
+    special,
   );
 
   test('Should resolve key', () => {

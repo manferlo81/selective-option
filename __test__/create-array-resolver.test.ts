@@ -1,4 +1,4 @@
-import { resolveArray } from '../src';
+import { createArrayResolver } from '../src';
 
 describe('Resolve Bool Strings', () => {
 
@@ -9,9 +9,10 @@ describe('Resolve Bool Strings', () => {
 
   const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
-  const resolve = (value: unknown) => resolveArray<K>(
-    value,
-    { keys, isKey, special },
+  const resolve = createArrayResolver<K>(
+    keys,
+    isKey,
+    special,
   );
 
   test('Should throw on invalid input', () => {

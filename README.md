@@ -10,6 +10,26 @@ npm i selective-option
 
 ## API
 
+### createBoolBasedResolver
+
+### createValueBasedResolver
+
+### createValueResolver
+
+### createNullishResolver
+
+### createStringResolver
+
+### createArrayResolver
+
+### createObjectResolver
+
+### resolveFailed
+
+### createResult
+
+## Deprecated API
+
 ### resolveBoolBased
 
 ### resolveValueBased
@@ -23,8 +43,6 @@ npm i selective-option
 ### resolveArray
 
 ### resolveObject
-
-### resolveFailed
 
 ## License
 

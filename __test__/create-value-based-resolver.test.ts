@@ -1,4 +1,4 @@
-import { resolveValueBased } from '../src';
+import { createValueBasedResolver } from '../src';
 
 describe('Resolve Value Based', () => {
 
@@ -13,9 +13,12 @@ describe('Resolve Value Based', () => {
   const isValidValue = (value: unknown): value is T => typeof value === 'number';
   const defaultValue = 0;
 
-  const resolve = (value: unknown) => resolveValueBased<K, T>(
-    value,
-    { keys, isKey, special, isValidValue, defaultValue },
+  const resolve = createValueBasedResolver<K, T>(
+    keys,
+    isValidValue,
+    defaultValue,
+    isKey,
+    special,
   );
 
   test('Should throw on invalid value', () => {
