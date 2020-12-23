@@ -1,8 +1,9 @@
+import { createArrayResolver } from './resolve-array';
 import { createBoolResolver } from './resolve-bool';
 import { resolveFailed } from './resolve-failed';
 import { createNullishResolver } from './resolve-nullish';
 import { createObjectResolver } from './resolve-object';
-import { createArrayResolver, createStringResolver } from './resolve-strings';
+import { createStringResolver } from './resolve-string';
 import { createValueResolver } from './resolve-value';
 import type { Nullable, Resolver, TypeCheckFunction } from './types';
 
