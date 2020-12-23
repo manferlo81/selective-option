@@ -45,6 +45,14 @@ function createValueResolver<K extends string, V>(
 ): PotentialResolver<K, V>;
 ```
 
+### createBoolResolver
+
+```typescript
+function createBoolResolver<K extends string>(
+  keys: K[],
+): PotentialResolver<K, boolean>;
+```
+
 ### createNullishResolver
 
 ```typescript
