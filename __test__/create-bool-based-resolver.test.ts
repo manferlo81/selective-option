@@ -22,7 +22,7 @@ describe('Resolve Bool Based', () => {
   );
 
   test('Should throw on invalid value', () => {
-    expect(() => resolve(true)).toThrow();
+    expect(() => resolve('string')).toThrow();
   });
 
   test('Should resolve null value', () => {
@@ -52,6 +52,21 @@ describe('Resolve Bool Based', () => {
       b: NaN,
       c: NaN,
       d: NaN,
+    });
+  });
+
+  test('Should resolve boolean value', () => {
+    expect(resolve(true)).toEqual({
+      a: true,
+      b: true,
+      c: true,
+      d: true,
+    });
+    expect(resolve(false)).toEqual({
+      a: false,
+      b: false,
+      c: false,
+      d: false,
     });
   });
 

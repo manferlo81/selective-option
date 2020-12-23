@@ -2,7 +2,7 @@ import { resolveFailed } from './resolve-failed';
 import { createNullishResolver } from './resolve-nullish';
 import { createObjectResolver } from './resolve-object';
 import { createValueResolver } from './resolve-value';
-import type { Nullable, Resolver, SelectiveResolved, TypeCheckFunction } from './types';
+import type { Nullable, Resolver, TypeCheckFunction } from './types';
 
 export function createValueBasedResolver<K extends string, V, D = V, DK extends string = 'default'>(
   keys: K[],
@@ -31,7 +31,7 @@ export function resolveValueBased<K extends string, V, D = V>(
   special: Record<string, K[]>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
-): SelectiveResolved<K, V | D> {
+): Record<K, V | D> {
   return createValueBasedResolver(
     keys,
     isValidValue,

@@ -1,15 +1,15 @@
 import { createResult } from './create-result';
 import { errorInvalidKey } from './errors';
 import { isArray } from './type-check';
-import type { Nullable, PotentialResolver, SelectiveResolved, TypeCheckFunction } from './types';
+import type { Nullable, PotentialResolver, TypeCheckFunction } from './types';
 
 function processString<K extends string>(
   key: string,
   keys: K[],
   isKey: TypeCheckFunction<K>,
   special: Nullable<Record<string, K[]>>,
-  input?: SelectiveResolved<K, boolean>,
-): SelectiveResolved<K, boolean> | void {
+  input?: Record<K, boolean>,
+): Record<K, boolean> | void {
 
   const specialKeys: Nullable<K[]> = special && special[key];
 
@@ -85,7 +85,7 @@ export function resolveString<K extends string>(
   keys: K[],
   isKey: TypeCheckFunction<K>,
   special?: Nullable<Record<string, K[]>>,
-): SelectiveResolved<K, boolean> | void {
+): Record<K, boolean> | void {
   return createStringResolver(
     keys,
     isKey,
@@ -99,7 +99,7 @@ export function resolveArray<K extends string>(
   keys: K[],
   isKey: TypeCheckFunction<K>,
   special?: Nullable<Record<string, K[]>>,
-): SelectiveResolved<K, boolean> | void {
+): Record<K, boolean> | void {
   return createArrayResolver(
     keys,
     isKey,

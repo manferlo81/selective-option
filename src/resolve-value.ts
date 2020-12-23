@@ -1,5 +1,5 @@
 import { createResult } from './create-result';
-import type { PotentialResolver, SelectiveResolved, TypeCheckFunction } from './types';
+import type { PotentialResolver, TypeCheckFunction } from './types';
 
 export function createValueResolver<K extends string, V>(
   keys: K[],
@@ -20,7 +20,7 @@ export function resolveValue<K extends string, V>(
   value: unknown,
   keys: K[],
   isValidValue: TypeCheckFunction<V>,
-): SelectiveResolved<K, V> | void {
+): Record<K, V> | void {
   return createValueResolver(
     keys,
     isValidValue,

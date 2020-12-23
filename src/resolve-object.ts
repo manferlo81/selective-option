@@ -1,7 +1,7 @@
 import { createResult } from './create-result';
 import { errorInvalidKey, errorInvalidValue } from './errors';
 import { isArray } from './type-check';
-import type { Nullable, PotentialResolver, SelectiveResolved, TypeCheckFunction } from './types';
+import type { Nullable, PotentialResolver, TypeCheckFunction } from './types';
 
 export function createObjectResolver<K extends string, V, D = V, DK extends string = 'default'>(
   keys: K[],
@@ -88,7 +88,7 @@ export function resolveObject<K extends string, V, D = V>(
   special: Nullable<Record<string, K[]>>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
-): SelectiveResolved<K, V | D> | void {
+): Record<K, V | D> | void {
   return createObjectResolver(
     keys,
     isValidValue,

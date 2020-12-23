@@ -1,4 +1,5 @@
 export { createResult } from './create-result';
+export { createBoolResolver } from './resolve-bool';
 export { createBoolBasedResolver, resolveBoolBased } from './resolve-bool-based';
 export { resolveFailed } from './resolve-failed';
 export { createNullishResolver, resolveNullish } from './resolve-nullish';
@@ -11,7 +12,6 @@ export type {
   ObjectOption,
   PotentialResolver,
   Resolver,
-  SelectiveResolved,
   StringOption,
   TypeCheckFunction,
   ValueBasedSelectiveOption,

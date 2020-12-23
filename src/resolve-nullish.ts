@@ -1,5 +1,5 @@
 import { createResult } from './create-result';
-import type { PotentialResolver, SelectiveResolved } from './types';
+import type { PotentialResolver } from './types';
 
 export function createNullishResolver<K extends string, D>(
   keys: K[],
@@ -20,7 +20,7 @@ export function resolveNullish<K extends string, D>(
   value: unknown,
   keys: K[],
   defaultValue: D,
-): SelectiveResolved<K, D> | void {
+): Record<K, D> | void {
   return createNullishResolver(
     keys,
     defaultValue,
