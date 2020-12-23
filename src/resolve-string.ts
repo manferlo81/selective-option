@@ -1,4 +1,5 @@
-import { processString } from './process-string';
+import { createResult } from './create-result';
+import { resolveKey } from './resolve-key';
 import type { Nullable, PotentialResolver, TypeCheckFunction } from './types';
 
 export function createStringResolver<K extends string>(
@@ -8,12 +9,21 @@ export function createStringResolver<K extends string>(
 ): PotentialResolver<K, boolean> {
   return (value) => {
     if (typeof value === 'string') {
-      return processString(
+      const resolved = resolveKey(
         value,
-        keys,
         isKey,
         special,
       );
+      if (resolved) {
+        return createResult(
+          resolved,
+          true,
+          createResult(
+            keys,
+            false,
+          ),
+        );
+      }
     }
   };
 }
