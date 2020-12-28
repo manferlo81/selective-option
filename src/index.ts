@@ -1,6 +1,5 @@
 export { createResult } from './create-result';
 export { createArrayResolver, resolveArray } from './resolve-array';
-export { createBoolResolver } from './resolve-bool';
 export { createBoolBasedResolver, resolveBoolBased } from './resolve-bool-based';
 export { resolveFailed } from './resolve-failed';
 export { createNullishResolver, resolveNullish } from './resolve-nullish';

@@ -55,21 +55,6 @@ describe('Resolve Bool Based', () => {
     });
   });
 
-  test('Should resolve boolean value', () => {
-    expect(resolve(true)).toEqual({
-      a: true,
-      b: true,
-      c: true,
-      d: true,
-    });
-    expect(resolve(false)).toEqual({
-      a: false,
-      b: false,
-      c: false,
-      d: false,
-    });
-  });
-
   test('Should resolve key', () => {
     expect(resolve('b')).toEqual({
       a: false,

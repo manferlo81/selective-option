@@ -1,5 +1,4 @@
 import { createArrayResolver } from './resolve-array';
-import { createBoolResolver } from './resolve-bool';
 import { resolveFailed } from './resolve-failed';
 import { createNullishResolver } from './resolve-nullish';
 import { createObjectResolver } from './resolve-object';
@@ -16,14 +15,12 @@ export function createBoolBasedResolver<K extends string, V, D = V, DK extends s
   defaultKey?: DK,
 ): Resolver<K, V | D | boolean> {
   const resolveValue = createValueResolver(keys, isValidValue);
-  const resolveBool = createBoolResolver(keys);
   const resolveNullish = createNullishResolver(keys, defaultValue);
   const resolveString = createStringResolver(keys, isKey, special);
   const resolveArray = createArrayResolver(keys, isKey, special);
   const resolveObject = createObjectResolver(keys, isValidValue, defaultValue, isKey, special, defaultKey);
   return (value) => (
     resolveValue(value) ||
-    resolveBool(value) ||
     resolveNullish(value) ||
     resolveString(value) ||
     resolveArray(value) ||

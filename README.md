@@ -47,16 +47,6 @@ function createValueResolver<K extends string, V>(
 
 Creates a resolver function that resolves if `isValidValue` returns a truthy value.
 
-### createBoolResolver
-
-```typescript
-function createBoolResolver<K extends string>(
-  keys: K[],
-): PotentialResolver<K, boolean>;
-```
-
-Creates a resolver function that resolves if the value is a boolean.
-
 ### createNullishResolver
 
 ```typescript
