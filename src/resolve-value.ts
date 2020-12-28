@@ -14,15 +14,3 @@ export function createValueResolver<K extends string, V>(
     }
   };
 }
-
-/** @deprecated */
-export function resolveValue<K extends string, V>(
-  value: unknown,
-  keys: K[],
-  isValidValue: TypeCheckFunction<V>,
-): Record<K, V> | void {
-  return createValueResolver(
-    keys,
-    isValidValue,
-  )(value);
-}

@@ -39,17 +39,3 @@ export function createArrayResolver<K extends string>(
     }
   };
 }
-
-/** @deprecated */
-export function resolveArray<K extends string>(
-  value: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
-): Record<K, boolean> | void {
-  return createArrayResolver(
-    keys,
-    isKey,
-    special,
-  )(value);
-}

@@ -27,17 +27,3 @@ export function createStringResolver<K extends string>(
     }
   };
 }
-
-/** @deprecated */
-export function resolveString<K extends string>(
-  value: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
-): Record<K, boolean> | void {
-  return createStringResolver(
-    keys,
-    isKey,
-    special,
-  )(value);
-}
