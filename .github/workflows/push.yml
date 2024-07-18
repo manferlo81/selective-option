@@ -31,17 +31,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
 
-      # - name: Get npm cache directory
-      #   id: npm-cache
-      #   run: echo "::set-output name=dir::$(npm config get cache)"
-
-      # - name: Cache
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ${{ steps.npm-cache.outputs.dir }}
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: ${{ runner.os }}-node-
-
       - name: Install dependencies
         run: npm ci
 
@@ -69,17 +58,7 @@ jobs:
         with:
           node-version: 22.4
           cache: "npm"
-
-      # - name: Get npm cache directory
-      #   run: echo "::set-output name=dir::$(npm config get cache)"
-      #   id: npm-cache
-
-      # - name: Cache
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ${{ steps.npm-cache.outputs.dir }}
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: ${{ runner.os }}-node-
+          cache-dependency-path: "package-lock.json"
 
       - name: Install dependencies
         run: npm ci
