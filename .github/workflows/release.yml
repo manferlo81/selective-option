@@ -14,43 +14,34 @@ jobs:
           - ubuntu-latest
           - windows-latest
         node-version:
-          - 18
-          - 20
-          - 22
+          - 18.x
+          - 20.x
+          - 22.4
 
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
-        name: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v1
-        name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "package-lock.json"
 
-      - run: echo "::set-output name=dir::$(npm config get cache)"
-        name: Get npm cache folder
-        id: npm-cache
+      - name: Install dependencies
+        run: npm ci
 
-      - uses: actions/cache@v2
-        name: Cache
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+      - name: Lint code
+        run: npm run lint
 
-      - run: npm ci
-        name: Install dependencies
+      - name: Run tests
+        run: npm test
 
-      - run: npm run lint
-        name: Lint code
-
-      - run: npm test
-        name: Run tests
-
-      - run: npm run build
-        name: Build
+      - name: Build
+        run: npm run build
 
   publish-npm:
     name: Publish to npm registry
@@ -59,34 +50,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-        name: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v1
-        name: Setup Node.js 12
+      - name: Setup Node.js 22.4
+        uses: actions/setup-node@v4
         with:
-          node-version: 12
+          node-version: 22.4
           registry-url: https://registry.npmjs.org/
 
-      - run: echo "::set-output name=dir::$(npm config get cache)"
-        name: Get npm cache folder
-        id: npm-cache
+      - name: Install dependencies
+        run: npm ci
 
-      - uses: actions/cache@v2
-        name: Cache
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+      - name: Build
+        run: npm run build
 
-      - run: npm ci
-        name: Install dependencies
-
-      - run: npm run build
-        name: Build
-
-      - run: npm publish
-        name: Publish package
+      - name: Publish package
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -97,33 +77,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-        name: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v1
-        name: Setup Node.js 12
+      - name: Setup Node.js 22.4
+        uses: actions/setup-node@v4
         with:
-          node-version: 12
+          node-version: 22.4
           registry-url: https://npm.pkg.github.com/
 
-      - run: echo "::set-output name=dir::$(npm config get cache)"
-        name: Get npm cache folder
-        id: npm-cache
+      - name: Install dependencies
+        run: npm ci
 
-      - uses: actions/cache@v2
-        name: Cache
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+      - name: Build
+        run: npm run build
 
-      - run: npm ci
-        name: Install dependencies
-
-      - run: npm run build
-        name: Build
-
-      - run: npm publish
-        name: Publish package
+      - name: Publish package
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
