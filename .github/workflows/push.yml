@@ -45,8 +45,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # - name: Lint code
-      #   run: npm run lint
+      - name: Lint code
+        run: npm run lint
 
       - name: Run tests
         run: npm test
@@ -58,7 +58,7 @@ jobs:
     name: Upload Coverage
 
     needs: run_test
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
