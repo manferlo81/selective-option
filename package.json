@@ -9,13 +9,16 @@
   ],
   "type": "commonjs",
   "exports": {
-    "import": "./dist/selective.mjs",
-    "default": "./dist/selective.cjs"
+    "types": "./dist/types/index.d.ts",
+    "import": "./dist/esm/selective.mjs",
+    "require": "./dist/cjs/selective.cjs",
+    "node": "./dist/cjs/selective.cjs",
+    "default": "./dist/cjs/selective.cjs"
   },
-  "main": "./dist/selective.cjs",
-  "module": "./dist/selective.mjs",
-  "jsnext:main": "./dist/selective.mjs",
-  "browser": "./dist/selective.umd.js",
+  "main": "./dist/cjs/selective.cjs",
+  "module": "./dist/esm/selective.mjs",
+  "jsnext:main": "./dist/esm/selective.mjs",
+  "browser": "./dist/umd/selective.umd.js",
   "types": "./dist/types/index.d.ts",
   "typings": "./dist/types/index.d.ts",
   "scripts": {
@@ -32,6 +35,7 @@
     "prerelease": "run-s clean lint test build",
     "release": "standard-version"
   },
+  "bundlib": "./.bundlibrc.yml",
   "devDependencies": {
     "@babel/core": "^7.24.9",
     "@babel/preset-env": "^7.24.8",
