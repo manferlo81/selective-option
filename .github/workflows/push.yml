@@ -22,36 +22,36 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
-        name: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: echo "::set-output name=dir::$(npm config get cache)"
-        name: Get npm cache folder
-        id: npm-cache
+      # - name: Get npm cache directory
+      #   id: npm-cache
+      #   run: echo "::set-output name=dir::$(npm config get cache)"
 
-      - uses: actions/cache@v4
-        name: Cache
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+      # - name: Cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ${{ steps.npm-cache.outputs.dir }}
+      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: ${{ runner.os }}-node-
 
-      - run: npm ci
-        name: Install dependencies
+      - name: Install dependencies
+        run: npm ci
 
-      - run: npm run lint
-        name: Lint code
+      - name: Lint code
+        run: npm run lint
 
-      - run: npm test
-        name: Run tests
+      - name: Run tests
+        run: npm test
 
-      - run: npm run build
-        name: Build
+      - name: Build
+        run: npm run build
 
   coverage:
     name: Upload Coverage
@@ -60,35 +60,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        name: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        name: Setup Node.js 12
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
         with:
-          node-version: 12
+          node-version: 22
 
-      - run: echo "::set-output name=dir::$(npm config get cache)"
-        name: Get npm cache folder
-        id: npm-cache
+      # - name: Get npm cache directory
+      #   run: echo "::set-output name=dir::$(npm config get cache)"
+      #   id: npm-cache
 
-      - uses: actions/cache@v4
-        name: Cache
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+      # - name: Cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ${{ steps.npm-cache.outputs.dir }}
+      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: ${{ runner.os }}-node-
 
-      - run: npm ci
-        name: Install dependencies
+      - name: Install dependencies
+        run: npm ci
 
-      - run: npm test
-        name: Run tests
+      - name: Run tests
+        run: npm test
         env:
           CI: true
 
-      - uses: codecov/codecov-action@v4
-        name: Upload coverage
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage/coverage-final.json
