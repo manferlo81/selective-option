@@ -102,7 +102,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage/coverage-final.json
 
-
   job_publish_to_npm:
     name: Publish to npm registry
 
