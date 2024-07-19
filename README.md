@@ -1,6 +1,6 @@
 # Selective Option
 
-[![Test and Build](https://github.com/manferlo81/selective-option/workflows/Test%20and%20Build/badge.svg?branch=main)](https://github.com/manferlo81/selective-option/actions) [![codecov](https://codecov.io/gh/manferlo81/selective-option/branch/main/graph/badge.svg?token=U0GIRWISBJ)](https://codecov.io/gh/manferlo81/selective-option)
+[![CI](https://github.com/manferlo81/selective-option/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/manferlo81/selective-option/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/manferlo81/selective-option/branch/main/graph/badge.svg?token=U0GIRWISBJ)](https://codecov.io/gh/manferlo81/selective-option)
 
 ## Install
 
