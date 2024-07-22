@@ -1,6 +1,6 @@
 {
   "name": "selective-option",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple selective option resolver",
   "keywords": [
     "option",
