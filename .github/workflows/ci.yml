@@ -5,11 +5,11 @@ on:
   push:
     branches:
       - main
+    tags:
+      - '*'
   pull_request:
     branches:
       - main
-  release:
-    types: [published]
 
 jobs:
   job_lint:
@@ -73,7 +73,7 @@ jobs:
   job_upload_coverage:
     name: Upload Coverage
 
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' && github.ref_type == 'branch' }}
     needs: job_test_and_build
     runs-on: ubuntu-latest
 
@@ -105,7 +105,7 @@ jobs:
   job_publish_to_npm:
     name: Publish to npm registry
 
-    if: ${{ github.event_name == 'release' }}
+    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name,'v') }}
     needs: job_test_and_build
     runs-on: ubuntu-latest
 
@@ -133,7 +133,8 @@ jobs:
   job_publish_to_gpr:
     name: Publish to Github Packages
 
-    if: ${{ github.event_name == 'release' }}
+    # skip for now
+    if: false
     needs: job_test_and_build
     runs-on: ubuntu-latest
 
