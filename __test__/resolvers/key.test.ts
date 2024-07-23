@@ -15,6 +15,29 @@ describe('createKeyResolver function', () => {
     return ['red', 'green', 'blue', 'white', 'black'].includes(color as never);
   };
 
+  test('Should throw if special values is not an array', () => {
+    const invalidKeys = [
+      5,
+    ];
+    invalidKeys.forEach((keys) => {
+      const create = () => createKeyResolver(isColor, { 'color': keys as never });
+      expect(create).toThrow();
+    });
+  });
+
+  test('Should throw if special values has invalid keys', () => {
+    const invalidKeys = [
+      ['lime', 'non-color', 3, true],
+      ['lime', 'non-color'],
+      ['red', 'non-color'],
+      ['non-color', 'blue'],
+    ];
+    invalidKeys.forEach((keys) => {
+      const create = () => createKeyResolver(isColor, { 'color': keys as never });
+      expect(create).toThrow();
+    });
+  });
+
   test('Should resolve key', () => {
     const resolveKey = createKeyResolver<Color>(isColor, specialColors);
     colors.forEach((key) => {
