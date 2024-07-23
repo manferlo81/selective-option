@@ -4,11 +4,12 @@ import { createFunctionReturning } from '../tools';
 import type { KeyResolver, SpecialKeys } from './types';
 
 export function createKeyResolver<K extends string>(isKey: TypeCheckFunction<K>): KeyResolver<K> {
+
+  // return resolver
   return (key) => {
-    if (isKey(key)) {
-      return [key];
-    }
+    if (isKey(key)) return [key];
   };
+
 }
 
 export function createSpecialKeyResolver<K extends string>(isKey: TypeCheckFunction<K>, specialData?: AllowNullish<SpecialKeys<string, K>>): KeyResolver<K> {

@@ -3,7 +3,7 @@ import type { AllowNullish, TypeCheckFunction } from '../helper-types';
 import type { Resolver } from '../types';
 import { createKeyResolver, createSpecialKeyResolver } from './key';
 import { createNullishResolver } from './nullish';
-import { createObjectResolver_v2 } from './object';
+import { createObjectResolver_v2 } from './v2/object';
 import { createValueResolver } from './value';
 
 export function createValueBasedResolver<K extends string, V, D = V, DK extends string = 'default'>(
@@ -24,7 +24,7 @@ export function createValueBasedResolver<K extends string, V, D = V, DK extends 
   const resolveNullish = createNullishResolver(keys, defaultValue);
   const resolveObject = createObjectResolver_v2(keys, isValidValue, defaultValue, resolveKey, resolveSpecialKey, defaultKey);
 
-  // return compiled potential resolvers
+  // return compiled resolver
   return createResolver(
     resolveValue,
     resolveNullish,
