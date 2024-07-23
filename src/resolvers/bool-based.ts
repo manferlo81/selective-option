@@ -1,11 +1,12 @@
-import type { AllowNullish, TypeCheckFunction } from '../helper-types';
-import { createArrayResolver } from './array';
-import { createNullishResolver } from './nullish';
-import { createObjectResolver } from './object';
-import { createStringResolver } from './string';
-import { createValueResolver } from './value';
-import type { Resolver } from '../types';
 import { createResolver } from '../create-resolver';
+import type { AllowNullish, TypeCheckFunction } from '../helper-types';
+import type { Resolver } from '../types';
+import { createArrayResolver_v2 } from './array';
+import { createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver } from './key';
+import { createNullishResolver } from './nullish';
+import { createObjectResolver_v2 } from './object';
+import { createStringResolver_v2 } from './string';
+import { createValueResolver } from './value';
 
 export function createBoolBasedResolver<K extends string, V, D = V>(
   keys: readonly K[],
@@ -15,11 +16,20 @@ export function createBoolBasedResolver<K extends string, V, D = V>(
   special?: AllowNullish<Record<string, K[]>>,
   overrideKey?: string,
 ): Resolver<K, V | D | boolean> {
+
+  // create key resolvers
+  const resolveKey = createKeyResolver(isKey);
+  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
+  const resolveMultiKey = createMultiKeyResolver(resolveKey, resolveSpecialKey);
+
+  //
   const resolveValue = createValueResolver(keys, isValidValue);
   const resolveNullish = createNullishResolver(keys, defaultValue);
-  const resolveString = createStringResolver(keys, isKey, special);
-  const resolveArray = createArrayResolver(keys, isKey, special);
-  const resolveObject = createObjectResolver(keys, isValidValue, defaultValue, isKey, special, overrideKey);
+  const resolveString = createStringResolver_v2(keys, resolveMultiKey);
+  const resolveArray = createArrayResolver_v2(keys, resolveMultiKey);
+  const resolveObject = createObjectResolver_v2(keys, isValidValue, defaultValue, resolveKey, resolveSpecialKey, overrideKey);
+
+  //
   return createResolver<K, V | D | boolean>(
     resolveValue,
     resolveNullish,
