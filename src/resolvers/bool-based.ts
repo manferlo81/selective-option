@@ -1,9 +1,9 @@
 import { createResolver } from '../create-resolver';
 import type { AllowNullish, TypeCheckFunction } from '../helper-types';
 import type { Resolver } from '../types';
-import { createArrayResolver_v2 } from './v2/array';
 import { createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver } from './key';
 import { createNullishResolver } from './nullish';
+import { createArrayResolver_v2 } from './v2/array';
 import { createObjectResolver_v2 } from './v2/object';
 import { createStringResolver_v2 } from './v2/string';
 import { createValueResolver } from './value';
@@ -37,4 +37,5 @@ export function createBoolBasedResolver<K extends string, V, D = V>(
     resolveArray,
     resolveObject,
   );
+
 }

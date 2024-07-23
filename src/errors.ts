@@ -5,5 +5,6 @@ export function errorInvalidKey(key: unknown): Error {
 }
 
 export function errorInvalidValue(value: unknown): Error {
-  return new Error(`${is(value, 'string') ? `"${value}"` : value} is not a valid value`);
+  const formattedValue = is(value, 'string') ? `"${value}"` : value;
+  return new Error(`${formattedValue} is not a valid value`);
 }

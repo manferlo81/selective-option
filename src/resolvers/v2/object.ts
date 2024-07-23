@@ -56,13 +56,13 @@ export function createObjectResolver_v2<K extends string, V, D = V>(
 
     }
 
-    const result = createResult<K, V | D>(
+    let result = createResult<K, V | D>(
       keys,
       overrideValue,
     );
 
     for (const item of specialData) {
-      createResult(
+      result = createResult(
         item[0],
         item[1],
         result,
@@ -70,7 +70,7 @@ export function createObjectResolver_v2<K extends string, V, D = V>(
     }
 
     for (const item of keysData) {
-      createResult(
+      result = createResult(
         item[0],
         item[1],
         result,

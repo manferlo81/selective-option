@@ -28,7 +28,6 @@ describe('createResult function', () => {
       c: true,
       d: true,
     });
-    expect(result).toBe(input);
   });
 
 });

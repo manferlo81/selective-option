@@ -20,14 +20,17 @@ export function createStringResolver_v2<K extends string>(
     // exit if it can't be resolved
     if (!resolved) return;
 
+    // create default result
+    const defaultResult = createResult(
+      keys,
+      false,
+    );
+
     // return result
     return createResult(
       resolved,
       true,
-      createResult(
-        keys,
-        false,
-      ),
+      defaultResult,
     );
 
   };
