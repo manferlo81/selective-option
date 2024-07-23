@@ -5,7 +5,7 @@ type SpecialKeys<S extends string, K extends string> = Partial<Record<S, K[]>>;
 export function resolveKey<K extends string>(
   key: string,
   isKey: TypeCheckFunction<K>,
-  special: AllowNullish<SpecialKeys<string, K>>,
+  special?: AllowNullish<SpecialKeys<string, K>>,
 ): K[] | void {
 
   if (isKey(key)) {
