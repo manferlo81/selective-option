@@ -3,7 +3,7 @@ import { errorInvalidKey } from '../errors';
 import type { AllowNullish, TypeCheckFunction } from '../helper-types';
 import { isArray } from '../type-check';
 import type { PotentialResolver } from '../types';
-import { createMultiKeyResolver } from './key';
+import { createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver } from './key';
 import type { KeyResolver } from './types';
 
 export function createArrayResolver_v2<K extends string>(
@@ -52,6 +52,8 @@ export function createArrayResolver<K extends string>(
   isKey: TypeCheckFunction<K>,
   special?: AllowNullish<Record<string, K[]>>,
 ): PotentialResolver<K, boolean> {
-  const resolveKey = createMultiKeyResolver(isKey, special);
-  return createArrayResolver_v2(keys, resolveKey);
+  const resolveKey = createKeyResolver(isKey);
+  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
+  const resolveMultiKey = createMultiKeyResolver(resolveKey, resolveSpecialKey);
+  return createArrayResolver_v2(keys, resolveMultiKey);
 }

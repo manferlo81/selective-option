@@ -33,8 +33,11 @@ export function createSpecialKeyResolver<K extends string>(isKey: TypeCheckFunct
 
 }
 
-export function createMultiKeyResolver<K extends string>(isKey: TypeCheckFunction<K>, specialData?: AllowNullish<SpecialKeys<string, K>>): KeyResolver<K> {
-  const resolveKey = createKeyResolver(isKey);
-  const resolveSpecialKey = createSpecialKeyResolver(isKey, specialData);
-  return (key) => resolveKey(key) || resolveSpecialKey(key);
+export function createMultiKeyResolver<K extends string>(...resolvers: Array<KeyResolver<K>>): KeyResolver<K> {
+  return (key) => {
+    for (const resolve of resolvers) {
+      const result = resolve(key);
+      if (result) return result;
+    }
+  };
 }
