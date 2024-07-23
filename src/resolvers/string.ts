@@ -1,13 +1,10 @@
-import { createResult } from './create-result';
-import type { AllowNullish, TypeCheckFunction } from './helper-types';
-import { createMultiKeyResolver } from './resolvers/key';
-import type { KeyResolver, SpecialKeys } from './resolvers/types';
-import type { PotentialResolver } from './types';
+import { createResult } from '../create-result';
+import type { AllowNullish, TypeCheckFunction } from '../helper-types';
+import type { PotentialResolver } from '../types';
+import { createMultiKeyResolver } from './key';
+import type { KeyResolver, SpecialKeys } from './types';
 
-export function createStringResolver_v2<K extends string>(
-  keys: K[],
-  resolveKey: KeyResolver<K>,
-): PotentialResolver<K, boolean> {
+export function createStringResolver_v2<K extends string>(keys: readonly K[], resolveMultiKey: KeyResolver<K>): PotentialResolver<K, boolean> {
 
   return (input) => {
 
@@ -15,7 +12,7 @@ export function createStringResolver_v2<K extends string>(
     if (typeof input !== 'string') return;
 
     // try to resolve value as key or special key
-    const resolved = resolveKey(input);
+    const resolved = resolveMultiKey(input);
 
     // exit if it can't be resolved
     if (!resolved) return;
@@ -35,7 +32,7 @@ export function createStringResolver_v2<K extends string>(
 }
 
 export function createStringResolver<K extends string>(
-  keys: K[],
+  keys: readonly K[],
   isKey: TypeCheckFunction<K>,
   special?: AllowNullish<SpecialKeys<string, K>>,
 ): PotentialResolver<K, boolean> {

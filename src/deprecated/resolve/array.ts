@@ -1,5 +1,5 @@
-import type { AllowNullish, TypeCheckFunction } from '../helper-types';
-import { createArrayResolver } from '../resolve-array';
+import type { AllowNullish, TypeCheckFunction } from '../../helper-types';
+import { createArrayResolver } from '../../resolvers/array';
 
 /** @deprecated */
 export function resolveArray<K extends string>(

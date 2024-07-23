@@ -1,5 +1,5 @@
-import type { AllowNullish, TypeCheckFunction } from '../helper-types';
-import { createStringResolver } from '../resolve-string';
+import type { AllowNullish, TypeCheckFunction } from '../../helper-types';
+import { createStringResolver } from '../../resolvers/string';
 
 /** @deprecated */
 export function resolveString<K extends string>(

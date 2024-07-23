@@ -1,4 +1,4 @@
-import { createNullishResolver } from '../resolve-nullish';
+import { createNullishResolver } from '../../resolvers/nullish';
 
 /** @deprecated */
 export function resolveNullish<K extends string, D>(

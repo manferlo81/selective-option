@@ -1,12 +1,12 @@
-import type { AllowNullish, TypeCheckFunction } from './helper-types';
-import { resolveFailed } from './resolve-failed';
-import { createNullishResolver } from './resolve-nullish';
-import { createObjectResolver } from './resolve-object';
-import { createValueResolver } from './resolve-value';
-import type { Resolver } from './types';
+import type { AllowNullish, TypeCheckFunction } from '../helper-types';
+import { createNullishResolver } from './nullish';
+import { createObjectResolver } from './object';
+import { createValueResolver } from './value';
+import type { Resolver } from '../types';
+import { createResolver } from '../create-resolver';
 
 export function createValueBasedResolver<K extends string, V, D = V, DK extends string = 'default'>(
-  keys: K[],
+  keys: readonly K[],
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   isKey: TypeCheckFunction<K>,
@@ -16,10 +16,9 @@ export function createValueBasedResolver<K extends string, V, D = V, DK extends 
   const resolveValue = createValueResolver(keys, isValidValue);
   const resolveNullish = createNullishResolver(keys, defaultValue);
   const resolveObject = createObjectResolver(keys, isValidValue, defaultValue, isKey, special, defaultKey);
-  return (value) => (
-    resolveValue(value) ||
-    resolveNullish(value) ||
-    resolveObject(value) ||
-    resolveFailed(value)
+  return createResolver(
+    resolveValue,
+    resolveNullish,
+    resolveObject,
   );
 }

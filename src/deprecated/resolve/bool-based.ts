@@ -1,5 +1,5 @@
-import type { TypeCheckFunction } from '../helper-types';
-import { createBoolBasedResolver } from '../resolve-bool-based';
+import type { TypeCheckFunction } from '../../helper-types';
+import { createBoolBasedResolver } from '../../resolvers/bool-based';
 
 /** @deprecated */
 export function resolveBoolBased<K extends string, V, D = V>(

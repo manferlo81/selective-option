@@ -1,10 +1,10 @@
-import { createResult } from './create-result';
-import { errorInvalidKey, errorInvalidValue } from './errors';
-import type { AllowNullish, TypeCheckFunction } from './helper-types';
-import { createKeyResolver, createSpecialKeyResolver } from './resolvers/key';
-import type { KeyResolver } from './resolvers/types';
-import { isArray } from './type-check';
-import type { PotentialResolver } from './types';
+import { createResult } from '../create-result';
+import { errorInvalidKey, errorInvalidValue } from '../errors';
+import type { AllowNullish, TypeCheckFunction } from '../helper-types';
+import { createKeyResolver, createSpecialKeyResolver } from './key';
+import type { KeyResolver } from './types';
+import { isArray } from '../type-check';
+import type { PotentialResolver } from '../types';
 
 export function createObjectResolver_v2<K extends string, V, D = V>(
   keys: readonly K[],

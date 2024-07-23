@@ -1,5 +1,5 @@
-import type { AllowNullish, TypeCheckFunction } from '../helper-types';
-import { createObjectResolver } from '../resolve-object';
+import type { AllowNullish, TypeCheckFunction } from '../../helper-types';
+import { createObjectResolver } from '../../resolvers/object';
 
 /** @deprecated */
 export function resolveObject<K extends string, V, D = V>(
