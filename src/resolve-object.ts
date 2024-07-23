@@ -1,50 +1,53 @@
 import { createResult } from './create-result';
 import { errorInvalidKey, errorInvalidValue } from './errors';
 import type { AllowNullish, TypeCheckFunction } from './helper-types';
+import { createKeyResolver, createSpecialKeyResolver } from './resolvers/key';
+import type { KeyResolver } from './resolvers/types';
 import { isArray } from './type-check';
 import type { PotentialResolver } from './types';
 
-export function createObjectResolver<K extends string, V, D = V, DK extends string = 'default'>(
-  keys: K[],
+export function createObjectResolver_v2<K extends string, V, D = V>(
+  keys: readonly K[],
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
-  isKey: TypeCheckFunction<K>,
-  special?: AllowNullish<Record<string, K[]>>,
-  defaultKey2?: DK,
+  resolveKey: KeyResolver<K>,
+  resolveSpecialKey: KeyResolver<K>,
+  defaultKey: string = 'default',
 ): PotentialResolver<K, V | D> {
-  return (object) => {
-    if (typeof object === 'object' && object && !isArray(object)) {
 
-      const objectKeys = Object.keys(object);
+  return (input) => {
 
-      let overrideValue: [V] | undefined;
-      let specialData: Array<[K[], V]> | undefined;
-      let keysData: Array<[K, V]> | undefined;
+    if (typeof input === 'object' && input && !isArray(input)) {
 
-      const len = objectKeys.length;
-      for (let i = 0; i < len; i++) {
+      const objectKeys = Object.keys(input);
 
-        const key = objectKeys[i];
-        const value = object[key as never];
+      let overrideValue = defaultValue;
+      const specialData: Array<[K[], V]> = [];
+      const keysData: Array<[K[], V]> = [];
+
+      // const len = objectKeys.length;
+      for (const key of objectKeys) {
+
+        // const key = objectKeys[i];
+        const value = input[key as never];
 
         if (value != null) {
 
-          if (!isValidValue(value)) {
-            throw errorInvalidValue(value);
-          }
-
-          const defaultKey = defaultKey2 || 'default';
+          if (!isValidValue(value)) throw errorInvalidValue(value);
 
           if (key === defaultKey) {
-            overrideValue = [value];
+            overrideValue = value;
           } else {
-            const specialKeys: AllowNullish<K[]> = special && special[key];
-            if (specialKeys) {
-              (specialData || (specialData = [])).push([specialKeys, value]);
-            } else if (isKey(key)) {
-              (keysData || (keysData = [])).push([key, value]);
+            const keyResolved = resolveKey(key);
+            if (keyResolved) {
+              keysData.push([keyResolved, value]);
             } else {
-              throw errorInvalidKey(key);
+              const specialResolved = resolveSpecialKey(key);
+              if (specialResolved) {
+                specialData.push([specialResolved, value]);
+              } else {
+                throw errorInvalidKey(key);
+              }
             }
           }
 
@@ -52,31 +55,52 @@ export function createObjectResolver<K extends string, V, D = V, DK extends stri
 
       }
 
-      const result = createResult(
+      const result = createResult<K, V | D>(
         keys,
-        overrideValue ? overrideValue[0] : defaultValue,
+        overrideValue,
       );
 
-      if (specialData) {
-        const slen = specialData.length;
-        for (let s = 0; s < slen; s++) {
-          createResult(
-            specialData[s][0],
-            specialData[s][1],
-            result,
-          );
-        }
+      for (const item of specialData) {
+        createResult(
+          item[0],
+          item[1],
+          result,
+        );
       }
 
-      if (keysData) {
-        const klen = keysData.length;
-        for (let k = 0; k < klen; k++) {
-          result[keysData[k][0]] = keysData[k][1];
-        }
+      for (const item of keysData) {
+        createResult(
+          item[0],
+          item[1],
+          result,
+        );
       }
 
       return result;
 
     }
+
   };
+
+}
+
+export function createObjectResolver<K extends string, V, D = V>(
+  keys: readonly K[],
+  isValidValue: TypeCheckFunction<V>,
+  defaultValue: D,
+  isKey: TypeCheckFunction<K>,
+  special?: AllowNullish<Record<string, K[]>>,
+  defaultKey?: string,
+): PotentialResolver<K, V | D> {
+  const resolveKey = createKeyResolver(isKey);
+  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
+  return createObjectResolver_v2(
+    keys,
+    isValidValue,
+    defaultValue,
+    resolveKey,
+    resolveSpecialKey,
+    defaultKey,
+  );
+
 }

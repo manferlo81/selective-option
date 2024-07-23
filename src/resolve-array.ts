@@ -1,7 +1,7 @@
 import { createResult } from './create-result';
 import { errorInvalidKey } from './errors';
 import type { AllowNullish, TypeCheckFunction } from './helper-types';
-import { createKeyResolver } from './resolvers/key';
+import { createMultiKeyResolver } from './resolvers/key';
 import type { KeyResolver } from './resolvers/types';
 import { isArray } from './type-check';
 import type { PotentialResolver } from './types';
@@ -10,32 +10,41 @@ export function createArrayResolver_v2<K extends string>(
   keys: K[],
   resolveKey: KeyResolver<K>,
 ): PotentialResolver<K, boolean> {
-  return (value) => {
-    if (isArray(value)) {
 
-      const result = createResult(keys, false);
+  return (input) => {
 
-      for (let i = 0; i < value.length; i++) {
-        const key = value[i];
-        if (typeof key !== 'string') {
-          throw errorInvalidKey(key);
-        }
-        const resolved = resolveKey(key);
-        if (!resolved) {
-          throw errorInvalidKey(key);
-        }
-        const [r] = resolved;
-        createResult(
-          r,
-          true,
-          result,
-        );
-      }
+    // exit if value is not an array
+    if (!isArray(input)) return;
 
-      return result;
+    // create default result
+    const result = createResult(keys, false);
+
+    // iterate through array
+    for (const key of input) {
+
+      // throw if item is not a string
+      if (typeof key !== 'string') throw errorInvalidKey(key);
+
+      // try to resolve as key or special key
+      const resolved = resolveKey(key);
+
+      // throw if it can't be resolved
+      if (!resolved) throw errorInvalidKey(key);
+
+      // update result
+      createResult(
+        resolved,
+        true,
+        result,
+      );
 
     }
+
+    // return result
+    return result;
+
   };
+
 }
 
 export function createArrayResolver<K extends string>(
@@ -43,6 +52,6 @@ export function createArrayResolver<K extends string>(
   isKey: TypeCheckFunction<K>,
   special?: AllowNullish<Record<string, K[]>>,
 ): PotentialResolver<K, boolean> {
-  const resolveKey = createKeyResolver(isKey, special);
+  const resolveKey = createMultiKeyResolver(isKey, special);
   return createArrayResolver_v2(keys, resolveKey);
 }

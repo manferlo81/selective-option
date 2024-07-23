@@ -12,7 +12,7 @@ export type BoolBasedSelectiveOption<K extends string, V> =
   | StringOption<K>
   | ValueBasedSelectiveOption<K, V>;
 
-export type InputResolver<I, R> = (value: I) => R;
+export type InputResolver<I, R> = (input: I) => R;
 export type ResolverBase<R> = InputResolver<unknown, R>;
 export type PotentialResolver<K extends string, V> = ResolverBase<Record<K, V> | void>;
 export type Resolver<K extends string, V> = ResolverBase<Record<K, V>>;

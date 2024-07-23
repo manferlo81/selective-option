@@ -2,10 +2,11 @@ import { createObjectResolver } from '../src';
 
 describe('createObjectResolver function', () => {
 
-  type K = 'a' | 'b' | 'c' | 'd';
+  const keys = ['a', 'b', 'c', 'd'] as const;
+
+  type K = (typeof keys)[number];
   type V = string | boolean;
 
-  const keys: K[] = ['a', 'b', 'c', 'd'];
   const isKey = (value: unknown): value is K => keys.includes(value as never);
 
   const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
@@ -13,40 +14,79 @@ describe('createObjectResolver function', () => {
   const isValidValue = (value: unknown): value is V => ['string', 'boolean'].includes(typeof value);
   const defaultValue = 'default-value';
 
-  const resolve = createObjectResolver(
-    keys,
-    isValidValue,
-    defaultValue,
-    isKey,
-    special,
-    'override',
-  );
-
   test('Should throw on invalid key', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     expect(() => resolve({ invalid: true })).toThrow();
   });
 
   test('Should return undefined on non object', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     expect(resolve(10)).toBeUndefined();
     expect(resolve([])).toBeUndefined();
   });
 
   test('Should throw on invalid default value', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     expect(() => resolve({ override: [] })).toThrow();
     expect(() => resolve({ override: 10 })).toThrow();
   });
 
   test('Should throw on invalid key value', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     expect(() => resolve({ a: [] })).toThrow();
     expect(() => resolve({ c: 10 })).toThrow();
   });
 
   test('Should throw on invalid special key value', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     expect(() => resolve({ first: [] })).toThrow();
     expect(() => resolve({ first: 10 })).toThrow();
   });
 
   test('Should resolve to default', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     expect(resolve({})).toEqual({
       a: defaultValue,
       b: defaultValue,
@@ -56,6 +96,14 @@ describe('createObjectResolver function', () => {
   });
 
   test('Should ignore nullish values', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     expect(resolve({ override: null })).toEqual({
       a: defaultValue,
       b: defaultValue,
@@ -77,6 +125,14 @@ describe('createObjectResolver function', () => {
   });
 
   test('Should override default value', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     const newDefaultValue = 'new-default-value';
     expect(resolve({ override: newDefaultValue })).toEqual({
       a: newDefaultValue,
@@ -86,7 +142,32 @@ describe('createObjectResolver function', () => {
     });
   });
 
+  test('Should use "default" as override key', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+    );
+    const newDefaultValue = 'new-default-value';
+    expect(resolve({ default: newDefaultValue })).toEqual({
+      a: newDefaultValue,
+      b: newDefaultValue,
+      c: newDefaultValue,
+      d: newDefaultValue,
+    });
+  });
+
   test('Should set simple keys', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     const a = true;
     const c = false;
     const d = 'string';
@@ -99,6 +180,14 @@ describe('createObjectResolver function', () => {
   });
 
   test('Should set special keys', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     expect(resolve({ last: true })).toEqual({
       a: defaultValue,
       b: defaultValue,
@@ -108,6 +197,14 @@ describe('createObjectResolver function', () => {
   });
 
   test('Should set default and simple keys', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     const newDefaultValue = 'new-default-value';
     expect(resolve({ override: newDefaultValue, a: true, c: false })).toEqual({
       a: true,
@@ -118,6 +215,14 @@ describe('createObjectResolver function', () => {
   });
 
   test('Should set default and special keys', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     const newDefaultValue = 'new-default-value';
     expect(resolve({ override: newDefaultValue, first: true })).toEqual({
       a: true,
@@ -128,6 +233,14 @@ describe('createObjectResolver function', () => {
   });
 
   test('Should allow regular keys to override special keys', () => {
+    const resolve = createObjectResolver(
+      keys,
+      isValidValue,
+      defaultValue,
+      isKey,
+      special,
+      'override',
+    );
     expect(resolve({ b: false, first: true })).toEqual({
       a: true,
       b: false,
