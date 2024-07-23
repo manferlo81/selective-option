@@ -1,7 +1,7 @@
 import { createResult } from '../create-result';
 import { errorInvalidKey } from '../errors';
 import type { AllowNullish, TypeCheckFunction } from '../helper-types';
-import { isArray } from '../type-check';
+import { is, isArray } from '../is';
 import type { PotentialResolver } from '../types';
 import { createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver } from './key';
 import type { KeyResolver } from './types';
@@ -23,7 +23,7 @@ export function createArrayResolver_v2<K extends string>(
     for (const key of input) {
 
       // throw if item is not a string
-      if (typeof key !== 'string') throw errorInvalidKey(key);
+      if (!is(key, 'string')) throw errorInvalidKey(key);
 
       // try to resolve as key or special key
       const resolved = resolveMultiKey(key);

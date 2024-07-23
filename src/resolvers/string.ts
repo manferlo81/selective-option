@@ -1,5 +1,6 @@
 import { createResult } from '../create-result';
 import type { AllowNullish, TypeCheckFunction } from '../helper-types';
+import { is } from '../is';
 import type { PotentialResolver } from '../types';
 import { createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver } from './key';
 import type { KeyResolver, SpecialKeys } from './types';
@@ -9,7 +10,7 @@ export function createStringResolver_v2<K extends string>(keys: readonly K[], re
   return (input) => {
 
     // exit if value is not a string
-    if (typeof input !== 'string') return;
+    if (!is(input, 'string')) return;
 
     // try to resolve value as key or special key
     const resolved = resolveMultiKey(input);

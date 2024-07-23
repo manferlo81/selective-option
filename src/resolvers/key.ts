@@ -1,6 +1,6 @@
 import type { AllowNullish, TypeCheckFunction } from '../helper-types';
+import { isArray } from '../is';
 import { createFunctionReturning } from '../tools';
-import { isArray } from '../type-check';
 import type { KeyResolver, SpecialKeys } from './types';
 
 export function createKeyResolver<K extends string>(isKey: TypeCheckFunction<K>): KeyResolver<K> {
