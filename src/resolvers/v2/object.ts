@@ -18,11 +18,11 @@ export function createObjectResolver_v2<K extends string, V, D = V>(
   return (input) => {
 
     // exit if it's not an object
-    if (!input || !is(input, 'object') || isArray(input)) return;
+    if (!input || !is<Record<string, V> | null | unknown[]>(input, 'object') || isArray(input)) return;
 
     const objectKeys = Object.keys(input);
 
-    let overrideValue = defaultValue;
+    let overrideValue: V | D = defaultValue;
     const specialData: Array<[K[], V]> = [];
     const keysData: Array<[K[], V]> = [];
 
@@ -56,28 +56,27 @@ export function createObjectResolver_v2<K extends string, V, D = V>(
 
     }
 
-    let result = createResult<K, V | D>(
+    const defaultResult = createResult<K, V | D>(
       keys,
       overrideValue,
     );
 
-    for (const item of specialData) {
-      result = createResult(
-        item[0],
-        item[1],
-        result,
+    const specialResult = specialData.reduce((output, [keys, value]) => {
+      return createResult(
+        keys,
+        value, output,
       );
-    }
+    }, defaultResult);
 
-    for (const item of keysData) {
-      result = createResult(
-        item[0],
-        item[1],
-        result,
+    const regularResult = keysData.reduce((output, [keys, value]) => {
+      return createResult(
+        keys,
+        value,
+        output,
       );
-    }
+    }, specialResult);
 
-    return result;
+    return regularResult;
 
   };
 
