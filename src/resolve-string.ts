@@ -13,8 +13,9 @@ export function createStringResolver_v2<K extends string>(
     if (typeof value === 'string') {
       const resolved = resolveKey(value);
       if (resolved) {
+        const [r] = resolved;
         return createResult(
-          resolved,
+          r,
           true,
           createResult(
             keys,

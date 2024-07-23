@@ -24,8 +24,9 @@ export function createArrayResolver_v2<K extends string>(
         if (!resolved) {
           throw errorInvalidKey(key);
         }
+        const [r] = resolved;
         createResult(
-          resolved,
+          r,
           true,
           result,
         );

@@ -9,12 +9,16 @@ export function createKeyResolver<K extends string>(
   return (key) => {
 
     if (isKey(key)) {
-      return [key];
+      return [[key], false];
     }
 
     if (!special) return;
 
-    return special[key];
+    const keys = special[key];
+
+    if (!keys) return;
+
+    return [keys, true];
 
   };
 

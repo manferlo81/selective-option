@@ -19,7 +19,7 @@ describe('createKeyResolver function', () => {
     const resolveKey = createKeyResolver<Color>(isColor, specialColors);
     colors.forEach((key) => {
       const resolved = resolveKey(key);
-      expect(resolved).toEqual([key]);
+      expect(resolved).toEqual([[key], false]);
     });
   });
 
@@ -29,7 +29,7 @@ describe('createKeyResolver function', () => {
     specialKeys.forEach((key) => {
       const resolved = resolveKey(key);
       const expected = specialColors[key];
-      expect(resolved).toEqual(expected);
+      expect(resolved).toEqual([expected, true]);
     });
   });
 

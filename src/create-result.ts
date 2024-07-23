@@ -1,3 +1,5 @@
+export function createResult<K extends string, V>(keys: K[], value: V): Record<K, V>;
+export function createResult<K extends string, V>(keys: K[], value: V, input: Record<K, V>): Record<K, V>;
 export function createResult<K extends string, V>(keys: K[], value: V, input?: Record<K, V>): Record<K, V> {
   const result = input || {} as Record<K, V>;
   const { length: len } = keys;
