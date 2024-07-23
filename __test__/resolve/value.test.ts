@@ -1,6 +1,6 @@
 import { resolveValue } from '../../src';
 
-describe('Resolve Value', () => {
+describe('deprecated resolveValue function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
   type V = boolean | 'auto';

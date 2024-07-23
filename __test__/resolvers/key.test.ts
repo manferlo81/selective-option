@@ -1,6 +1,6 @@
-import { resolveKey } from '../src/resolve-key';
+import { createKeyResolver } from '../../src/resolvers/key';
 
-describe('resolveKey function', () => {
+describe('createKeyResolver function', () => {
 
   const colors = ['red', 'green', 'blue', 'white', 'black'] as const;
 
@@ -16,16 +16,18 @@ describe('resolveKey function', () => {
   };
 
   test('Should resolve key', () => {
+    const resolveKey = createKeyResolver<Color>(isColor, specialColors);
     colors.forEach((key) => {
-      const resolved = resolveKey<Color>(key, isColor, specialColors);
+      const resolved = resolveKey(key);
       expect(resolved).toEqual([key]);
     });
   });
 
   test('Should resolve special key', () => {
     const specialKeys = Object.keys(specialColors) as Array<keyof typeof specialColors>;
+    const resolveKey = createKeyResolver<Color>(isColor, specialColors);
     specialKeys.forEach((key) => {
-      const resolved = resolveKey<Color>(key, isColor, specialColors);
+      const resolved = resolveKey(key);
       const expected = specialColors[key];
       expect(resolved).toEqual(expected);
     });
@@ -37,8 +39,9 @@ describe('resolveKey function', () => {
       'string',
       'anything',
     ];
+    const resolveKey = createKeyResolver<Color>(isColor);
     invalidKeys.forEach((invalidKey) => {
-      const resolved = resolveKey<Color>(invalidKey, isColor);
+      const resolved = resolveKey(invalidKey);
       expect(resolved).toBeUndefined();
     });
   });
@@ -49,8 +52,9 @@ describe('resolveKey function', () => {
       'string',
       'anything',
     ];
+    const resolveKey = createKeyResolver<Color>(isColor, specialColors);
     invalidKeys.forEach((invalidKey) => {
-      const resolved = resolveKey<Color>(invalidKey, isColor, specialColors);
+      const resolved = resolveKey(invalidKey);
       expect(resolved).toBeUndefined();
     });
   });
@@ -62,8 +66,9 @@ describe('resolveKey function', () => {
       true,
       false,
     ];
+    const resolveKey = createKeyResolver<Color>(isColor, specialColors);
     invalidKeys.forEach((invalidKey) => {
-      const resolved = resolveKey<Color>(invalidKey as never, isColor, specialColors);
+      const resolved = resolveKey(invalidKey as never);
       expect(resolved).toBeUndefined();
     });
   });

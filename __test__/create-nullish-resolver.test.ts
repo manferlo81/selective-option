@@ -1,6 +1,6 @@
 import { createNullishResolver } from '../src';
 
-describe('Resolve Nullish', () => {
+describe('createNullishResolver function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
   type V = boolean | 'auto';

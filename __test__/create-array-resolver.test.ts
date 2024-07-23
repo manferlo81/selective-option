@@ -1,6 +1,6 @@
 import { createArrayResolver } from '../src';
 
-describe('Resolve Bool Strings', () => {
+describe('createArrayResolver function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
 

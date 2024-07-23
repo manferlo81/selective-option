@@ -1,6 +1,6 @@
 import { createBoolBasedResolver } from '../src';
 
-describe('Resolve Bool Based', () => {
+describe('createBoolBasedResolver function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
   type T = number;

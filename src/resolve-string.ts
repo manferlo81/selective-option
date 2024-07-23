@@ -1,20 +1,17 @@
 import { createResult } from './create-result';
 import type { AllowNullish, TypeCheckFunction } from './helper-types';
-import { resolveKey } from './resolve-key';
+import { createKeyResolver } from './resolvers/key';
+import type { KeyResolver, SpecialKeys } from './resolvers/types';
 import type { PotentialResolver } from './types';
 
-export function createStringResolver<K extends string>(
+export function createStringResolver_v2<K extends string>(
   keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special?: AllowNullish<Record<string, K[]>>,
+  resolveKey: KeyResolver<K>,
 ): PotentialResolver<K, boolean> {
+
   return (value) => {
     if (typeof value === 'string') {
-      const resolved = resolveKey(
-        value,
-        isKey,
-        special,
-      );
+      const resolved = resolveKey(value);
       if (resolved) {
         return createResult(
           resolved,
@@ -27,4 +24,13 @@ export function createStringResolver<K extends string>(
       }
     }
   };
+}
+
+export function createStringResolver<K extends string>(
+  keys: K[],
+  isKey: TypeCheckFunction<K>,
+  special?: AllowNullish<SpecialKeys<string, K>>,
+): PotentialResolver<K, boolean> {
+  const resolveKey = createKeyResolver(isKey, special);
+  return createStringResolver_v2(keys, resolveKey);
 }

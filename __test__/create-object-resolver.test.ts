@@ -1,6 +1,6 @@
 import { createObjectResolver } from '../src';
 
-describe('Resolve Object', () => {
+describe('createObjectResolver function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
   type V = string | boolean;

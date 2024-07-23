@@ -1,6 +1,6 @@
 import { resolveNullish } from '../../src';
 
-describe('Resolve Nullish', () => {
+describe('deprecated resolveNullish function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
   type V = boolean | 'auto';

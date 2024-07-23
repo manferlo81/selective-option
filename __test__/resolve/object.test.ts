@@ -1,6 +1,6 @@
 import { resolveObject } from '../../src';
 
-describe('Resolve Object', () => {
+describe('deprecated resolveObject function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
   type V = string | boolean;

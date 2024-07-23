@@ -1,6 +1,6 @@
-import { resolveValueBased } from '../../src';
+import { resolveBoolBased } from '../../src';
 
-describe('Resolve Value Based', () => {
+describe('deprecated resolveBoolBased function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
   type T = number;
@@ -13,7 +13,7 @@ describe('Resolve Value Based', () => {
   const isValidValue = (value: unknown): value is T => typeof value === 'number';
   const defaultValue = 0;
 
-  const resolve = (value: unknown) => resolveValueBased<K, T>(
+  const resolve = (value: unknown) => resolveBoolBased(
     value,
     keys,
     isKey,
@@ -23,7 +23,7 @@ describe('Resolve Value Based', () => {
   );
 
   test('Should throw on invalid value', () => {
-    expect(() => resolve(true)).toThrow();
+    expect(() => resolve('string')).toThrow();
   });
 
   test('Should resolve null value', () => {
@@ -53,6 +53,78 @@ describe('Resolve Value Based', () => {
       b: NaN,
       c: NaN,
       d: NaN,
+    });
+  });
+
+  test('Should resolve key', () => {
+    expect(resolve('b')).toEqual({
+      a: false,
+      b: true,
+      c: false,
+      d: false,
+    });
+    expect(resolve('d')).toEqual({
+      a: false,
+      b: false,
+      c: false,
+      d: true,
+    });
+  });
+
+  test('Should resolve special key', () => {
+    expect(resolve('first')).toEqual({
+      a: true,
+      b: true,
+      c: false,
+      d: false,
+    });
+    expect(resolve('last')).toEqual({
+      a: false,
+      b: false,
+      c: true,
+      d: true,
+    });
+  });
+
+  test('Should resolve array', () => {
+    expect(resolve([])).toEqual({
+      a: false,
+      b: false,
+      c: false,
+      d: false,
+    });
+  });
+
+  test('Should resolve array of keys', () => {
+    expect(resolve(['a', 'd'])).toEqual({
+      a: true,
+      b: false,
+      c: false,
+      d: true,
+    });
+  });
+
+  test('Should resolve array of special keys', () => {
+    expect(resolve(['first'])).toEqual({
+      a: true,
+      b: true,
+      c: false,
+      d: false,
+    });
+    expect(resolve(['last'])).toEqual({
+      a: false,
+      b: false,
+      c: true,
+      d: true,
+    });
+  });
+
+  test('Should resolve array of mixed keys', () => {
+    expect(resolve(['first', 'd'])).toEqual({
+      a: true,
+      b: true,
+      c: false,
+      d: true,
     });
   });
 

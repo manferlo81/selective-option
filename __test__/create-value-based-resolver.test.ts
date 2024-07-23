@@ -1,6 +1,6 @@
 import { createValueBasedResolver } from '../src';
 
-describe('Resolve Value Based', () => {
+describe('createValueBasedResolver function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
   type T = number;

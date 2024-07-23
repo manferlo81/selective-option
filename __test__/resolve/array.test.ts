@@ -1,6 +1,6 @@
 import { resolveArray } from '../../src';
 
-describe('Resolve Bool Strings', () => {
+describe('deprecated resolveArray function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
 

@@ -1,6 +1,6 @@
 import { createResult } from '../src';
 
-describe('Create Result', () => {
+describe('createResult function', () => {
 
   test('Should create result correctly', () => {
     expect(createResult([], true)).toEqual({});

@@ -1,6 +1,6 @@
 import { createStringResolver } from '../src';
 
-describe('Resolve Bool Strings', () => {
+describe('createStringResolver function', () => {
 
   type K = 'a' | 'b' | 'c' | 'd';
 

@@ -9,3 +9,4 @@ export { createStringResolver } from './resolve-string';
 export { createValueResolver } from './resolve-value';
 export { createValueBasedResolver } from './resolve-value-based';
 export type * from './types';
+export type * from './resolvers/types';
