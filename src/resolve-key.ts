@@ -1,9 +1,9 @@
-import type { Nullable, TypeCheckFunction } from './types';
+import type { AllowNullish, TypeCheckFunction } from './helper-types';
 
 export function resolveKey<K extends string>(
   key: string,
   isKey: TypeCheckFunction<K>,
-  special: Nullable<Record<string, K[]>>,
+  special: AllowNullish<Record<string, K[]>>,
 ): K[] | void {
 
   const resolved = special && special[key];

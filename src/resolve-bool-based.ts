@@ -1,17 +1,18 @@
+import type { AllowNullish, TypeCheckFunction } from './helper-types';
 import { createArrayResolver } from './resolve-array';
 import { resolveFailed } from './resolve-failed';
 import { createNullishResolver } from './resolve-nullish';
 import { createObjectResolver } from './resolve-object';
 import { createStringResolver } from './resolve-string';
 import { createValueResolver } from './resolve-value';
-import type { Nullable, Resolver, TypeCheckFunction } from './types';
+import type { Resolver } from './types';
 
 export function createBoolBasedResolver<K extends string, V, D = V, DK extends string = 'default'>(
   keys: K[],
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
+  special?: AllowNullish<Record<string, K[]>>,
   defaultKey?: DK,
 ): Resolver<K, V | D | boolean> {
   const resolveValue = createValueResolver(keys, isValidValue);

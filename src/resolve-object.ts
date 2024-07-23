@@ -1,14 +1,15 @@
 import { createResult } from './create-result';
 import { errorInvalidKey, errorInvalidValue } from './errors';
+import type { AllowNullish, TypeCheckFunction } from './helper-types';
 import { isArray } from './type-check';
-import type { Nullable, PotentialResolver, TypeCheckFunction } from './types';
+import type { PotentialResolver } from './types';
 
 export function createObjectResolver<K extends string, V, D = V, DK extends string = 'default'>(
   keys: K[],
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
+  special?: AllowNullish<Record<string, K[]>>,
   defaultKey2?: DK,
 ): PotentialResolver<K, V | D> {
   return (object) => {
@@ -37,7 +38,7 @@ export function createObjectResolver<K extends string, V, D = V, DK extends stri
           if (key === defaultKey) {
             overrideValue = [value];
           } else {
-            const specialKeys: Nullable<K[]> = special && special[key];
+            const specialKeys: AllowNullish<K[]> = special && special[key];
             if (specialKeys) {
               (specialData || (specialData = [])).push([specialKeys, value]);
             } else if (isKey(key)) {

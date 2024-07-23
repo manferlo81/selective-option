@@ -1,5 +1,5 @@
+import type { TypeCheckFunction } from '../helper-types';
 import { createValueBasedResolver } from '../resolve-value-based';
-import type { TypeCheckFunction } from '../types';
 
 /** @deprecated */
 export function resolveValueBased<K extends string, V, D = V>(

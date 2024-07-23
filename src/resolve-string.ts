@@ -1,11 +1,12 @@
 import { createResult } from './create-result';
+import type { AllowNullish, TypeCheckFunction } from './helper-types';
 import { resolveKey } from './resolve-key';
-import type { Nullable, PotentialResolver, TypeCheckFunction } from './types';
+import type { PotentialResolver } from './types';
 
 export function createStringResolver<K extends string>(
   keys: K[],
   isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
+  special?: AllowNullish<Record<string, K[]>>,
 ): PotentialResolver<K, boolean> {
   return (value) => {
     if (typeof value === 'string') {

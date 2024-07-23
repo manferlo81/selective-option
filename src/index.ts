@@ -8,12 +8,4 @@ export { createObjectResolver } from './resolve-object';
 export { createStringResolver } from './resolve-string';
 export { createValueResolver } from './resolve-value';
 export { createValueBasedResolver } from './resolve-value-based';
-export type {
-  BoolBasedSelectiveOption,
-  ObjectOption,
-  PotentialResolver,
-  Resolver,
-  StringOption,
-  TypeCheckFunction,
-  ValueBasedSelectiveOption,
-} from './types';
+export type * from './types';

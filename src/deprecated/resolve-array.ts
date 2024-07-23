@@ -1,12 +1,12 @@
+import type { AllowNullish, TypeCheckFunction } from '../helper-types';
 import { createArrayResolver } from '../resolve-array';
-import type { Nullable, TypeCheckFunction } from '../types';
 
 /** @deprecated */
 export function resolveArray<K extends string>(
   value: unknown,
   keys: K[],
   isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
+  special?: AllowNullish<Record<string, K[]>>,
 ): Record<K, boolean> | void {
   return createArrayResolver(
     keys,
