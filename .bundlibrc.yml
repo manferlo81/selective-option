@@ -1,4 +1,0 @@
-interop: true
-esModule: main
-min: browser
-project: tsconfig-build.json
