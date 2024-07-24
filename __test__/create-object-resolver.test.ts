@@ -1,4 +1,4 @@
-import { createObjectResolver } from '../src';
+import { createKeyResolver, createObjectResolver, createSpecialKeyResolver } from '../src';
 
 describe('createObjectResolver function', () => {
 
@@ -14,13 +14,16 @@ describe('createObjectResolver function', () => {
   const isValidValue = (value: unknown): value is V => ['string', 'boolean'].includes(typeof value);
   const defaultValue = 'default-value';
 
+  const resolveKey = createKeyResolver(isKey);
+  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
+
   test('Should throw on invalid key', () => {
     const resolve = createObjectResolver(
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     expect(() => resolve({ invalid: true })).toThrow();
@@ -31,8 +34,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     expect(resolve(10)).toBeUndefined();
@@ -44,8 +47,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     expect(() => resolve({ override: [] })).toThrow();
@@ -57,8 +60,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     expect(() => resolve({ a: [] })).toThrow();
@@ -70,8 +73,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     expect(() => resolve({ first: [] })).toThrow();
@@ -83,8 +86,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     expect(resolve({})).toEqual({
@@ -100,8 +103,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     expect(resolve({ override: null })).toEqual({
@@ -129,8 +132,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     const newDefaultValue = 'new-default-value';
@@ -147,8 +150,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
     );
     const newDefaultValue = 'new-default-value';
     expect(resolve({ default: newDefaultValue })).toEqual({
@@ -164,8 +167,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     const a = true;
@@ -184,8 +187,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     expect(resolve({ last: true })).toEqual({
@@ -201,8 +204,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     const newDefaultValue = 'new-default-value';
@@ -219,8 +222,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     const newDefaultValue = 'new-default-value';
@@ -237,8 +240,8 @@ describe('createObjectResolver function', () => {
       keys,
       isValidValue,
       defaultValue,
-      isKey,
-      special,
+      resolveKey,
+      resolveSpecialKey,
       'override',
     );
     expect(resolve({ b: false, first: true })).toEqual({

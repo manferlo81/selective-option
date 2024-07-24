@@ -1,8 +1,54 @@
-import { ObjectOption, ValueBasedSelectiveOption } from '../src';
-import type { K, S, V } from './tools/resolve-points';
-import { createResult, defaultValue, extendResult, keys, resolvePoints, special, specialKeys } from './tools/resolve-points';
+import { createBoolBasedResolver, createKeyResolver, createSpecialKeyResolver, ObjectOption, ValueBasedSelectiveOption } from '../src';
 
 describe('createBoolBasedResolver function', () => {
+
+  const keys = ['john', 'maggie', 'angel', 'ariel', 'peter', 'gloria'] as const;
+  const isKey = (value: unknown): value is K => keys.includes(value as never);
+  const literalSizeValues = ['low', 'high', 'unknown'] as const;
+
+  type K = (typeof keys)[number];
+  type S = 'male' | 'female' | 'unisex';
+  type V = number | (typeof literalSizeValues)[number];
+  type R<V> = Readonly<Record<K, V>>;
+
+  const special: Record<S, K[]> = {
+    male: ['angel', 'ariel', 'john', 'peter'],
+    female: ['angel', 'ariel', 'gloria', 'maggie'],
+    unisex: ['angel', 'ariel'],
+  };
+  const specialKeys = Object.keys(special) as readonly S[];
+
+  const isValidSize = (value: unknown): value is V => typeof value === 'number' || literalSizeValues.includes(value as never);
+  const defaultValue: V | boolean = 'unknown';
+
+  const createResult = <X extends V | boolean>(value: X): R<X> => {
+    return {
+      john: value,
+      angel: value,
+      ariel: value,
+      maggie: value,
+      peter: value,
+      gloria: value,
+    };
+  };
+
+  function extendResult<I extends V | boolean, X extends V | boolean>(result: R<I>, keys: readonly K[], value: X): R<I | X> {
+    return keys.reduce((output, key) => {
+      return { ...output, [key]: value };
+    }, result as R<I | X>);
+  }
+
+  const resolveKey = createKeyResolver(isKey);
+  const resolverSpecialKey = createSpecialKeyResolver(isKey, special);
+
+  const resolvePoints = createBoolBasedResolver(
+    keys,
+    isValidSize,
+    defaultValue,
+    resolveKey,
+    resolverSpecialKey,
+    'override',
+  );
 
   test('Should throw on invalid value', () => {
     expect(() => resolvePoints('string' as never)).toThrow();

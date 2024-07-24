@@ -1,6 +1,6 @@
 import { createResult } from '../create-result';
 import type { TypeCheckFunction } from '../helper-types';
-import type { PotentialResolver } from '../types';
+import type { PotentialResolver } from './types';
 
 export function createValueResolver<K extends string, V>(
   keys: readonly K[],

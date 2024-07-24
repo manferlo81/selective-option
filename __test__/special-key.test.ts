@@ -1,4 +1,4 @@
-import { createSpecialKeyResolver } from '../../src/resolvers/key';
+import { createSpecialKeyResolver } from '../src';
 
 describe('createKeyResolver function', () => {
 

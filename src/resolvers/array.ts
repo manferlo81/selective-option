@@ -1,15 +1,42 @@
-import type { AllowNullish, TypeCheckFunction } from '../helper-types';
-import type { PotentialResolver } from '../types';
-import { createArrayResolver_v2 } from './v2/array';
-import { createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver } from './key';
+import { createResult } from '../create-result';
+import { errorInvalidKey } from '../errors';
+import { is, isArray } from '../is';
+import type { KeyResolver, PotentialResolver } from './types';
 
 export function createArrayResolver<K extends string>(
   keys: readonly K[],
-  isKey: TypeCheckFunction<K>,
-  special?: AllowNullish<Record<string, K[]>>,
+  resolveKey: KeyResolver<K>,
 ): PotentialResolver<K, boolean> {
-  const resolveKey = createKeyResolver(isKey);
-  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
-  const resolveMultiKey = createMultiKeyResolver(resolveKey, resolveSpecialKey);
-  return createArrayResolver_v2(keys, resolveMultiKey);
+
+  // return array resolver
+  return (input) => {
+
+    // exit if value is not an array
+    if (!isArray(input)) return;
+
+    return createResult(
+      input.reduce<K[]>((output, key) => {
+
+        // throw if item is not a string
+        if (!is(key, 'string')) throw errorInvalidKey(key);
+
+        // try to resolve as key or special key
+        const resolved = resolveKey(key);
+
+        // throw if it can't be resolved
+        if (!resolved) throw errorInvalidKey(key);
+
+        // return updated result
+        return [...output, ...resolved];
+
+      }, []),
+      true,
+      createResult(
+        keys,
+        false,
+      ),
+    );
+
+  };
+
 }

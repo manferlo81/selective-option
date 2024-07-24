@@ -1,17 +1,11 @@
 export { createResult } from './create-result';
-export * from './deprecated/functions';
 export type * from './input-types';
 export { createArrayResolver } from './resolvers/array';
 export { createBoolBasedResolver } from './resolvers/bool-based';
+export { createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver } from './resolvers/key';
 export { createNullishResolver } from './resolvers/nullish';
 export { createObjectResolver } from './resolvers/object';
 export { createStringResolver } from './resolvers/string';
 export type * from './resolvers/types';
-export { createArrayResolver_v2 } from './resolvers/v2/array';
-export { createBoolBasedResolver_v2 } from './resolvers/v2/bool-based';
-export { createObjectResolver_v2 } from './resolvers/v2/object';
-export { createStringResolver_v2 } from './resolvers/v2/string';
-export { createValueBasedResolver_v2 } from './resolvers/v2/value-based';
 export { createValueResolver } from './resolvers/value';
 export { createValueBasedResolver } from './resolvers/value-based';
-export type * from './types';

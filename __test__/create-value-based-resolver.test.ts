@@ -1,57 +1,62 @@
-import { createValueBasedResolver } from '../src';
+import { createKeyResolver, createSpecialKeyResolver, createValueBasedResolver } from '../src';
 
 describe('createValueBasedResolver function', () => {
 
-  type K = 'a' | 'b' | 'c' | 'd';
-  type T = number;
-
-  const keys: K[] = ['a', 'b', 'c', 'd'];
+  const keys = ['a', 'b', 'c', 'd'] as const;
   const isKey = (value: unknown): value is K => keys.includes(value as never);
+  const specialKeys = ['first', 'last'] as const;
 
-  const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
+  type K = (typeof keys)[number];
+  type V = number;
+  type S = (typeof specialKeys)[number];
 
-  const isValidValue = (value: unknown): value is T => typeof value === 'number';
-  const defaultValue = 0;
+  const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
-  const resolve = createValueBasedResolver<K, T>(
+  const isValidValue = (value: unknown): value is V => typeof value === 'number';
+  const defaultValue: V = 0;
+
+  const resolveKey = createKeyResolver(isKey);
+  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
+
+  const resolve = createValueBasedResolver<K, S, V, 'default'>(
     keys,
     isValidValue,
     defaultValue,
-    isKey,
-    special,
+    resolveKey,
+    resolveSpecialKey,
   );
 
   test('Should throw on invalid value', () => {
-    expect(() => resolve(true)).toThrow();
+    expect(() => resolve(true as never)).toThrow();
   });
 
   test('Should resolve null value', () => {
-    expect(resolve(null)).toEqual({
-      a: defaultValue,
-      b: defaultValue,
-      c: defaultValue,
-      d: defaultValue,
-    });
-    expect(resolve(undefined)).toEqual({
-      a: defaultValue,
-      b: defaultValue,
-      c: defaultValue,
-      d: defaultValue,
+    const inputs = [
+      null,
+      undefined,
+    ];
+    inputs.forEach((input) => {
+      expect(resolve(input)).toEqual({
+        a: defaultValue,
+        b: defaultValue,
+        c: defaultValue,
+        d: defaultValue,
+      });
     });
   });
 
   test('Should resolve valid value', () => {
-    expect(resolve(10)).toEqual({
-      a: 10,
-      b: 10,
-      c: 10,
-      d: 10,
-    });
-    expect(resolve(NaN)).toEqual({
-      a: NaN,
-      b: NaN,
-      c: NaN,
-      d: NaN,
+    const inputs = [
+      10,
+      NaN,
+    ];
+    inputs.forEach((input) => {
+      expect(resolve(input)).toEqual({
+        a: input,
+        b: input,
+        c: input,
+        d: input,
+      });
     });
   });
 

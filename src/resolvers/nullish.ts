@@ -1,5 +1,5 @@
 import { createResult } from '../create-result';
-import type { PotentialResolver } from '../types';
+import type { PotentialResolver } from './types';
 
 export function createNullishResolver<K extends string, V>(
   keys: readonly K[],

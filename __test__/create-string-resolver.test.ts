@@ -1,4 +1,4 @@
-import { createStringResolver } from '../src';
+import { createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver, createStringResolver } from '../src';
 
 describe('createStringResolver function', () => {
 
@@ -9,10 +9,13 @@ describe('createStringResolver function', () => {
 
   const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
+  const resolveKey = createKeyResolver(isKey);
+  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
+  const resolveMultiKey = createMultiKeyResolver(resolveKey, resolveSpecialKey);
+
   const resolve = createStringResolver<K>(
     keys,
-    isKey,
-    special,
+    resolveMultiKey,
   );
 
   test('Should resolve key', () => {

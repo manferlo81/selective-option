@@ -1,4 +1,4 @@
-import { createArrayResolver } from '../src';
+import { createArrayResolver, createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver } from '../src';
 
 describe('createArrayResolver function', () => {
 
@@ -9,10 +9,13 @@ describe('createArrayResolver function', () => {
 
   const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
+  const resolveKey = createKeyResolver(isKey);
+  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
+  const resolveMultiKey = createMultiKeyResolver(resolveKey, resolveSpecialKey);
+
   const resolve = createArrayResolver<K>(
     keys,
-    isKey,
-    special,
+    resolveMultiKey,
   );
 
   test('Should throw on invalid input', () => {
