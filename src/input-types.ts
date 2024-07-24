@@ -1,12 +1,12 @@
 import type { AllowNullish } from './helper-types';
 
-export type ObjectOption<K extends string, V, DK extends string = 'default'> = Partial<Record<K | DK, AllowNullish<V>>>;
+export type ObjectOption<K extends string, V, O extends string = 'default'> = Partial<Record<K | O, AllowNullish<V>>>;
 export type StringOption<K extends string> = K | K[];
 
-export type ValueBasedSelectiveOption<K extends string, V, DK extends string = 'default'> =
+export type ValueBasedSelectiveOption<K extends string, V, O extends string = 'default'> =
   | AllowNullish<V>
-  | ObjectOption<K, V, DK>;
+  | ObjectOption<K, V, O>;
 
-export type BoolBasedSelectiveOption<K extends string, V> =
+export type BoolBasedSelectiveOption<K extends string, V, O extends string = 'default'> =
   | StringOption<K>
-  | ValueBasedSelectiveOption<K, V>;
+  | ValueBasedSelectiveOption<K, V | boolean, O>;
