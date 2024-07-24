@@ -1,15 +1,19 @@
 import { createBoolBasedResolver } from '../../src';
 
-export const keys = ['circle', 'square', 'oval', 'rectangle'] as const;
+export const keys = ['circle', 'square', 'oval', 'rectangle', 'hexagon'] as const;
 export const isKey = (value: unknown): value is K => keys.includes(value as never);
 export const literalSizeValues = ['small', 'random'] as const;
 
 export type K = (typeof keys)[number];
-export type S = 'quadrilateral' | 'elliptical';
+export type S = 'quadrilateral' | 'elliptical' | 'regular';
 export type V = number | (typeof literalSizeValues)[number];
 export type R<V> = Readonly<Record<K, V>>;
 
-export const special: Record<S, K[]> = { quadrilateral: ['rectangle', 'square'], elliptical: ['circle', 'oval'] };
+export const special: Record<S, K[]> = {
+  quadrilateral: ['rectangle', 'square'],
+  elliptical: ['circle', 'oval'],
+  regular: ['circle', 'square', 'hexagon'],
+};
 export const specialKeys = Object.keys(special) as readonly S[];
 
 export const isValidSize = (value: unknown): value is V => typeof value === 'number' || literalSizeValues.includes(value as never);
@@ -21,6 +25,7 @@ export const createResult = <X extends V | boolean>(value: X): R<X> => {
     oval: value,
     rectangle: value,
     square: value,
+    hexagon: value,
   };
 };
 
