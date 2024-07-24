@@ -51,7 +51,12 @@ describe('createBoolBasedResolver function', () => {
   );
 
   test('Should throw on invalid value', () => {
-    expect(() => resolvePoints('string' as never)).toThrow();
+    const invalid = [
+      'string',
+    ];
+    invalid.forEach((input) => {
+      expect(() => resolvePoints(input as never)).toThrow();
+    });
   });
 
   test('Should resolve nullish value', () => {
@@ -208,9 +213,9 @@ describe('createBoolBasedResolver function', () => {
 
   test('Should resolve key over special key no matter the order', () => {
     const defaultResult = createResult(defaultValue);
-    const inputs: Array<{ input: ValueBasedSelectiveOption<K | S, V, 'override'>; expected: Partial<Record<K, V | boolean>> }> = [
+    const inputs: Array<{ input: ValueBasedSelectiveOption<K | S, V | boolean, 'override'>; expected: Partial<Record<K, V | boolean>> }> = [
       { input: { male: 20, john: 10 }, expected: { angel: 20, ariel: 20, john: 10, peter: 20 } },
-      { input: { john: 10, male: 20 }, expected: { angel: 20, ariel: 20, john: 10, peter: 20 } },
+      { input: { john: true, male: 20 }, expected: { angel: 20, ariel: 20, john: true, peter: 20 } },
     ];
     inputs.forEach(({ input, expected: extendedResult }) => {
       expect(resolvePoints(input)).toEqual({ ...defaultResult, ...extendedResult });
