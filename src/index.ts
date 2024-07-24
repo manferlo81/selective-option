@@ -3,7 +3,6 @@ export * from './deprecated/functions';
 export type * from './input-types';
 export { createArrayResolver } from './resolvers/array';
 export { createBoolBasedResolver } from './resolvers/bool-based';
-export { resolveFailed } from './resolvers/failed';
 export { createNullishResolver } from './resolvers/nullish';
 export { createObjectResolver } from './resolvers/object';
 export { createStringResolver } from './resolvers/string';

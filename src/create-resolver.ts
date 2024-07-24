@@ -1,4 +1,4 @@
-import { resolveFailed } from './resolvers/failed';
+import { errorInvalidValue } from './errors';
 import type { PotentialResolver, Resolver } from './types';
 
 export function createResolver<K extends string, V>(...resolvers: Array<PotentialResolver<K, V>>): Resolver<K, V> {
@@ -7,6 +7,6 @@ export function createResolver<K extends string, V>(...resolvers: Array<Potentia
       const result = resolve(input);
       if (result) return result;
     }
-    return resolveFailed(input);
+    throw errorInvalidValue(input);
   };
 }
