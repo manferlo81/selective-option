@@ -1,11 +1,12 @@
 import { createNullishResolver } from '../../resolvers/nullish';
+import type { Resolved } from '../../types';
 
 /** @deprecated */
-export function resolveNullish<K extends string, D>(
+export function resolveNullish<K extends string, V>(
   value: unknown,
   keys: K[],
-  defaultValue: D,
-): Record<K, D> | void {
+  defaultValue: V,
+): Resolved<K, V> | void {
   return createNullishResolver(
     keys,
     defaultValue,

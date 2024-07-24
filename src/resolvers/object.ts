@@ -3,14 +3,14 @@ import type { PotentialResolver } from '../types';
 import { createObjectResolver_v2 } from './v2/object';
 import { createKeyResolver, createSpecialKeyResolver } from './key';
 
-export function createObjectResolver<K extends string, V, D = V>(
+export function createObjectResolver<K extends string, V>(
   keys: readonly K[],
   isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
+  defaultValue: V,
   isKey: TypeCheckFunction<K>,
   special?: AllowNullish<Record<string, K[]>>,
   defaultKey?: string,
-): PotentialResolver<K, V | D> {
+): PotentialResolver<K, V> {
 
   // create key resolvers
   const resolveKey = createKeyResolver(isKey);

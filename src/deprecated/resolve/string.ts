@@ -1,5 +1,6 @@
 import type { AllowNullish, TypeCheckFunction } from '../../helper-types';
 import { createStringResolver } from '../../resolvers/string';
+import type { Resolved } from '../../types';
 
 /** @deprecated */
 export function resolveString<K extends string>(
@@ -7,7 +8,7 @@ export function resolveString<K extends string>(
   keys: K[],
   isKey: TypeCheckFunction<K>,
   special?: AllowNullish<Record<string, K[]>>,
-): Record<K, boolean> | void {
+): Resolved<K, boolean> | void {
   return createStringResolver(
     keys,
     isKey,

@@ -1,19 +1,31 @@
-import { resolveBoolBased } from '../../src';
+import { BoolBasedSelectiveOption, resolveBoolBased } from '../../src';
 
 describe('deprecated resolveBoolBased function', () => {
 
-  type K = 'a' | 'b' | 'c' | 'd';
-  type T = number;
+  const keys = ['square', 'rectangle', 'circle', 'oval'] as const;
+  const literalSizes = ['small', 'large', 'random'] as const;
 
-  const keys: K[] = ['a', 'b', 'c', 'd'];
+  type K = (typeof keys)[number];
+  type V = number | (typeof literalSizes)[number];
+  type S = 'rectangular' | 'elliptical';
+
   const isKey = (value: unknown): value is K => keys.includes(value as never);
+  const isValidValue = (value: unknown): value is V => typeof value === 'number' || literalSizes.includes(value as never);
 
-  const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
+  const special: Record<S, K[]> = { rectangular: ['square', 'rectangle'], elliptical: ['circle', 'oval'] };
+  const specialKeys = Object.keys(special) as S[];
+  const defaultValue: V = 'random';
 
-  const isValidValue = (value: unknown): value is T => typeof value === 'number';
-  const defaultValue = 0;
+  const createResult = <X extends V | boolean>(value: X): Readonly<Record<K, X>> => {
+    return {
+      square: value,
+      rectangle: value,
+      circle: value,
+      oval: value,
+    };
+  };
 
-  const resolve = (value: unknown) => resolveBoolBased(
+  const resolve = (value: BoolBasedSelectiveOption<K | S, number, 'default'>) => resolveBoolBased(
     value,
     keys,
     isKey,
@@ -23,128 +35,81 @@ describe('deprecated resolveBoolBased function', () => {
   );
 
   test('Should throw on invalid value', () => {
-    expect(() => resolve('string')).toThrow();
+    expect(() => resolve('string' as never)).toThrow();
   });
 
   test('Should resolve null value', () => {
-    expect(resolve(null)).toEqual({
-      a: defaultValue,
-      b: defaultValue,
-      c: defaultValue,
-      d: defaultValue,
-    });
-    expect(resolve(undefined)).toEqual({
-      a: defaultValue,
-      b: defaultValue,
-      c: defaultValue,
-      d: defaultValue,
-    });
+    expect(resolve(null)).toEqual(createResult(defaultValue));
+    expect(resolve(undefined)).toEqual(createResult(defaultValue));
   });
 
   test('Should resolve valid value', () => {
-    expect(resolve(10)).toEqual({
-      a: 10,
-      b: 10,
-      c: 10,
-      d: 10,
-    });
-    expect(resolve(NaN)).toEqual({
-      a: NaN,
-      b: NaN,
-      c: NaN,
-      d: NaN,
-    });
+    expect(resolve(10)).toEqual(createResult(10));
+    expect(resolve(NaN)).toEqual(createResult(NaN));
   });
 
   test('Should resolve key', () => {
-    expect(resolve('b')).toEqual({
-      a: false,
-      b: true,
-      c: false,
-      d: false,
-    });
-    expect(resolve('d')).toEqual({
-      a: false,
-      b: false,
-      c: false,
-      d: true,
+    const falseResult = createResult(false);
+    keys.forEach((key) => {
+      expect(resolve(key)).toEqual({
+        ...falseResult,
+        [key]: true,
+      });
     });
   });
 
   test('Should resolve special key', () => {
-    expect(resolve('first')).toEqual({
-      a: true,
-      b: true,
-      c: false,
-      d: false,
-    });
-    expect(resolve('last')).toEqual({
-      a: false,
-      b: false,
-      c: true,
-      d: true,
+    const falseResult = createResult(false);
+    specialKeys.forEach((specialKey) => {
+      const keys = special[specialKey];
+      const expected = keys.reduce((output, key) => {
+        return { ...output, [key]: true };
+      }, falseResult);
+      expect(resolve(specialKey)).toEqual(expected);
     });
   });
 
   test('Should resolve array', () => {
-    expect(resolve([])).toEqual({
-      a: false,
-      b: false,
-      c: false,
-      d: false,
-    });
+    expect(resolve([])).toEqual(createResult(false));
   });
 
   test('Should resolve array of keys', () => {
-    expect(resolve(['a', 'd'])).toEqual({
-      a: true,
-      b: false,
-      c: false,
-      d: true,
+    expect(resolve(['square', 'oval'])).toEqual({
+      ...createResult(false),
+      square: true,
+      oval: true,
     });
   });
 
   test('Should resolve array of special keys', () => {
-    expect(resolve(['first'])).toEqual({
-      a: true,
-      b: true,
-      c: false,
-      d: false,
+    expect(resolve(['rectangular'])).toEqual({
+      ...createResult(false),
+      rectangle: true,
+      square: true,
     });
-    expect(resolve(['last'])).toEqual({
-      a: false,
-      b: false,
-      c: true,
-      d: true,
+    expect(resolve(['elliptical'])).toEqual({
+      ...createResult(false),
+      circle: true,
+      oval: true,
     });
   });
 
   test('Should resolve array of mixed keys', () => {
-    expect(resolve(['first', 'd'])).toEqual({
-      a: true,
-      b: true,
-      c: false,
-      d: true,
+    expect(resolve(['rectangular', 'oval'])).toEqual({
+      ...createResult(false),
+      rectangle: true,
+      square: true,
+      oval: true,
     });
   });
 
   test('Should resolve object', () => {
-    expect(resolve({})).toEqual({
-      a: defaultValue,
-      b: defaultValue,
-      c: defaultValue,
-      d: defaultValue,
-    });
+    expect(resolve({})).toEqual(createResult(defaultValue));
   });
 
   test('Should resolve object with default value', () => {
-    const newDefaultValue = 99;
-    expect(resolve({ default: newDefaultValue })).toEqual({
-      a: newDefaultValue,
-      b: newDefaultValue,
-      c: newDefaultValue,
-      d: newDefaultValue,
-    });
+    const overrideValue = 99;
+    expect(resolve({ default: overrideValue })).toEqual(createResult(overrideValue));
   });
 
 });

@@ -5,14 +5,14 @@ import { is, isArray } from '../../is';
 import type { PotentialResolver } from '../../types';
 import type { KeyResolver } from '../types';
 
-export function createObjectResolver_v2<K extends string, V, D = V>(
+export function createObjectResolver_v2<K extends string, V>(
   keys: readonly K[],
   isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
+  defaultValue: V,
   resolveKey: KeyResolver<K>,
   resolveSpecialKey: KeyResolver<K>,
   defaultKey: string = 'default',
-): PotentialResolver<K, V | D> {
+): PotentialResolver<K, V> {
 
   // return object resolver
   return (input) => {
@@ -22,7 +22,7 @@ export function createObjectResolver_v2<K extends string, V, D = V>(
 
     const objectKeys = Object.keys(input);
 
-    let overrideValue: V | D = defaultValue;
+    let overrideValue: V = defaultValue;
     const specialData: Array<[K[], V]> = [];
     const keysData: Array<[K[], V]> = [];
 
@@ -56,7 +56,7 @@ export function createObjectResolver_v2<K extends string, V, D = V>(
 
     }
 
-    const defaultResult = createResult<K, V | D>(
+    const defaultResult = createResult(
       keys,
       overrideValue,
     );

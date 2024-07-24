@@ -3,14 +3,14 @@ import type { Resolver } from '../types';
 import { createKeyResolver, createSpecialKeyResolver } from './key';
 import { createValueBasedResolver_v2 } from './v2/value-based';
 
-export function createValueBasedResolver<K extends string, V, D = V>(
+export function createValueBasedResolver<K extends string, V>(
   keys: readonly K[],
   isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
+  defaultValue: V,
   isKey: TypeCheckFunction<K>,
   special?: AllowNullish<Record<string, K[]>>,
   overrideKey?: string,
-): Resolver<K, V | D> {
+): Resolver<K, V> {
 
   // create key resolvers
   const resolveKey = createKeyResolver(isKey);

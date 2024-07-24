@@ -6,14 +6,14 @@ import type { KeyResolver } from '../types';
 import { createValueResolver } from '../value';
 import { createObjectResolver_v2 } from './object';
 
-export function createValueBasedResolver_v2<K extends string, V, D = V>(
+export function createValueBasedResolver_v2<K extends string, V>(
   keys: readonly K[],
   isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
+  defaultValue: V,
   resolveKey: KeyResolver<K>,
   resolveSpecialKey: KeyResolver<K>,
   overrideKey?: string,
-): Resolver<K, V | D> {
+): Resolver<K, V> {
 
   // create potential resolvers
   const resolveValue = createValueResolver(keys, isValidValue);
