@@ -1,4 +1,5 @@
-import { createBoolBasedResolver } from '../../src';
+import { createBoolBasedResolver_v2 } from '../../src';
+import { createKeyResolver, createSpecialKeyResolver } from '../../src/resolvers/key';
 
 export const keys = ['john', 'maggie', 'angel', 'ariel', 'peter', 'gloria'] as const;
 export const isKey = (value: unknown): value is K => keys.includes(value as never);
@@ -36,11 +37,14 @@ export function extendResult<I extends V | boolean, X extends V | boolean>(resul
   }, result as R<I | X>);
 }
 
-export const resolvePoints = createBoolBasedResolver(
+const resolveKey = createKeyResolver(isKey);
+const resolverSpecialKey = createSpecialKeyResolver(isKey, special);
+
+export const resolvePoints = createBoolBasedResolver_v2(
   keys,
   isValidSize,
   defaultValue,
-  isKey,
-  special,
+  resolveKey,
+  resolverSpecialKey,
   'override',
 );
