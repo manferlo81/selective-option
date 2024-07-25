@@ -1,4 +1,4 @@
-import type { Resolved } from './resolvers/types';
+import type { Resolved } from './potential-resolvers/types';
 
 export function createResult<K extends string, V>(keys: readonly K[], value: V): Resolved<K, V>;
 export function createResult<K extends string, V>(keys: readonly K[], value: V, input: Resolved<K, V>): Resolved<K, V>;

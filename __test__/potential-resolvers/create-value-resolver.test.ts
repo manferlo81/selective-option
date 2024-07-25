@@ -1,4 +1,4 @@
-import { createValueResolver } from '../src';
+import { createValueResolver } from '../../src';
 
 describe('createValueResolver function', () => {
 

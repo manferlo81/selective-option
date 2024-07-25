@@ -1,9 +1,8 @@
-import { createKeyResolver, createSpecialKeyResolver, createValueBasedResolver } from '../src';
+import { createValueBasedResolver } from '../../src';
 
 describe('createValueBasedResolver function', () => {
 
   const keys = ['a', 'b', 'c', 'd'] as const;
-  const isKey = (value: unknown): value is K => keys.includes(value as never);
   const specialKeys = ['first', 'last'] as const;
 
   type K = (typeof keys)[number];
@@ -15,15 +14,12 @@ describe('createValueBasedResolver function', () => {
   const isValidValue = (value: unknown): value is V => typeof value === 'number';
   const defaultValue: V = 0;
 
-  const resolveKey = createKeyResolver(isKey);
-  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
-
-  const resolve = createValueBasedResolver<K, S, V, 'default'>(
+  const resolve = createValueBasedResolver(
     keys,
     isValidValue,
     defaultValue,
-    resolveKey,
-    resolveSpecialKey,
+    'default',
+    special,
   );
 
   test('Should throw on invalid value', () => {

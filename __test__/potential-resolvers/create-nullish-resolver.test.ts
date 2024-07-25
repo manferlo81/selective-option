@@ -1,4 +1,4 @@
-import { createNullishResolver } from '../src';
+import { createNullishResolver } from '../../src';
 
 describe('createNullishResolver function', () => {
 

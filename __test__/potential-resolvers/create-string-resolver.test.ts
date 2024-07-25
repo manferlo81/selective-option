@@ -1,21 +1,18 @@
-import { createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver, createStringResolver } from '../src';
+import { createStringResolver } from '../../src';
 
 describe('createStringResolver function', () => {
 
-  type K = 'a' | 'b' | 'c' | 'd';
+  const keys = ['a', 'b', 'c', 'd'] as const;
+  const specialKeys = ['first', 'last'] as const;
 
-  const keys: K[] = ['a', 'b', 'c', 'd'];
-  const isKey = (value: unknown): value is K => keys.includes(value as never);
+  type K = (typeof keys)[number];
+  type S = (typeof specialKeys)[number];
 
-  const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
+  const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
-  const resolveKey = createKeyResolver(isKey);
-  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
-  const resolveMultiKey = createMultiKeyResolver(resolveKey, resolveSpecialKey);
-
-  const resolve = createStringResolver<K>(
+  const resolve = createStringResolver<K, S>(
     keys,
-    resolveMultiKey,
+    special,
   );
 
   test('Should resolve key', () => {

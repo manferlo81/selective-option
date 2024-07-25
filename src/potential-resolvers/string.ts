@@ -1,10 +1,12 @@
 import { createResult } from '../create-result';
 import { is } from '../is';
-import type { KeyResolver, PotentialResolver } from './types';
+import { AllowNullish } from '../private-types';
+import { resolveKey } from './key';
+import type { PotentialResolver, SpecialKeys } from './types';
 
-export function createStringResolver<K extends string>(
+export function createStringResolver<K extends string, S extends string>(
   keys: readonly K[],
-  resolveKey: KeyResolver<K>,
+  special?: AllowNullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, boolean> {
 
   // return string resolver
@@ -14,7 +16,7 @@ export function createStringResolver<K extends string>(
     if (!is(input, 'string')) return;
 
     // try to resolve value as key or special key
-    const resolved = resolveKey(input);
+    const resolved = resolveKey(input, keys, special);
 
     // exit if it can't be resolved
     if (!resolved) return;

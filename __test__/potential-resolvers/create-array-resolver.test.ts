@@ -1,21 +1,17 @@
-import { createArrayResolver, createKeyResolver, createMultiKeyResolver, createSpecialKeyResolver } from '../src';
+import { createArrayResolver } from '../../src';
 
 describe('createArrayResolver function', () => {
 
-  type K = 'a' | 'b' | 'c' | 'd';
-
   const keys: K[] = ['a', 'b', 'c', 'd'];
-  const isKey = (value: unknown): value is K => keys.includes(value as never);
 
-  const special: Record<string, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
+  type K = 'a' | 'b' | 'c' | 'd';
+  type S = 'first' | 'last';
 
-  const resolveKey = createKeyResolver(isKey);
-  const resolveSpecialKey = createSpecialKeyResolver(isKey, special);
-  const resolveMultiKey = createMultiKeyResolver(resolveKey, resolveSpecialKey);
+  const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
-  const resolve = createArrayResolver<K>(
+  const resolve = createArrayResolver<K, S>(
     keys,
-    resolveMultiKey,
+    special,
   );
 
   test('Should throw on invalid input', () => {

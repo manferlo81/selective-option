@@ -1,9 +1,8 @@
-import { createBoolBasedResolver, createKeyResolver, createSpecialKeyResolver, ObjectOption, ValueBasedSelectiveOption } from '../src';
+import { createBoolBasedResolver, ObjectOption, ValueBasedSelectiveOption } from '../../src';
 
 describe('createBoolBasedResolver function', () => {
 
   const keys = ['john', 'maggie', 'angel', 'ariel', 'peter', 'gloria'] as const;
-  const isKey = (value: unknown): value is K => keys.includes(value as never);
   const literalSizeValues = ['low', 'high', 'unknown'] as const;
 
   type K = (typeof keys)[number];
@@ -38,16 +37,12 @@ describe('createBoolBasedResolver function', () => {
     }, result as R<I | X>);
   }
 
-  const resolveKey = createKeyResolver(isKey);
-  const resolverSpecialKey = createSpecialKeyResolver(isKey, special);
-
   const resolvePoints = createBoolBasedResolver(
     keys,
     isValidSize,
     defaultValue,
-    resolveKey,
-    resolverSpecialKey,
     'override',
+    special,
   );
 
   test('Should throw on invalid value', () => {

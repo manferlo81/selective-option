@@ -1,38 +1,40 @@
 import { createResult } from '../create-result';
 import { errorInvalidKey, errorInvalidValue } from '../errors';
-import type { TypeCheckFunction } from '../private-types';
+import type { AllowNullish, TypeCheckFunction } from '../private-types';
 import { is, isArray } from '../is';
-import type { KeyResolver, PotentialResolver, Resolved } from './types';
+import type { PotentialResolver, Resolved, SpecialKeys } from './types';
+import { resolveKey } from './key';
 
 type ResultExtendItem<K extends string, V> = [keys: readonly K[], value: V];
 type ObjectProcessed<K extends string, V> = [override: V, keys: Array<ResultExtendItem<K, V>>, special: Array<ResultExtendItem<K, V>>];
 
-function processInput<K extends string, V>(
-  input: Record<string, unknown>,
+function processInput<K extends string, S extends string, V>(
+  input: object,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
-  resolveKey: KeyResolver<K>,
-  resolveSpecialKey: KeyResolver<K>,
   defaultKey: string,
+  keys: readonly K[],
+  special?: AllowNullish<SpecialKeys<S, K>>,
 ): ObjectProcessed<K, V> {
   const objectKeys = Object.keys(input);
   return objectKeys.reduce((output, key) => {
-    const value = input[key];
+    const value = input[key as never];
     if (value == null) return output;
     if (!isValidValue(value)) throw errorInvalidValue(value);
-    const [override, keys, special] = output;
-    if (key === defaultKey) return [value, keys, special];
-    const keyResolved = resolveKey(key);
+    const [override, keysData, specialData] = output;
+    if (key === defaultKey) return [value, keysData, specialData];
+    const keyResolved = resolveKey(key, keys);
     if (keyResolved) {
       const item: ResultExtendItem<K, V> = [keyResolved, value];
-      const newItems = [...keys, item];
-      return [override, newItems, special];
+      const newItems = [...keysData, item];
+      return [override, newItems, specialData];
     }
-    const specialResolved = resolveSpecialKey(key);
+    if (!special) throw errorInvalidKey(key);
+    const specialResolved = special[key as S];
     if (!specialResolved) throw errorInvalidKey(key);
     const item: ResultExtendItem<K, V> = [specialResolved, value];
-    const newSpecialKeys = [...special, item];
-    return [override, keys, newSpecialKeys];
+    const newSpecialKeys = [...specialData, item];
+    return [override, keysData, newSpecialKeys];
   }, [defaultValue, [], []] as ObjectProcessed<K, V>);
 
 }
@@ -45,28 +47,27 @@ function resultReducer<K extends string, V>(output: Resolved<K, V>, [keys, value
   );
 }
 
-export function createObjectResolver<K extends string, V>(
+export function createObjectResolver<K extends string, S extends string, V>(
   keys: readonly K[],
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
-  resolveKey: KeyResolver<K>,
-  resolveSpecialKey: KeyResolver<K>,
-  defaultKey: string = 'default',
+  overrideKey: string,
+  special?: AllowNullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, V> {
 
   // return object resolver
   return (input) => {
 
     // exit if it's not an object
-    if (!input || !is<Record<string, V> | null | unknown[]>(input, 'object') || isArray(input)) return;
+    if (!input || !is(input, 'object') || isArray(input)) return;
 
     const [overrideValue, keysData, specialData] = processInput(
       input,
       isValidValue,
       defaultValue,
-      resolveKey,
-      resolveSpecialKey,
-      defaultKey,
+      overrideKey,
+      keys,
+      special,
     );
 
     return keysData.reduce(
