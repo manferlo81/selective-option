@@ -3,17 +3,33 @@
     [
       "@babel/preset-env",
       {
-        "loose": true,
-        "useBuiltIns": false,
-        "targets": {
-          "node": "10",
-          "browsers": [
-            "> 1%",
-            "last 5 versions",
-            "not dead"
-          ]
-        }
+        "useBuiltIns": "entry",
+        "corejs": "3.37",
+        "exclude": [
+          "transform-typeof-symbol"
+        ]
       }
     ]
-  ]
+  ],
+  "assumptions": {
+    "arrayLikeIsIterable": true,
+    "constantReexports": true,
+    "ignoreFunctionLength": true,
+    "ignoreToPrimitiveHint": true,
+    "mutableTemplateObject": true,
+    "noClassCalls": true,
+    "noDocumentAll": true,
+    "objectRestNoSymbols": true,
+    "privateFieldsAsProperties": true,
+    "pureGetters": true,
+    "setClassMethods": true,
+    "setComputedProperties": true,
+    "setPublicClassFields": true,
+    "setSpreadProperties": true,
+    "skipForOfIteratorClosing": true,
+    "superIsCallableConstructor": true,
+    "enumerableModuleMeta": true,
+    "noIncompleteNsImportDetection": true,
+    "noNewArrows": true
+  }
 }
