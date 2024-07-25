@@ -1,12 +1,12 @@
-import { createResolver } from './create-resolver';
 import type { AllowNullish, TypeCheckFunction } from '../private-types';
+import { createResolver } from './create-resolver';
 import { createNullishResolver } from './nullish';
-import type { SpecialKeys, ValueBasedResolver } from './types';
-import { createValueResolver } from './value';
 import { createObjectResolver } from './object';
+import type { KeyList, SpecialKeys, ValueBasedResolver } from './types';
+import { createValueResolver } from './value';
 
 export function createValueBasedResolver<K extends string, S extends string, V, O extends string>(
-  keys: readonly K[],
+  keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
   overrideKey: O,

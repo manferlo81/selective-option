@@ -1,11 +1,11 @@
 import { createResult } from '../create-result';
-import { errorInvalidKey, errorInvalidValue } from '../tools/errors';
 import type { AllowNullish, TypeCheckFunction } from '../private-types';
+import { errorInvalidKey, errorInvalidValue } from '../tools/errors';
 import { is, isArray } from '../tools/is';
-import type { PotentialResolver, Resolved, SpecialKeys } from './types';
 import { resolveKey } from '../tools/key';
+import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from './types';
 
-type ResultExtendItem<K extends string, V> = [keys: readonly K[], value: V];
+type ResultExtendItem<K extends string, V> = [keys: KeyList<K>, value: V];
 type ObjectProcessed<K extends string, V> = [override: V, keys: Array<ResultExtendItem<K, V>>, special: Array<ResultExtendItem<K, V>>];
 
 function processInput<K extends string, S extends string, V>(
@@ -13,7 +13,7 @@ function processInput<K extends string, S extends string, V>(
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
   defaultKey: string,
-  keys: readonly K[],
+  keys: KeyList<K>,
   special?: AllowNullish<SpecialKeys<S, K>>,
 ): ObjectProcessed<K, V> {
   const objectKeys = Object.keys(input);
@@ -48,7 +48,7 @@ function resultReducer<K extends string, V>(output: Resolved<K, V>, [keys, value
 }
 
 export function createObjectResolver<K extends string, S extends string, V>(
-  keys: readonly K[],
+  keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
   overrideKey: string,

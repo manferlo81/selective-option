@@ -1,4 +1,4 @@
-import { createValueBasedResolver, Keys, Resolved } from '../../src';
+import { createValueBasedResolver, KeyList, Resolved } from '../../src';
 
 describe('createValueBasedResolver function', () => {
 
@@ -22,7 +22,7 @@ describe('createValueBasedResolver function', () => {
     special,
   );
 
-  const createExpected = <X extends V | boolean>(initial: X, keys?: Keys<K>, value2?: X): Resolved<K, X | undefined> => {
+  const createExpected = <X extends V | boolean>(initial: X, keys?: KeyList<K>, value2?: X): Resolved<K, X | undefined> => {
     const expected: Resolved<K, X> = {
       a: initial,
       b: initial,

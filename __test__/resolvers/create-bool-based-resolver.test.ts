@@ -1,4 +1,4 @@
-import { createBoolBasedResolver, Keys, ObjectOption, ValueBasedSelectiveOption } from '../../src';
+import { createBoolBasedResolver, KeyList, ObjectOption, ValueBasedSelectiveOption } from '../../src';
 
 describe('createBoolBasedResolver function', () => {
 
@@ -29,7 +29,7 @@ describe('createBoolBasedResolver function', () => {
     special,
   );
 
-  const createExpected = <X extends V | boolean>(initial: X, keys?: Keys<K>, value2?: X): R<X | undefined> => {
+  const createExpected = <X extends V | boolean>(initial: X, keys?: KeyList<K>, value2?: X): R<X | undefined> => {
     const expected: R<X> = {
       john: initial,
       angel: initial,

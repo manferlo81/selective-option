@@ -1,6 +1,6 @@
 import type { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from '../input-types';
 
-export type Keys<K> = readonly K[];
+export type KeyList<K> = readonly K[];
 export type SpecialKeys<S extends string, K extends string> = Partial<Record<S, K[]>>;
 
 export type InputResolver<I, R> = (input: I) => R;
