@@ -133,7 +133,7 @@ describe('createBoolBasedResolver function', () => {
         true,
       );
       expect(resolveIsMarried(input)).toEqual(expected);
-      expect(resolveIsMarried(input.toReversed())).toEqual(expected);
+      expect(resolveIsMarried([...input].reverse())).toEqual(expected);
     });
 
   });
@@ -154,7 +154,7 @@ describe('createBoolBasedResolver function', () => {
         true,
       );
       expect(resolveIsMarried(input)).toEqual(expected);
-      expect(resolveIsMarried(input.toReversed())).toEqual(expected);
+      expect(resolveIsMarried([...input].reverse())).toEqual(expected);
     });
 
   });
@@ -162,12 +162,12 @@ describe('createBoolBasedResolver function', () => {
   test('Should resolve array of mixed keys', () => {
 
     const inputs = specialKeys.reduce((list, specialKey) => {
-      const l = keys.map((key) => {
+      const objects = keys.map((key) => {
         const input = [specialKey, key] as const;
         const changed = [key, ...special[specialKey]];
         return { input, changed };
       });
-      return [...list, ...l];
+      return [...list, ...objects];
     }, [] as Array<{ input: ReadonlyArray<RegularKey | SpecialKey>; changed: readonly RegularKey[] }>);
 
     inputs.forEach(({ input, changed }) => {
@@ -177,7 +177,7 @@ describe('createBoolBasedResolver function', () => {
         true,
       );
       expect(resolveIsMarried(input)).toEqual(expected);
-      expect(resolveIsMarried(input.toReversed())).toEqual(expected);
+      expect(resolveIsMarried([...input].reverse())).toEqual(expected);
     });
 
   });
