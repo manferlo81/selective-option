@@ -1,56 +1,61 @@
-import { createBoolBasedResolver, ObjectOption, ValueBasedSelectiveOption } from '../../src';
+import { createBoolBasedResolver, Keys, ObjectOption, ValueBasedSelectiveOption } from '../../src';
 
 describe('createBoolBasedResolver function', () => {
 
   const keys = ['john', 'maggie', 'angel', 'ariel', 'peter', 'gloria'] as const;
-  const literalSizeValues = ['low', 'high', 'unknown'] as const;
+  const literalValues = ['yes', 'no', 'unknown'] as const;
+  const specialKeys = ['male', 'female', 'specified', 'unspecified'] as const;
 
   type K = (typeof keys)[number];
-  type S = 'male' | 'female' | 'unisex';
-  type V = number | (typeof literalSizeValues)[number];
+  type S = (typeof specialKeys)[number];
+  type V = (typeof literalValues)[number];
   type R<V> = Readonly<Record<K, V>>;
 
   const special: Record<S, K[]> = {
-    male: ['angel', 'ariel', 'john', 'peter'],
-    female: ['angel', 'ariel', 'gloria', 'maggie'],
-    unisex: ['angel', 'ariel'],
+    male: ['john', 'peter'],
+    female: ['gloria', 'maggie'],
+    specified: ['gloria', 'john', 'maggie', 'peter'],
+    unspecified: ['angel', 'ariel'],
   };
-  const specialKeys = Object.keys(special) as readonly S[];
 
-  const isValidSize = (value: unknown): value is V => typeof value === 'number' || literalSizeValues.includes(value as never);
+  const isValidValue = (value: unknown): value is V => literalValues.includes(value as never);
   const defaultValue: V | boolean = 'unknown';
 
-  const createResult = <X extends V | boolean>(value: X): R<X> => {
-    return {
-      john: value,
-      angel: value,
-      ariel: value,
-      maggie: value,
-      peter: value,
-      gloria: value,
-    };
-  };
-
-  function extendResult<I extends V | boolean, X extends V | boolean>(result: R<I>, keys: readonly K[], value: X): R<I | X> {
-    return keys.reduce((output, key) => {
-      return { ...output, [key]: value };
-    }, result as R<I | X>);
-  }
-
-  const resolvePoints = createBoolBasedResolver(
+  const resolveIsMarried = createBoolBasedResolver(
     keys,
-    isValidSize,
+    isValidValue,
     defaultValue,
     'override',
     special,
   );
+
+  const createExpected = <X extends V | boolean>(initial: X, keys?: Keys<K>, value2?: X): R<X | undefined> => {
+    const expected: R<X> = {
+      john: initial,
+      angel: initial,
+      ariel: initial,
+      maggie: initial,
+      peter: initial,
+      gloria: initial,
+    };
+    if (!keys) return expected;
+    return keys.reduce((output, key) => {
+      return { ...output, [key]: value2 };
+    }, expected);
+  };
+
+  const validValues: ReadonlyArray<V | boolean> = [
+    ...literalValues,
+    true,
+    false,
+  ];
 
   test('Should throw on invalid value', () => {
     const invalid = [
       'string',
     ];
     invalid.forEach((input) => {
-      expect(() => resolvePoints(input as never)).toThrow();
+      expect(() => resolveIsMarried(input as never)).toThrow();
     });
   });
 
@@ -60,24 +65,15 @@ describe('createBoolBasedResolver function', () => {
       undefined,
     ];
     inputs.forEach((input) => {
-      const expected = createResult(defaultValue);
-      expect(resolvePoints(input)).toEqual(expected);
+      const expected = createExpected(defaultValue);
+      expect(resolveIsMarried(input)).toEqual(expected);
     });
   });
 
   test('Should resolve valid value', () => {
-    const inputs: V[] = [
-      10,
-      0,
-      1,
-      NaN,
-      'high',
-      'low',
-      'unknown',
-    ];
-    inputs.forEach((input) => {
-      const expected = createResult(input);
-      expect(resolvePoints(input)).toEqual(expected);
+    literalValues.forEach((input) => {
+      const expected = createExpected(input);
+      expect(resolveIsMarried(input)).toEqual(expected);
     });
   });
 
@@ -87,134 +83,142 @@ describe('createBoolBasedResolver function', () => {
       false,
     ];
     inputs.forEach((input) => {
-      const expected = createResult(input);
-      expect(resolvePoints(input)).toEqual(expected);
+      const expected = createExpected(input);
+      expect(resolveIsMarried(input)).toEqual(expected);
     });
   });
 
   test('Should resolve key', () => {
-    const falseResult = createResult(false);
+    const falseResult = createExpected(false);
     keys.forEach((key) => {
       const expected = {
         ...falseResult,
         [key]: true,
       };
-      expect(resolvePoints(key)).toEqual(expected);
+      expect(resolveIsMarried(key)).toEqual(expected);
     });
   });
 
   test('Should resolve special key', () => {
-    const specialKeys = Object.keys(special) as S[];
     specialKeys.forEach((specialKey) => {
-      const keys = special[specialKey];
-      const expected = extendResult(
-        createResult(false),
-        keys,
+      const expected = createExpected(
+        false,
+        special[specialKey],
         true,
       );
-      expect(resolvePoints(specialKey)).toEqual(expected);
+      expect(resolveIsMarried(specialKey)).toEqual(expected);
     });
   });
 
   test('Should resolve array', () => {
-    expect(resolvePoints([])).toEqual(createResult(false));
+    const expected = createExpected(false);
+    expect(resolveIsMarried([])).toEqual(expected);
   });
 
   test('Should resolve array of keys', () => {
-    const falseResult = createResult(false);
-    const inputs: K[][] = [
-      [],
-      ['angel', 'maggie'],
-      ['gloria', 'peter'],
-    ];
+
+    const inputs: Array<readonly K[]> = keys.map((key, i) => {
+      const other = keys[(i + 1) % keys.length];
+      const other2 = keys[(i + 2) % keys.length];
+      return [key, other, other2];
+    });
+
     inputs.forEach((input) => {
-      const expected = extendResult(
-        falseResult,
+      const expected = createExpected(
+        false,
         input,
         true,
       );
-      expect(resolvePoints(input)).toEqual(expected);
+      expect(resolveIsMarried(input)).toEqual(expected);
+      expect(resolveIsMarried(input.toReversed())).toEqual(expected);
     });
+
   });
 
   test('Should resolve array of special keys', () => {
-    const falseResult = createResult(false);
-    const inputs: Array<{ input: readonly S[]; changed: readonly K[] }> = [
-      { input: [], changed: [] },
-      { input: ['male'], changed: ['angel', 'ariel', 'john', 'peter'] },
-      { input: ['female'], changed: ['angel', 'ariel', 'gloria', 'maggie'] },
-      { input: specialKeys, changed: keys },
-    ];
+
+    const inputs = specialKeys.map<{ input: readonly S[]; changed: readonly K[] }>((specialKey, i) => {
+      const otherKey = specialKeys[(i + 1) % specialKeys.length];
+      const input = [specialKey, otherKey];
+      const changed = [...special[specialKey], ...special[otherKey]];
+      return { input, changed };
+    });
+
     inputs.forEach(({ input, changed }) => {
-      const expected = extendResult(
-        falseResult,
+      const expected = createExpected(
+        false,
         changed,
         true,
       );
-      expect(resolvePoints(input)).toEqual(expected);
+      expect(resolveIsMarried(input)).toEqual(expected);
+      expect(resolveIsMarried(input.toReversed())).toEqual(expected);
     });
+
   });
 
   test('Should resolve array of mixed keys', () => {
-    const falseResult = createResult(false);
-    const inputs: Array<{ input: Array<K | S>; changed: readonly K[] }> = [
-      { input: ['female', 'john'], changed: ['maggie', 'angel', 'ariel', 'gloria', 'john'] },
-      { input: ['female', 'maggie'], changed: ['maggie', 'angel', 'ariel', 'gloria'] },
-      { input: ['unisex', 'gloria'], changed: ['angel', 'ariel', 'gloria'] },
-      { input: ['unisex', 'angel'], changed: ['angel', 'ariel'] },
-    ];
+
+    const inputs = specialKeys.reduce((list, specialKey) => {
+      const l = keys.map((key) => {
+        const input = [specialKey, key] as const;
+        const changed = [key, ...special[specialKey]];
+        return { input, changed };
+      });
+      return [...list, ...l];
+    }, [] as Array<{ input: ReadonlyArray<K | S>; changed: readonly K[] }>);
+
     inputs.forEach(({ input, changed }) => {
-      const expected = extendResult(
-        falseResult,
+      const expected = createExpected(
+        false,
         changed,
         true,
       );
-      expect(resolvePoints(input)).toEqual(expected);
-      expect(resolvePoints(input.reverse())).toEqual(expected);
+      expect(resolveIsMarried(input)).toEqual(expected);
+      expect(resolveIsMarried(input.toReversed())).toEqual(expected);
     });
+
   });
 
   test('Should resolve object', () => {
-    const expected = createResult(defaultValue);
-    expect(resolvePoints({})).toEqual(expected);
+    const expected = createExpected(defaultValue);
+    expect(resolveIsMarried({})).toEqual(expected);
   });
 
   test('Should resolve object with overridden value', () => {
-    const values: Array<V | boolean> = [
-      99,
-      40,
-      true,
-      false,
-      'high',
-      'low',
-      'unknown',
-    ];
-    values.forEach((overrideValue) => {
-      const expected = createResult(overrideValue);
-      expect(resolvePoints({ override: overrideValue })).toEqual(expected);
+    validValues.forEach((overrideValue) => {
+      const expected = createExpected(overrideValue);
+      expect(resolveIsMarried({ override: overrideValue })).toEqual(expected);
     });
   });
 
   test('Should resolve keys after override', () => {
+
     const inputs: Array<{ input: ObjectOption<K | S, V, 'override'>; override: V; expected: Partial<Record<K, V | boolean>> }> = [
-      { input: { john: 40 }, override: 'low', expected: { john: 40 } },
-      { input: { male: 40 }, override: 'low', expected: { angel: 40, ariel: 40, john: 40, peter: 40 } },
+      { input: { john: 'no' }, override: 'yes', expected: { john: 'no' } },
+      { input: { male: 'yes' }, override: 'no', expected: { john: 'yes', peter: 'yes' } },
     ];
+
     inputs.forEach(({ input, override, expected: extendedResult }) => {
-      const defaultResult = createResult(override);
-      expect(resolvePoints({ ...input, override })).toEqual({ ...defaultResult, ...extendedResult });
+      const defaultResult = createExpected(override);
+      expect(resolveIsMarried({ ...input, override })).toEqual({ ...defaultResult, ...extendedResult });
     });
+
   });
 
   test('Should resolve key over special key no matter the order', () => {
-    const defaultResult = createResult(defaultValue);
+
+    const defaultResult = createExpected(defaultValue);
+
     const inputs: Array<{ input: ValueBasedSelectiveOption<K | S, V | boolean, 'override'>; expected: Partial<Record<K, V | boolean>> }> = [
-      { input: { male: 20, john: 10 }, expected: { angel: 20, ariel: 20, john: 10, peter: 20 } },
-      { input: { john: true, male: 20 }, expected: { angel: 20, ariel: 20, john: true, peter: 20 } },
+      { input: { male: 'yes', john: 'no' }, expected: { john: 'no', peter: 'yes' } },
+      { input: { john: 'no', specified: false }, expected: { john: 'no', peter: false, gloria: false, maggie: false } },
     ];
+
     inputs.forEach(({ input, expected: extendedResult }) => {
-      expect(resolvePoints(input)).toEqual({ ...defaultResult, ...extendedResult });
+      const expected = { ...defaultResult, ...extendedResult };
+      expect(resolveIsMarried(input)).toEqual(expected);
     });
+
   });
 
 });

@@ -1,4 +1,4 @@
-import { createValueBasedResolver } from '../../src';
+import { createValueBasedResolver, Keys, Resolved } from '../../src';
 
 describe('createValueBasedResolver function', () => {
 
@@ -22,6 +22,19 @@ describe('createValueBasedResolver function', () => {
     special,
   );
 
+  const createExpected = <X extends V | boolean>(initial: X, keys?: Keys<K>, value2?: X): Resolved<K, X | undefined> => {
+    const expected: Resolved<K, X> = {
+      a: initial,
+      b: initial,
+      c: initial,
+      d: initial,
+    };
+    if (!keys) return expected;
+    return keys.reduce((output, key) => {
+      return { ...output, [key]: value2 };
+    }, expected);
+  };
+
   test('Should throw on invalid value', () => {
     expect(() => resolve(true as never)).toThrow();
   });
@@ -32,12 +45,8 @@ describe('createValueBasedResolver function', () => {
       undefined,
     ];
     inputs.forEach((input) => {
-      expect(resolve(input)).toEqual({
-        a: defaultValue,
-        b: defaultValue,
-        c: defaultValue,
-        d: defaultValue,
-      });
+      const expected = createExpected(defaultValue);
+      expect(resolve(input)).toEqual(expected);
     });
   });
 
@@ -47,32 +56,20 @@ describe('createValueBasedResolver function', () => {
       NaN,
     ];
     inputs.forEach((input) => {
-      expect(resolve(input)).toEqual({
-        a: input,
-        b: input,
-        c: input,
-        d: input,
-      });
+      const expected = createExpected(input);
+      expect(resolve(input)).toEqual(expected);
     });
   });
 
   test('Should resolve object', () => {
-    expect(resolve({})).toEqual({
-      a: defaultValue,
-      b: defaultValue,
-      c: defaultValue,
-      d: defaultValue,
-    });
+    const expected = createExpected(defaultValue);
+    expect(resolve({})).toEqual(expected);
   });
 
   test('Should resolve object with default value', () => {
     const newDefaultValue = 99;
-    expect(resolve({ default: newDefaultValue })).toEqual({
-      a: newDefaultValue,
-      b: newDefaultValue,
-      c: newDefaultValue,
-      d: newDefaultValue,
-    });
+    const expected = createExpected(newDefaultValue);
+    expect(resolve({ default: newDefaultValue })).toEqual(expected);
   });
 
 });
