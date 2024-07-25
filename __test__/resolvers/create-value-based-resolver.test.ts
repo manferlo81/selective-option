@@ -4,26 +4,27 @@ describe('createValueBasedResolver function', () => {
 
   const keys = ['a', 'b', 'c', 'd'] as const;
   const specialKeys = ['first', 'last'] as const;
+  const overrideKey = 'default';
 
-  type K = (typeof keys)[number];
-  type V = number;
-  type S = (typeof specialKeys)[number];
+  type RegularKey = (typeof keys)[number];
+  type SpecialKey = (typeof specialKeys)[number];
+  type ValidValue = number;
 
-  const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
+  const special: Record<SpecialKey, RegularKey[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
-  const isValidValue = (value: unknown): value is V => typeof value === 'number';
-  const defaultValue: V = 0;
+  const isValidValue = (value: unknown): value is ValidValue => typeof value === 'number';
+  const defaultValue: ValidValue = 0;
 
   const resolve = createValueBasedResolver(
     keys,
     isValidValue,
     defaultValue,
-    'default',
+    overrideKey,
     special,
   );
 
-  const createExpected = <X extends V | boolean>(initial: X, keys?: KeyList<K>, value2?: X): Resolved<K, X | undefined> => {
-    const expected: Resolved<K, X> = {
+  const createExpected = <V extends ValidValue>(initial: V, keys?: KeyList<RegularKey>, value2?: V): Resolved<RegularKey, V | undefined> => {
+    const expected: Resolved<RegularKey, V> = {
       a: initial,
       b: initial,
       c: initial,
@@ -51,7 +52,7 @@ describe('createValueBasedResolver function', () => {
   });
 
   test('Should resolve valid value', () => {
-    const inputs = [
+    const inputs: ValidValue[] = [
       10,
       NaN,
     ];
