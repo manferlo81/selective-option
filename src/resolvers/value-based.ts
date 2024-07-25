@@ -1,5 +1,5 @@
 import { createResolver } from '../create-resolver';
-import type { TypeCheckFunction } from '../helper-types';
+import type { TypeCheckFunction } from '../private-types';
 import { createNullishResolver } from './nullish';
 import type { KeyResolver, ValueBasedResolver } from './types';
 import { createValueResolver } from './value';

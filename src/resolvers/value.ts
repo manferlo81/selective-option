@@ -1,5 +1,5 @@
 import { createResult } from '../create-result';
-import type { TypeCheckFunction } from '../helper-types';
+import type { TypeCheckFunction } from '../private-types';
 import type { PotentialResolver } from './types';
 
 export function createValueResolver<K extends string, V>(

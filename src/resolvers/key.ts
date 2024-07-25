@@ -1,4 +1,4 @@
-import type { AllowNullish, TypeCheckFunction } from '../helper-types';
+import type { AllowNullish, TypeCheckFunction } from '../private-types';
 import { isArray } from '../is';
 import { createFunctionReturning } from '../tools';
 import type { KeyResolver, SpecialKeys } from './types';

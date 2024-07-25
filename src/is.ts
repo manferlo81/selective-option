@@ -1,4 +1,4 @@
-import type { TypeCheckFunction } from './helper-types';
+import type { TypeCheckFunction } from './private-types';
 
 interface IsArrayFunction extends TypeCheckFunction<unknown[]>, TypeCheckFunction<readonly unknown[]> {
   <T extends unknown[]>(value: unknown): value is T;

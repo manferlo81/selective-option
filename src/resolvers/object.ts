@@ -1,6 +1,6 @@
 import { createResult } from '../create-result';
 import { errorInvalidKey, errorInvalidValue } from '../errors';
-import type { TypeCheckFunction } from '../helper-types';
+import type { TypeCheckFunction } from '../private-types';
 import { is, isArray } from '../is';
 import type { KeyResolver, PotentialResolver, Resolved } from './types';
 

@@ -1,4 +1,4 @@
-import type { AllowNullish } from './helper-types';
+import type { AllowNullish } from './private-types';
 
 export type ObjectOption<K extends string, V, O extends string = 'default'> = Partial<Record<K | O, AllowNullish<V>>>;
 export type StringOption<K extends string> = K | readonly K[];
