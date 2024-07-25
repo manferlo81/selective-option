@@ -1,7 +1,7 @@
 import { createResult } from '../create-result';
-import { is } from '../is';
+import { is } from '../tools/is';
 import { AllowNullish } from '../private-types';
-import { resolveKey } from './key';
+import { resolveKey } from '../tools/key';
 import type { PotentialResolver, SpecialKeys } from './types';
 
 export function createStringResolver<K extends string, S extends string>(

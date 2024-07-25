@@ -1,4 +1,4 @@
-import { resolveKey } from '../src/potential-resolvers/key';
+import { resolveKey } from '../src/tools/key';
 
 describe('resolveKey function', () => {
 

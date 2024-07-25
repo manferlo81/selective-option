@@ -1,8 +1,8 @@
 import { createResult } from '../create-result';
-import { errorInvalidKey } from '../errors';
-import { is, isArray } from '../is';
+import { errorInvalidKey } from '../tools/errors';
+import { is, isArray } from '../tools/is';
 import { AllowNullish } from '../private-types';
-import { resolveKey } from './key';
+import { resolveKey } from '../tools/key';
 import type { PotentialResolver, SpecialKeys } from './types';
 
 export function createArrayResolver<K extends string, S extends string>(

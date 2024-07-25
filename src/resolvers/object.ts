@@ -1,9 +1,9 @@
 import { createResult } from '../create-result';
-import { errorInvalidKey, errorInvalidValue } from '../errors';
+import { errorInvalidKey, errorInvalidValue } from '../tools/errors';
 import type { AllowNullish, TypeCheckFunction } from '../private-types';
-import { is, isArray } from '../is';
+import { is, isArray } from '../tools/is';
 import type { PotentialResolver, Resolved, SpecialKeys } from './types';
-import { resolveKey } from './key';
+import { resolveKey } from '../tools/key';
 
 type ResultExtendItem<K extends string, V> = [keys: readonly K[], value: V];
 type ObjectProcessed<K extends string, V> = [override: V, keys: Array<ResultExtendItem<K, V>>, special: Array<ResultExtendItem<K, V>>];

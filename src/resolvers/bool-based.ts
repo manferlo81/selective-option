@@ -1,11 +1,11 @@
-import { createResolver } from '../create-resolver';
+import { createResolver } from './create-resolver';
 import type { AllowNullish, TypeCheckFunction } from '../private-types';
-import { createArrayResolver } from '../potential-resolvers/array';
-import { createNullishResolver } from '../potential-resolvers/nullish';
-import { createObjectResolver } from '../potential-resolvers/object';
-import { createStringResolver } from '../potential-resolvers/string';
-import type { BoolBasedResolver, SpecialKeys } from '../potential-resolvers/types';
-import { createValueResolver } from '../potential-resolvers/value';
+import { createArrayResolver } from './array';
+import { createNullishResolver } from './nullish';
+import { createObjectResolver } from './object';
+import { createStringResolver } from './string';
+import type { BoolBasedResolver, SpecialKeys } from './types';
+import { createValueResolver } from './value';
 
 export function createBoolBasedResolver<K extends string, S extends string, V, O extends string>(
   keys: readonly K[],

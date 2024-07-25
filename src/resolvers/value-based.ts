@@ -1,9 +1,9 @@
-import { createResolver } from '../create-resolver';
+import { createResolver } from './create-resolver';
 import type { AllowNullish, TypeCheckFunction } from '../private-types';
-import { createNullishResolver } from '../potential-resolvers/nullish';
-import type { SpecialKeys, ValueBasedResolver } from '../potential-resolvers/types';
-import { createValueResolver } from '../potential-resolvers/value';
-import { createObjectResolver } from '../potential-resolvers/object';
+import { createNullishResolver } from './nullish';
+import type { SpecialKeys, ValueBasedResolver } from './types';
+import { createValueResolver } from './value';
+import { createObjectResolver } from './object';
 
 export function createValueBasedResolver<K extends string, S extends string, V, O extends string>(
   keys: readonly K[],

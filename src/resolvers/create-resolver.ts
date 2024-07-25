@@ -1,5 +1,5 @@
-import { errorInvalidValue } from './errors';
-import type { PotentialResolver, Resolver } from './potential-resolvers/types';
+import { errorInvalidValue } from '../tools/errors';
+import type { PotentialResolver, Resolver } from './types';
 
 export function createResolver<K extends string, V>(...resolvers: Array<PotentialResolver<K, V>>): Resolver<K, V> {
   return (input) => {

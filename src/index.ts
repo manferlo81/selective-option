@@ -1,11 +1,11 @@
-export { createResolver } from './create-resolver';
+export { createResolver } from './resolvers/create-resolver';
 export { createResult } from './create-result';
 export type * from './input-types';
-export { createArrayResolver } from './potential-resolvers/array';
-export { createNullishResolver } from './potential-resolvers/nullish';
-export { createObjectResolver } from './potential-resolvers/object';
-export { createStringResolver } from './potential-resolvers/string';
-export type * from './potential-resolvers/types';
-export { createValueResolver } from './potential-resolvers/value';
+export { createArrayResolver } from './resolvers/array';
+export { createNullishResolver } from './resolvers/nullish';
+export { createObjectResolver } from './resolvers/object';
+export { createStringResolver } from './resolvers/string';
+export type * from './resolvers/types';
+export { createValueResolver } from './resolvers/value';
 export { createBoolBasedResolver } from './resolvers/bool-based';
 export { createValueBasedResolver } from './resolvers/value-based';
