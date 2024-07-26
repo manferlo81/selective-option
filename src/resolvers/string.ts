@@ -1,8 +1,27 @@
 import { createResult } from '../create-result';
-import type { AllowNullish } from '../private-types';
+import type { AllowNullish, Nullish } from '../private-types';
 import { is } from '../tools/is';
 import { resolveKey } from '../tools/key';
 import type { KeyList, PotentialResolver, SpecialKeys } from './types';
+
+export function createStringResolver<K extends string, S extends string>(
+  keys: KeyList<K>,
+  special: SpecialKeys<S, K>,
+): PotentialResolver<K, boolean>;
+
+export function createStringResolver<K extends string>(
+  keys: KeyList<K>,
+  special: Nullish,
+): PotentialResolver<K, boolean>;
+
+export function createStringResolver<K extends string>(
+  keys: KeyList<K>,
+): PotentialResolver<K, boolean>;
+
+export function createStringResolver<K extends string, S extends string>(
+  keys: KeyList<K>,
+  special?: AllowNullish<SpecialKeys<S, K>>,
+): PotentialResolver<K, boolean>;
 
 export function createStringResolver<K extends string, S extends string>(
   keys: KeyList<K>,

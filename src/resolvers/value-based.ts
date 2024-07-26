@@ -34,6 +34,14 @@ export function createValueBasedResolver<K extends string, S extends string, V, 
   defaultValue: V,
   overrideKey: O,
   special?: AllowNullish<SpecialKeys<S, K>>,
+): ValueBasedResolver<K, S, V, O>;
+
+export function createValueBasedResolver<K extends string, S extends string, V, O extends string>(
+  keys: KeyList<K>,
+  isValidValue: TypeCheckFunction<V>,
+  defaultValue: V,
+  overrideKey: O,
+  special?: AllowNullish<SpecialKeys<S, K>>,
 ): ValueBasedResolver<K, S, V, O> {
 
   // create potential resolvers

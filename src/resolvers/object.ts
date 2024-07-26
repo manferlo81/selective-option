@@ -1,5 +1,5 @@
 import { createResult } from '../create-result';
-import type { AllowNullish, TypeCheckFunction } from '../private-types';
+import type { AllowNullish, Nullish, TypeCheckFunction } from '../private-types';
 import { errorInvalidKey, errorInvalidValue } from '../tools/errors';
 import { is, isArray } from '../tools/is';
 import { resolveKey } from '../tools/key';
@@ -46,6 +46,37 @@ function resultReducer<K extends string, V>(output: Resolved<K, V>, [keys, value
     output,
   );
 }
+
+export function createObjectResolver<K extends string, S extends string, V>(
+  keys: KeyList<K>,
+  isValidValue: TypeCheckFunction<V>,
+  defaultValue: V,
+  overrideKey: string,
+  special: SpecialKeys<S, K>,
+): PotentialResolver<K, V>;
+
+export function createObjectResolver<K extends string, V>(
+  keys: KeyList<K>,
+  isValidValue: TypeCheckFunction<V>,
+  defaultValue: V,
+  overrideKey: string,
+  special: Nullish,
+): PotentialResolver<K, V>;
+
+export function createObjectResolver<K extends string, V>(
+  keys: KeyList<K>,
+  isValidValue: TypeCheckFunction<V>,
+  defaultValue: V,
+  overrideKey: string,
+): PotentialResolver<K, V>;
+
+export function createObjectResolver<K extends string, S extends string, V>(
+  keys: KeyList<K>,
+  isValidValue: TypeCheckFunction<V>,
+  defaultValue: V,
+  overrideKey: string,
+  special?: AllowNullish<SpecialKeys<S, K>>,
+): PotentialResolver<K, V>;
 
 export function createObjectResolver<K extends string, S extends string, V>(
   keys: KeyList<K>,

@@ -70,6 +70,14 @@ export function createBoolBasedResolver<K extends string, S extends string, V, O
   defaultValue: V | boolean,
   overrideKey: O,
   special?: AllowNullish<SpecialKeys<S, K>>,
+): BoolBasedResolver<K, S, V | boolean, O>;
+
+export function createBoolBasedResolver<K extends string, S extends string, V, O extends string>(
+  keys: KeyList<K>,
+  isValidValue: AllowNullish<TypeCheckFunction<V>>,
+  defaultValue: V | boolean,
+  overrideKey: O,
+  special?: AllowNullish<SpecialKeys<S, K>>,
 ): BoolBasedResolver<K, S, V | boolean, O> {
 
   // create boolean value validator
