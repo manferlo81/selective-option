@@ -1,3 +1,4 @@
+import type { ValueBasedSelectiveOption } from '../input-types';
 import type { AllowNullish, Nullish, TypeCheckFunction } from '../private-types';
 import { createResolver } from './create-resolver';
 import { createNullishResolver } from './nullish';
@@ -50,7 +51,7 @@ export function createValueBasedResolver<K extends string, S extends string, V, 
   const resolveObject = createObjectResolver(keys, isValidValue, defaultValue, overrideKey, special);
 
   // return compiled resolver
-  return createResolver(
+  return createResolver<K, V, ValueBasedSelectiveOption<K | S, V, O>>(
     resolveValue,
     resolveNullish,
     resolveObject,
