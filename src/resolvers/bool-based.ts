@@ -10,7 +10,7 @@ import { createValueResolver } from './value';
 export function createBoolBasedResolver<K extends string, S extends string, V, O extends string>(
   keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,
-  defaultValue: V,
+  defaultValue: V | boolean,
   overrideKey: O,
   special?: AllowNullish<SpecialKeys<S, K>>,
 ): BoolBasedResolver<K, S, V | boolean, O> {

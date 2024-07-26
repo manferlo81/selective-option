@@ -22,7 +22,7 @@ describe('createBoolBasedResolver function', () => {
   };
 
   const isValidValue = (value: unknown): value is LiteralValue => literalValues.includes(value as never);
-  const defaultValue: BoolBaseValue = 'unknown';
+  const defaultValue: BoolBaseValue = true;
 
   const resolveIsMarried = createBoolBasedResolver(
     keys,
