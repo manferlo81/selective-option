@@ -1,4 +1,4 @@
-import type { AllowNullish, TypeCheckFunction } from '../private-types';
+import type { AllowNullish, Nullish, TypeCheckFunction } from '../private-types';
 import { createArrayResolver } from './array';
 import { createResolver } from './create-resolver';
 import { createNullishResolver } from './nullish';
@@ -31,7 +31,7 @@ export function createBoolBasedResolver<K extends string, V, O extends string>(
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V | boolean,
   overrideKey: O,
-  special: AllowNullish<never>,
+  special: Nullish,
 ): BoolBasedResolver<K, never, V | boolean, O>;
 
 export function createBoolBasedResolver<K extends string, V, O extends string>(
@@ -43,7 +43,7 @@ export function createBoolBasedResolver<K extends string, V, O extends string>(
 
 export function createBoolBasedResolver<K extends string, S extends string, O extends string>(
   keys: KeyList<K>,
-  isValidValue: AllowNullish<never>,
+  isValidValue: Nullish,
   defaultValue: boolean,
   overrideKey: O,
   special: SpecialKeys<S, K>,
@@ -51,15 +51,15 @@ export function createBoolBasedResolver<K extends string, S extends string, O ex
 
 export function createBoolBasedResolver<K extends string, O extends string>(
   keys: KeyList<K>,
-  isValidValue: AllowNullish<never>,
+  isValidValue: Nullish,
   defaultValue: boolean,
   overrideKey: O,
-  special: AllowNullish<never>,
+  special: Nullish,
 ): BoolBasedResolver<K, never, boolean, O>;
 
 export function createBoolBasedResolver<K extends string, O extends string>(
   keys: KeyList<K>,
-  isValidValue: AllowNullish<never>,
+  isValidValue: Nullish,
   defaultValue: boolean,
   overrideKey: O,
 ): BoolBasedResolver<K, never, boolean, O>;
