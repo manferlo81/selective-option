@@ -8,11 +8,11 @@ describe('createValueBasedResolver function', () => {
 
   type RegularKey = (typeof keys)[number];
   type SpecialKey = (typeof specialKeys)[number];
-  type ValidValue = number;
+  type ValidValue = number | null;
 
   const special: Record<SpecialKey, RegularKey[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
-  const isValidValue = (value: unknown): value is ValidValue => typeof value === 'number';
+  const isValidValue = (value: unknown): value is ValidValue => value === null || typeof value === 'number';
   const defaultValue: ValidValue = 0;
 
   const resolve = createValueBasedResolver(
@@ -40,9 +40,9 @@ describe('createValueBasedResolver function', () => {
     expect(() => resolve(true as never)).toThrow();
   });
 
-  test('Should resolve null value', () => {
+  test('Should resolve nullish value', () => {
     const inputs = [
-      null,
+      // null, null is a valid value in this case and doesn't resolve to default value
       undefined,
     ];
     inputs.forEach((input) => {
@@ -55,6 +55,7 @@ describe('createValueBasedResolver function', () => {
     const inputs: ValidValue[] = [
       10,
       NaN,
+      null,
     ];
     inputs.forEach((input) => {
       const expected = createExpected(input);
@@ -71,6 +72,11 @@ describe('createValueBasedResolver function', () => {
     const newDefaultValue = 99;
     const expected = createExpected(newDefaultValue);
     expect(resolve({ default: newDefaultValue })).toEqual(expected);
+  });
+
+  test('Should resolve valid value before nullish value', () => {
+    expect(resolve({ default: null })).toEqual(createExpected(null));
+    expect(resolve({ default: undefined })).toEqual(createExpected(defaultValue));
   });
 
 });

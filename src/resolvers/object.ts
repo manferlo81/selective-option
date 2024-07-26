@@ -26,11 +26,15 @@ function processInput<K extends string, S extends string, V>(
     // get object key value
     const value = input[key as never];
 
-    // go to next step if value is nullish
-    if (value == null) return output;
+    // if value is not valid
+    if (!isValidValue(value)) {
 
-    // throw if value is not valid
-    if (!isValidValue(value)) throw errorInvalidValue(value);
+      // go to next step if value is nullish
+      if (value == null) return output;
+
+      // throw if value is not valid
+      throw errorInvalidValue(value);
+    }
 
     // destructure data array
     const [override, keysData, specialData] = output;
