@@ -35,22 +35,26 @@ export function createArrayResolver<K extends string, S extends string>(
     // exit if value is not an array
     if (!isArray(input)) return;
 
+    // create key list from input array
+    const list = input.reduce<K[]>((output, key) => {
+
+      // throw if item is not a string
+      if (!is(key, 'string')) throw errorInvalidKey(key);
+
+      // try to resolve as key or special key
+      const resolved = resolveKey(key, keys, special);
+
+      // throw if it can't be resolved
+      if (!resolved) throw errorInvalidKey(key);
+
+      // return updated result
+      return [...output, ...resolved];
+
+    }, []);
+
+    // return result from key list
     return createResult(
-      input.reduce<K[]>((output, key) => {
-
-        // throw if item is not a string
-        if (!is(key, 'string')) throw errorInvalidKey(key);
-
-        // try to resolve as key or special key
-        const resolved = resolveKey(key, keys, special);
-
-        // throw if it can't be resolved
-        if (!resolved) throw errorInvalidKey(key);
-
-        // return updated result
-        return [...output, ...resolved];
-
-      }, []),
+      list,
       true,
       createResult(
         keys,
