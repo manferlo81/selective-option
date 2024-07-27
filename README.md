@@ -237,7 +237,7 @@ See [`KeyList`](#type-keylist) and [`Resolved`](#type-resolved).
 ### *type* `StringOption`
 
 ```typescript
-export type StringOption<K extends string> = K | KeyList<K>;
+type StringOption<K extends string> = K | KeyList<K>;
 ```
 
 See [`KeyList`](#type-keylist). Used in *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption).
@@ -245,7 +245,7 @@ See [`KeyList`](#type-keylist). Used in *type* [`BoolBasedSelectiveOption`](#typ
 ### *type* `ObjectOption`
 
 ```typescript
-export type ObjectOption<K extends string, V, O extends string> = Partial<Record<K | O, V | null | undefined>>;
+type ObjectOption<K extends string, V, O extends string> = Partial<Record<K | O, V | null | undefined>>;
 ```
 
 Used in *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption).
@@ -253,7 +253,7 @@ Used in *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption).
 ### *type* `ValueBasedSelectiveOption`
 
 ```typescript
-export type ValueBasedSelectiveOption<K extends string, V, O extends string> =
+type ValueBasedSelectiveOption<K extends string, V, O extends string> =
   | V
   | null
   | undefined
@@ -265,7 +265,7 @@ See [`ObjectOption`](#type-objectoption). Used in *type* [`BoolBasedSelectiveOpt
 ### *type* `BoolBasedSelectiveOption`
 
 ```typescript
-export type BoolBasedSelectiveOption<K extends string, V, O extends string> =
+type BoolBasedSelectiveOption<K extends string, V, O extends string> =
   | StringOption<K>
   | ValueBasedSelectiveOption<K, V | boolean, O>;
 ```
@@ -275,7 +275,7 @@ See [`StringOption`](#type-stringoption) and [`ValueBasedSelectiveOption`](#type
 ### *type* `Resolved`
 
 ```typescript
-export type Resolved<K extends string, V> = Readonly<Record<K, V>>;
+type Resolved<K extends string, V> = Readonly<Record<K, V>>;
 ```
 
 Used in *function* [`createResult`](#function-createresult) and *type* [`PotentialResolver`](#type-potentialresolver), [`Resolver`](#type-resolver).
@@ -283,7 +283,7 @@ Used in *function* [`createResult`](#function-createresult) and *type* [`Potenti
 ### *type* `InputResolver`
 
 ```typescript
-export type InputResolver<I, R> = (input: I) => R;
+type InputResolver<I, R> = (input: I) => R;
 ```
 
 Used in *type* [`PotentialResolver`](#type-potentialresolver) and [`Resolver`](#type-resolver).
@@ -291,7 +291,7 @@ Used in *type* [`PotentialResolver`](#type-potentialresolver) and [`Resolver`](#
 ### *type* `PotentialResolver`
 
 ```typescript
-export type PotentialResolver<K extends string, V> = InputResolver<unknown, Resolved<K, V> | void | undefined>;
+type PotentialResolver<K extends string, V> = InputResolver<unknown, Resolved<K, V> | void | undefined>;
 ```
 
 See [`InputResolver`](#type-inputresolver) and [`Resolved`](#type-resolved). Used in *function* [`createValueResolver`](#function-createvalueresolver), [`createStringResolver`](#function-createstringresolver), [`createArrayResolver`](#function-createarrayresolver), [`createObjectResolver`](#function-createobjectresolver) and [`createResolver`](#function-createresolver).
@@ -299,7 +299,7 @@ See [`InputResolver`](#type-inputresolver) and [`Resolved`](#type-resolved). Use
 ### *type* `Resolver`
 
 ```typescript
-export type Resolver<K extends string, V, I = unknown> = InputResolver<I, Resolved<K, V>>;
+type Resolver<K extends string, V, I = unknown> = InputResolver<I, Resolved<K, V>>;
 ```
 
 See [`InputResolver`](#type-inputresolver) and [`Resolved`](#type-resolved). Used in *function* [`createResolver`](#function-createresolver) and *type* [`ValueBasedResolver`](#type-valuebasedresolver) and [`BoolBasedResolver`](#type-boolbasedresolver).
@@ -307,7 +307,7 @@ See [`InputResolver`](#type-inputresolver) and [`Resolved`](#type-resolved). Use
 ### *type* `ValueBasedResolver`
 
 ```typescript
-export type ValueBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V, ValueBasedSelectiveOption<K | S, V, O>>;
+type ValueBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V, ValueBasedSelectiveOption<K | S, V, O>>;
 ```
 
 See [`Resolver`](#type-resolver) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver).
@@ -315,7 +315,7 @@ See [`Resolver`](#type-resolver) and [`ValueBasedSelectiveOption`](#type-valueba
 ### *type* `BoolBasedResolver`
 
 ```typescript
-export type BoolBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V | boolean, BoolBasedSelectiveOption<K | S, V, O>>;
+type BoolBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V | boolean, BoolBasedSelectiveOption<K | S, V, O>>;
 ```
 
 See [`Resolver`](#type-resolver) and [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption). Used in *function* [`createBoolBasedResolver`](#function-createboolbasedresolver).
