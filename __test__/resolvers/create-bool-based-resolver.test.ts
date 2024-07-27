@@ -1,4 +1,5 @@
-import { createBoolBasedResolver, KeyList, ObjectOption, ValueBasedSelectiveOption } from '../../src';
+import type { KeyList, ObjectOption, ValueBasedSelectiveOption } from '../../src';
+import { createBoolBasedResolver } from '../../src';
 
 describe('createBoolBasedResolver function', () => {
 
@@ -32,6 +33,14 @@ describe('createBoolBasedResolver function', () => {
     special,
   );
 
+  const resolveIsMarriedBoolOnly = createBoolBasedResolver(
+    keys,
+    null,
+    defaultValue,
+    overrideKey,
+    special,
+  );
+
   const createExpected = <V extends BoolBaseValue>(initial: V, keys?: KeyList<RegularKey>, value2?: V): Expected<V | undefined> => {
     const expected: Expected<V> = {
       john: initial,
@@ -47,18 +56,13 @@ describe('createBoolBasedResolver function', () => {
     }, expected);
   };
 
-  const validValues: readonly BoolBaseValue[] = [
-    ...literalValues,
-    true,
-    false,
-  ];
-
   test('Should throw on invalid value', () => {
     const invalid = [
       'string',
     ];
     invalid.forEach((input) => {
       expect(() => resolveIsMarried(input as never)).toThrow();
+      expect(() => resolveIsMarriedBoolOnly(input as never)).toThrow();
     });
   });
 
@@ -70,13 +74,15 @@ describe('createBoolBasedResolver function', () => {
     inputs.forEach((input) => {
       const expected = createExpected(defaultValue);
       expect(resolveIsMarried(input)).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(input)).toEqual(expected);
     });
   });
 
-  test('Should resolve valid value', () => {
+  test('Should resolve valid literal value', () => {
     literalValues.forEach((input) => {
       const expected = createExpected(input);
       expect(resolveIsMarried(input)).toEqual(expected);
+      expect(() => resolveIsMarriedBoolOnly(input as never)).toThrow();
     });
   });
 
@@ -88,6 +94,7 @@ describe('createBoolBasedResolver function', () => {
     inputs.forEach((input) => {
       const expected = createExpected(input);
       expect(resolveIsMarried(input)).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(input)).toEqual(expected);
     });
   });
 
@@ -99,6 +106,7 @@ describe('createBoolBasedResolver function', () => {
         [key]: true,
       };
       expect(resolveIsMarried(key)).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(key)).toEqual(expected);
     });
   });
 
@@ -110,12 +118,14 @@ describe('createBoolBasedResolver function', () => {
         true,
       );
       expect(resolveIsMarried(specialKey)).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(specialKey)).toEqual(expected);
     });
   });
 
   test('Should resolve array', () => {
     const expected = createExpected(false);
     expect(resolveIsMarried([])).toEqual(expected);
+    expect(resolveIsMarriedBoolOnly([])).toEqual(expected);
   });
 
   test('Should resolve array of keys', () => {
@@ -127,20 +137,32 @@ describe('createBoolBasedResolver function', () => {
     });
 
     inputs.forEach((input) => {
+
       const expected = createExpected(
         false,
         input,
         true,
       );
+
       expect(resolveIsMarried(input)).toEqual(expected);
-      expect(resolveIsMarried([...input].reverse())).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(input)).toEqual(expected);
+
+      const reversed = [...input].reverse();
+      expect(resolveIsMarried(reversed)).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(reversed)).toEqual(expected);
+
     });
 
   });
 
   test('Should resolve array of special keys', () => {
 
-    const inputs = specialKeys.map<{ input: readonly SpecialKey[]; changed: readonly RegularKey[] }>((specialKey, i) => {
+    interface InputItem {
+      input: readonly SpecialKey[];
+      changed: readonly RegularKey[];
+    }
+
+    const inputs = specialKeys.map<InputItem>((specialKey, i) => {
       const otherKey = specialKeys[(i + 1) % specialKeys.length];
       const input = [specialKey, otherKey];
       const changed = [...special[specialKey], ...special[otherKey]];
@@ -148,13 +170,20 @@ describe('createBoolBasedResolver function', () => {
     });
 
     inputs.forEach(({ input, changed }) => {
+
       const expected = createExpected(
         false,
         changed,
         true,
       );
+
       expect(resolveIsMarried(input)).toEqual(expected);
-      expect(resolveIsMarried([...input].reverse())).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(input)).toEqual(expected);
+
+      const reversed = [...input].reverse();
+      expect(resolveIsMarried(reversed)).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(reversed)).toEqual(expected);
+
     });
 
   });
@@ -176,13 +205,20 @@ describe('createBoolBasedResolver function', () => {
     }, []);
 
     inputs.forEach(({ input, changed }) => {
+
       const expected = createExpected(
         false,
         changed,
         true,
       );
+
       expect(resolveIsMarried(input)).toEqual(expected);
-      expect(resolveIsMarried([...input].reverse())).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(input)).toEqual(expected);
+
+      const reversed = [...input].reverse();
+      expect(resolveIsMarried(reversed)).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(reversed)).toEqual(expected);
+
     });
 
   });
@@ -190,12 +226,24 @@ describe('createBoolBasedResolver function', () => {
   test('Should resolve object', () => {
     const expected = createExpected(defaultValue);
     expect(resolveIsMarried({})).toEqual(expected);
+    expect(resolveIsMarriedBoolOnly({})).toEqual(expected);
   });
 
   test('Should resolve object with overridden value', () => {
-    validValues.forEach((overrideValue) => {
+    literalValues.forEach((overrideValue) => {
+      const input = { override: overrideValue };
       const expected = createExpected(overrideValue);
-      expect(resolveIsMarried({ override: overrideValue })).toEqual(expected);
+      expect(resolveIsMarried(input)).toEqual(expected);
+      expect(() => resolveIsMarriedBoolOnly(input as never)).toThrow();
+    });
+  });
+
+  test('Should resolve object with overridden value', () => {
+    [true, false].forEach((overrideValue) => {
+      const expected = createExpected(overrideValue);
+      const input = { override: overrideValue };
+      expect(resolveIsMarried(input)).toEqual(expected);
+      expect(resolveIsMarriedBoolOnly(input)).toEqual(expected);
     });
   });
 
@@ -206,9 +254,12 @@ describe('createBoolBasedResolver function', () => {
       { input: { male: 'yes' }, override: 'no', expected: { john: 'yes', peter: 'yes' } },
     ];
 
-    inputs.forEach(({ input, override, expected: extendedResult }) => {
+    inputs.forEach(({ input: partialInput, override, expected: extendedResult }) => {
       const defaultResult = createExpected(override);
-      expect(resolveIsMarried({ ...input, override })).toEqual({ ...defaultResult, ...extendedResult });
+      const expected = { ...defaultResult, ...extendedResult };
+      const input = { ...partialInput, override };
+      expect(resolveIsMarried(input)).toEqual(expected);
+      expect(() => resolveIsMarriedBoolOnly(input as never)).toThrow();
     });
 
   });
@@ -225,6 +276,7 @@ describe('createBoolBasedResolver function', () => {
     inputs.forEach(({ input, expected: extendedResult }) => {
       const expected = { ...defaultResult, ...extendedResult };
       expect(resolveIsMarried(input)).toEqual(expected);
+      expect(() => resolveIsMarriedBoolOnly(input as never)).toThrow();
     });
 
   });
