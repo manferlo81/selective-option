@@ -1,4 +1,5 @@
-import { createValueBasedResolver, KeyList, Resolved } from '../../src';
+import { createValueBasedResolver } from '../../src';
+import { createExpectedCreator } from '../tools/create-expected';
 
 describe('createValueBasedResolver function', () => {
 
@@ -23,18 +24,14 @@ describe('createValueBasedResolver function', () => {
     special,
   );
 
-  const createExpected = <V extends ValidValue>(initial: V, keys?: KeyList<RegularKey>, value2?: V): Resolved<RegularKey, V | undefined> => {
-    const expected: Resolved<RegularKey, V> = {
+  const createExpected = createExpectedCreator<RegularKey, ValidValue>((initial) => {
+    return {
       a: initial,
       b: initial,
       c: initial,
       d: initial,
     };
-    if (!keys) return expected;
-    return keys.reduce((output, key) => {
-      return { ...output, [key]: value2 };
-    }, expected);
-  };
+  });
 
   test('Should throw on invalid value', () => {
     expect(() => resolve(true as never)).toThrow();

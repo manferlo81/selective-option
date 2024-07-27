@@ -1,5 +1,6 @@
-import type { KeyList, ObjectOption, ValueBasedSelectiveOption } from '../../src';
+import type { ObjectOption, ValueBasedSelectiveOption } from '../../src';
 import { createBoolBasedResolver } from '../../src';
+import { createExpectedCreator } from '../tools/create-expected';
 
 describe('createBoolBasedResolver function', () => {
 
@@ -13,7 +14,6 @@ describe('createBoolBasedResolver function', () => {
   type LiteralValue = (typeof literalValues)[number];
   type BoolBaseValue = LiteralValue | boolean;
   type OverrideKey = typeof overrideKey;
-  type Expected<V> = Readonly<Record<RegularKey, V>>;
 
   const special: Readonly<Record<SpecialKey, RegularKey[]>> = {
     male: ['john', 'peter'],
@@ -41,8 +41,8 @@ describe('createBoolBasedResolver function', () => {
     special,
   );
 
-  const createExpected = <V extends BoolBaseValue>(initial: V, keys?: KeyList<RegularKey>, value2?: V): Expected<V | undefined> => {
-    const expected: Expected<V> = {
+  const createExpected = createExpectedCreator<RegularKey, BoolBaseValue>((initial) => {
+    return {
       john: initial,
       angel: initial,
       ariel: initial,
@@ -50,11 +50,7 @@ describe('createBoolBasedResolver function', () => {
       peter: initial,
       gloria: initial,
     };
-    if (!keys) return expected;
-    return keys.reduce((output, key) => {
-      return { ...output, [key]: value2 };
-    }, expected);
-  };
+  });
 
   test('Should throw on invalid value', () => {
     const invalid = [
@@ -249,7 +245,7 @@ describe('createBoolBasedResolver function', () => {
 
   test('Should resolve keys after override', () => {
 
-    const inputs: Array<{ input: ObjectOption<RegularKey | SpecialKey, LiteralValue, OverrideKey>; override: LiteralValue; expected: Partial<Expected<BoolBaseValue>> }> = [
+    const inputs: Array<{ input: ObjectOption<RegularKey | SpecialKey, LiteralValue, OverrideKey>; override: LiteralValue; expected: Partial<Record<RegularKey, BoolBaseValue>> }> = [
       { input: { john: 'no' }, override: 'yes', expected: { john: 'no' } },
       { input: { male: 'yes' }, override: 'no', expected: { john: 'yes', peter: 'yes' } },
     ];
@@ -268,7 +264,7 @@ describe('createBoolBasedResolver function', () => {
 
     const defaultResult = createExpected(defaultValue);
 
-    const inputs: Array<{ input: ValueBasedSelectiveOption<RegularKey | SpecialKey, BoolBaseValue, OverrideKey>; expected: Partial<Expected<BoolBaseValue>> }> = [
+    const inputs: Array<{ input: ValueBasedSelectiveOption<RegularKey | SpecialKey, BoolBaseValue, OverrideKey>; expected: Partial<Record<RegularKey, BoolBaseValue>> }> = [
       { input: { male: 'yes', john: 'no' }, expected: { john: 'no', peter: 'yes' } },
       { input: { john: 'no', specified: false }, expected: { john: 'no', peter: false, gloria: false, maggie: false } },
     ];

@@ -1,11 +1,15 @@
 import type { PotentialResolver } from '../src';
 import { createResolver, createResult } from '../src';
+import { createExpectedCreator } from './tools/create-expected';
+import { ArrayItemType } from './tools/helper-types';
 
 describe('', () => {
 
   const keys = ['john', 'maria', 'peter', 'richard'] as const;
+  const literalNumbers = ['pi', 'e'] as const;
 
-  type K = (typeof keys)[number];
+  type K = ArrayItemType<typeof keys>;
+  type V = ArrayItemType<typeof literalNumbers>;
 
   const numberResolver: PotentialResolver<K, number> = (input) => {
 
@@ -18,13 +22,9 @@ describe('', () => {
 
   };
 
-  const literalNumbers = ['pi', 'e'] as const;
-  type V = (typeof literalNumbers)[number];
-
   const literalNumberResolver: PotentialResolver<K, V> = (input) => {
 
     if (typeof input !== 'string') return;
-
     if (!literalNumbers.includes(input as never)) return;
 
     return createResult(
@@ -39,14 +39,14 @@ describe('', () => {
     literalNumberResolver,
   );
 
-  const createExpected = <V>(value: V): Record<K, V> => {
+  const createExpected = createExpectedCreator(<V>(value: V) => {
     return {
       john: value,
       maria: value,
       peter: value,
       richard: value,
     };
-  };
+  });
 
   test('Should throw on invalid input', () => {
 

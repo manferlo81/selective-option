@@ -1,12 +1,14 @@
 import { createObjectResolver } from '../../src';
+import { createExpectedCreator } from '../tools/create-expected';
+import { ArrayItemType } from '../tools/helper-types';
 
 describe('createObjectResolver function', () => {
 
   const keys = ['a', 'b', 'c', 'd'] as const;
   const specialKeys = ['first', 'last'] as const;
 
-  type K = (typeof keys)[number];
-  type S = (typeof specialKeys)[number];
+  type K = ArrayItemType<typeof keys>;
+  type S = ArrayItemType<typeof specialKeys>;
   type V = string | boolean;
 
   const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
@@ -21,7 +23,7 @@ describe('createObjectResolver function', () => {
     'override',
   );
 
-  const resolve = createObjectResolver(
+  const resolveSpecial = createObjectResolver(
     keys,
     isValidValue,
     defaultValue,
@@ -29,19 +31,14 @@ describe('createObjectResolver function', () => {
     special,
   );
 
-  const createExpected = <V>(value: V, ...extend: Array<{ keys: readonly K[]; value: V }>): Record<K, V> => {
-    const expected: Record<K, V> = {
+  const createExpected = createExpectedCreator<K, V>((value) => {
+    return {
       a: value,
       b: value,
       c: value,
       d: value,
     };
-    return extend.reduce((output, { keys, value }) => {
-      return keys.reduce((output, key) => {
-        return { ...output, [key]: value };
-      }, output);
-    }, expected);
-  };
+  });
 
   const validValues: V[] = [
     true,
@@ -51,34 +48,34 @@ describe('createObjectResolver function', () => {
   ];
 
   test('Should throw on invalid key', () => {
-    expect(() => resolve({ invalid: true })).toThrow();
+    expect(() => resolveSpecial({ invalid: true })).toThrow();
   });
 
   test('Should return undefined on non object', () => {
-    expect(resolve(10)).toBeUndefined();
-    expect(resolve([])).toBeUndefined();
+    expect(resolveSpecial(10)).toBeUndefined();
+    expect(resolveSpecial([])).toBeUndefined();
   });
 
   test('Should throw on invalid default value', () => {
-    expect(() => resolve({ override: [] })).toThrow();
-    expect(() => resolve({ override: 10 })).toThrow();
+    expect(() => resolveSpecial({ override: [] })).toThrow();
+    expect(() => resolveSpecial({ override: 10 })).toThrow();
   });
 
   test('Should throw on invalid key value', () => {
-    expect(() => resolve({ a: [] })).toThrow();
-    expect(() => resolve({ c: 10 })).toThrow();
+    expect(() => resolveSpecial({ a: [] })).toThrow();
+    expect(() => resolveSpecial({ c: 10 })).toThrow();
   });
 
   test('Should throw on invalid special key value', () => {
-    expect(() => resolve({ first: [] })).toThrow();
-    expect(() => resolve({ first: 10 })).toThrow();
+    expect(() => resolveSpecial({ first: [] })).toThrow();
+    expect(() => resolveSpecial({ first: 10 })).toThrow();
   });
 
   test('Should throw on special key value if no special declared', () => {
     specialKeys.forEach((specialKey) => {
       validValues.forEach((value) => {
         const input = { [specialKey]: value };
-        expect(() => resolve(input)).not.toThrow();
+        expect(() => resolveSpecial(input)).not.toThrow();
         expect(() => resolveRegular(input)).toThrow();
       });
     });
@@ -86,7 +83,7 @@ describe('createObjectResolver function', () => {
 
   test('Should resolve to default if input is an empty object', () => {
     const expected = createExpected(defaultValue);
-    expect(resolve({})).toEqual(expected);
+    expect(resolveSpecial({})).toEqual(expected);
   });
 
   test('Should ignore nullish values', () => {
@@ -102,7 +99,7 @@ describe('createObjectResolver function', () => {
     const expected = createExpected(defaultValue);
     validKeys.forEach((key) => {
       nullish.forEach((value) => {
-        expect(resolve({ [key]: value })).toEqual(expected);
+        expect(resolveSpecial({ [key]: value })).toEqual(expected);
       });
     });
 
@@ -111,7 +108,7 @@ describe('createObjectResolver function', () => {
   test('Should override default value', () => {
     validValues.forEach((newDefaultValue) => {
       const expected = createExpected(newDefaultValue);
-      expect(resolve({ override: newDefaultValue })).toEqual(expected);
+      expect(resolveSpecial({ override: newDefaultValue })).toEqual(expected);
     });
   });
 
@@ -124,7 +121,7 @@ describe('createObjectResolver function', () => {
         ...createExpected(defaultValue),
         ...input,
       };
-      expect(resolve(input)).toEqual(expected);
+      expect(resolveSpecial(input)).toEqual(expected);
     });
   });
 
@@ -133,9 +130,10 @@ describe('createObjectResolver function', () => {
       validValues.forEach((value) => {
         const expected = createExpected(
           defaultValue,
-          { keys: special[specialKey], value },
+          special[specialKey],
+          value,
         );
-        expect(resolve({ [specialKey]: value })).toEqual(expected);
+        expect(resolveSpecial({ [specialKey]: value })).toEqual(expected);
       });
     });
   });
@@ -148,7 +146,7 @@ describe('createObjectResolver function', () => {
           ...createExpected(newDefaultValue),
           [key]: value,
         };
-        expect(resolve({ override: newDefaultValue, [key]: value })).toEqual(expected);
+        expect(resolveSpecial({ override: newDefaultValue, [key]: value })).toEqual(expected);
       });
     });
   });
@@ -161,25 +159,27 @@ describe('createObjectResolver function', () => {
         const expected = special[specialKey].reduce((output, key) => {
           return { ...output, [key]: value };
         }, createExpected(newDefaultValue));
-        expect(resolve({ override: newDefaultValue, [specialKey]: value })).toEqual(expected);
+        expect(resolveSpecial({ override: newDefaultValue, [specialKey]: value })).toEqual(expected);
       });
     });
   });
 
   test('Should allow regular keys to override special keys', () => {
     specialKeys.forEach((specialKey) => {
+      const specialResolved = special[specialKey];
       keys.forEach((key) => {
         validValues.forEach((specialValue, i) => {
           const value = validValues[(i + 1) % validValues.length];
           const expected = {
             ...createExpected(
               defaultValue,
-              { keys: special[specialKey], value: specialValue },
+              specialResolved,
+              specialValue,
             ),
             [key]: value,
           };
           const input = { [specialKey]: specialValue, [key]: value };
-          expect(resolve(input)).toEqual(expected);
+          expect(resolveSpecial(input)).toEqual(expected);
         });
       });
     });

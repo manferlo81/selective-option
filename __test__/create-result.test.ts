@@ -3,11 +3,12 @@ import { createResult } from '../src';
 describe('createResult function', () => {
 
   test('Should create result correctly', () => {
-    expect(createResult([], true)).toEqual({});
-    expect(createResult(['a', 'b', 'c'], true)).toEqual({
-      a: true,
-      b: true,
-      c: true,
+    const cases = [
+      { keys: [], value: null, expected: {} },
+      { keys: ['a', 'b', 'c'], value: true, expected: { a: true, b: true, c: true } },
+    ];
+    cases.forEach(({ keys, value, expected }) => {
+      expect(createResult(keys, value)).toEqual(expected);
     });
   });
 

@@ -1,12 +1,14 @@
 import { createStringResolver } from '../../src';
+import { createExpectedCreator } from '../tools/create-expected';
+import { ArrayItemType } from '../tools/helper-types';
 
 describe('createStringResolver function', () => {
 
   const keys = ['a', 'b', 'c', 'd'] as const;
   const specialKeys = ['first', 'last'] as const;
 
-  type K = (typeof keys)[number];
-  type S = (typeof specialKeys)[number];
+  type K = ArrayItemType<typeof keys>;
+  type S = ArrayItemType<typeof specialKeys>;
 
   const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
@@ -15,33 +17,28 @@ describe('createStringResolver function', () => {
     special,
   );
 
+  const createExpected = (() => {
+    const create = createExpectedCreator<K, boolean>((value) => ({
+      a: value,
+      b: value,
+      c: value,
+      d: value,
+    }));
+    return (keys: K[]) => create(false, keys, true);
+  })();
+
   test('Should resolve key', () => {
-    expect(resolve('c')).toEqual({
-      a: false,
-      b: false,
-      c: true,
-      d: false,
-    });
-    expect(resolve('d')).toEqual({
-      a: false,
-      b: false,
-      c: false,
-      d: true,
+    keys.forEach((key) => {
+      const expected = createExpected([key]);
+      expect(resolve(key)).toEqual(expected);
     });
   });
 
   test('Should resolve special key', () => {
-    expect(resolve('first')).toEqual({
-      a: true,
-      b: true,
-      c: false,
-      d: false,
-    });
-    expect(resolve('last')).toEqual({
-      a: false,
-      b: false,
-      c: true,
-      d: true,
+    specialKeys.forEach((specialKey) => {
+      const specialResolved = special[specialKey];
+      const expected = createExpected(specialResolved);
+      expect(resolve(specialKey)).toEqual(expected);
     });
   });
 

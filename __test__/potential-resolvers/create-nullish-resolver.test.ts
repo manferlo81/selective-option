@@ -1,11 +1,14 @@
 import { createNullishResolver } from '../../src';
+import { createExpectedCreator } from '../tools/create-expected';
+import { ArrayItemType } from '../tools/helper-types';
 
 describe('createNullishResolver function', () => {
 
-  type K = 'a' | 'b' | 'c' | 'd';
+  const keys = ['a', 'b', 'c', 'd'] as const;
+
+  type K = ArrayItemType<typeof keys>;
   type V = boolean | 'auto';
 
-  const keys: K[] = ['a', 'b', 'c', 'd'];
   const defaultValue = true;
 
   const resolve = createNullishResolver<K, V>(
@@ -13,26 +16,34 @@ describe('createNullishResolver function', () => {
     defaultValue,
   );
 
-  test('Should resolve null value', () => {
-    expect(resolve(null)).toEqual({
-      a: defaultValue,
-      b: defaultValue,
-      c: defaultValue,
-      d: defaultValue,
-    });
-    expect(resolve(undefined)).toEqual({
-      a: defaultValue,
-      b: defaultValue,
-      c: defaultValue,
-      d: defaultValue,
+  const createExpected = createExpectedCreator<K, V>((value) => ({
+    a: value,
+    b: value,
+    c: value,
+    d: value,
+  }));
+
+  test('Should resolve nullish value', () => {
+    const inputs = [
+      null,
+      undefined,
+    ];
+    inputs.forEach((input) => {
+      const expected = createExpected(defaultValue);
+      expect(resolve(input)).toEqual(expected);
     });
   });
 
   test('Should resolve to undefined if not nullish', () => {
-    expect(resolve('')).toBeUndefined();
-    expect(resolve(0)).toBeUndefined();
-    expect(resolve([])).toBeUndefined();
-    expect(resolve({})).toBeUndefined();
+    const inputs = [
+      '',
+      0,
+      [],
+      {},
+    ];
+    inputs.forEach((input) => {
+      expect(resolve(input)).toBeUndefined();
+    });
   });
 
 });
