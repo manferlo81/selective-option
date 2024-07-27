@@ -3,6 +3,7 @@ import type { AllowNullish, Nullish, TypeCheckFunction } from '../private-types'
 import { errorInvalidKey, errorInvalidValue } from '../tools/errors';
 import { is, isArray } from '../tools/is';
 import { resolveKey } from '../tools/key';
+import { resolveValue } from '../tools/value-nullish';
 import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from './types';
 
 type ResultExtendItem<K extends string, V> = [keys: KeyList<K>, value: V];
@@ -26,28 +27,30 @@ function processInput<K extends string, S extends string, V>(
     // get object key value
     const value = input[key as never];
 
-    // if value is not valid
-    if (!isValidValue(value)) {
+    // resolve value
+    const valueResolved = resolveValue(value, isValidValue);
 
-      // go to next step if value is nullish
-      if (value as unknown == null) return output;
+    // throw if value is not valid
+    if (!valueResolved) throw errorInvalidValue(value);
 
-      // throw if value is not valid
-      throw errorInvalidValue(value);
-    }
+    // get validation result
+    const [isValid, validatedValue] = valueResolved;
+
+    // return output without changes if value is nullish
+    if (!isValid) return output;
 
     // destructure data array
     const [override, keysData, specialData] = output;
 
     // set override value if key equals override key
-    if (key === defaultKey) return [value, keysData, specialData];
+    if (key === defaultKey) return [validatedValue, keysData, specialData];
 
     // try to resolve key as regular key
     const keyResolved = resolveKey(key, keys);
 
     // extend regular key data if regular key resolved
     if (keyResolved) {
-      const item: ResultExtendItem<K, V> = [keyResolved, value];
+      const item: ResultExtendItem<K, V> = [keyResolved, validatedValue];
       const newItems = [...keysData, item];
       return [override, newItems, specialData];
     }
@@ -62,7 +65,7 @@ function processInput<K extends string, S extends string, V>(
     if (!specialResolved) throw errorInvalidKey(key);
 
     // extend special key data if special key resolved
-    const item: ResultExtendItem<K, V> = [specialResolved, value];
+    const item: ResultExtendItem<K, V> = [specialResolved, validatedValue];
     const newSpecialKeys = [...specialData, item];
     return [override, keysData, newSpecialKeys];
 
