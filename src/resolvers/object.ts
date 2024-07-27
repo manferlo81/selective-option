@@ -9,11 +9,11 @@ import type { PotentialResolver, Resolved } from './types';
 type ResultExtendItem<K extends string, V> = [keys: KeyList<K>, value: V];
 type ObjectProcessed<K extends string, V> = [override: V, keys: Array<ResultExtendItem<K, V>>, special: Array<ResultExtendItem<K, V>>];
 
-function processInput<K extends string, S extends string, V>(
+function processInput<K extends string, S extends string, V, O extends string>(
   input: object,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
-  defaultKey: string,
+  overrideKey: O,
   keys: KeyList<K>,
   special?: AllowNullish<SpecialKeys<S, K>>,
 ): ObjectProcessed<K, V> {
@@ -43,7 +43,7 @@ function processInput<K extends string, S extends string, V>(
     const [override, keysData, specialData] = output;
 
     // set override value if key equals override key
-    if (key === defaultKey) return [validatedValue, keysData, specialData];
+    if (key === overrideKey) return [validatedValue, keysData, specialData];
 
     // try to resolve key as regular key
     const keyResolved = resolveKey(key, keys);
@@ -81,35 +81,35 @@ function resultReducer<K extends string, V>(output: Resolved<K, V>, [keys, value
   );
 }
 
-export function createObjectResolver<K extends string, S extends string, V>(
+export function createObjectResolver<K extends string, S extends string, V, O extends string>(
   keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
-  overrideKey: string,
+  overrideKey: O,
   special: SpecialKeys<S, K>,
 ): PotentialResolver<K, V>;
 
-export function createObjectResolver<K extends string, V>(
+export function createObjectResolver<K extends string, V, O extends string>(
   keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
-  overrideKey: string,
+  overrideKey: O,
   special?: Nullish,
 ): PotentialResolver<K, V>;
 
-export function createObjectResolver<K extends string, S extends string, V>(
+export function createObjectResolver<K extends string, S extends string, V, O extends string>(
   keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
-  overrideKey: string,
+  overrideKey: O,
   special?: AllowNullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, V>;
 
-export function createObjectResolver<K extends string, S extends string, V>(
+export function createObjectResolver<K extends string, S extends string, V, O extends string>(
   keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
-  overrideKey: string,
+  overrideKey: O,
   special?: AllowNullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, V> {
 
