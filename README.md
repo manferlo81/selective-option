@@ -1,220 +1,272 @@
 # Selective Option
 
-[![CI](https://github.com/manferlo81/selective-option/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/manferlo81/selective-option/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/manferlo81/selective-option/branch/main/graph/badge.svg?token=U0GIRWISBJ)](https://codecov.io/gh/manferlo81/selective-option)
+[![CI](https://github.com/manferlo81/selective-option/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/manferlo81/selective-option/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/manferlo81/selective-option/branch/main/graph/badge.svg?token=U0GIRWISBJ)](https://codecov.io/gh/manferlo81/selective-option)
+
+## In this page
+
+* [Install](#install)
+* [API](#api)
+  * Resolvers
+    * *function* [`createValueBasedResolver`](#function-createvaluebasedresolver)
+    * *function* [`createBoolBasedResolver`](#function-createboolbasedresolver)
+  * Potential Resolvers
+    * *function* [`createValueResolver`](#function-createvalueresolver)
+    * *function* [`createStringResolver`](#function-createstringresolver)
+    * *function* [`createArrayResolver`](#function-createarrayresolver)
+    * *function* [`createObjectResolver`](#function-createobjectresolver)
+  * Others
+    * *function* [`createResolver`](#function-createresolver)
+    * *function* [`createResult`](#function-createresult)
+* [Exported Types](#exported-types)
+  * Input Types
+    * *type* [`StringOption`](#type-stringoption)
+    * *type* [`ObjectOption`](#type-objectoption)
+    * *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption)
+    * *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption)
+  * Resolver Types
+    * *type* [`Resolved`](#type-resolved)
+    * *type* [`InputResolver`](#type-inputresolver)
+    * *type* [`PotentialResolver`](#type-potentialresolver)
+    * *type* [`Resolver`](#type-resolver)
+    * *type* [`ValueBasedResolver`](#type-valuebasedresolver)
+    * *type* [`BoolBasedResolver`](#type-boolbasedresolver)
+* [Other Types](#other-types)
+  * *type* [`KeyList`](#type-keylist)
+  * *type* [`SpecialKeys`](#type-specialkeys)
+  * *type* [`TypeCheckFunction`](#type-typecheckfunction)
 
 ## Install
 
 ```bash
-npm i selective-option
+npm install selective-option
 ```
 
 ## API
 
-### createBoolBasedResolver
+### *function* `createValueBasedResolver`
 
 ```typescript
-function createBoolBasedResolver<K extends string, V, D = V, DK extends string = 'default'>(
-  keys: K[],
+function createValueBasedResolver<K extends string, S extends string, V, O extends string>(
+  keys: readonly K[],
   isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
-  isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
-  defaultKey?: DK,
-): Resolver<K, V | D | boolean>;
+  defaultValue: V,
+  overrideKey: O,
+  special?: SpecialKeys<S, K> | null | undefined,
+): ValueBasedResolver<K, S, V, O>;
 ```
 
-### createValueBasedResolver
+See [`TypeCheckFunction`](#type-typecheckfunction), [`SpecialKeys`](#type-specialkeys) and [`ValueBasedResolver`](#type-valuebasedresolver).
+
+### *function* `createBoolBasedResolver`
 
 ```typescript
-function createValueBasedResolver<K extends string, V, D = V, DK extends string = 'default'>(
-  keys: K[],
-  isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
-  isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
-  defaultKey?: DK,
-): Resolver<K, V | D>;
+function createBoolBasedResolver<K extends string, S extends string, V, O extends string>(
+  keys: readonly K[],
+  isValidValue: TypeCheckFunction<V> | null | undefined,
+  defaultValue: V | boolean,
+  overrideKey: O,
+  special?: SpecialKeys<S, K> | null | undefined,
+): BoolBasedResolver<K, S, V | boolean, O>;
 ```
 
-### createValueResolver
+See [`TypeCheckFunction`](#type-typecheckfunction), [`SpecialKeys`](#type-specialkeys) and [`BoolBasedResolver`](#type-boolbasedresolver).
+
+### *function* `createValueResolver`
+
+Creates a `potential resolver` function that resolves to the `input value` if it satisfies `isValidValue` function, or `defaultValue` if input is nullish. It returns undefined otherwise.
 
 ```typescript
 function createValueResolver<K extends string, V>(
-  keys: K[],
+  keys: readonly K[],
   isValidValue: TypeCheckFunction<V>,
+  defaultValue: V,
 ): PotentialResolver<K, V>;
 ```
 
-Creates a resolver function that resolves if `isValidValue` returns a truthy value.
+See [`TypeCheckFunction`](#type-typecheckfunction) and [`PotentialResolver`](#type-potentialresolver).
 
-### createNullishResolver
+### *function* `createStringResolver`
 
-```typescript
-function createNullishResolver<K extends string, D>(
-  keys: K[],
-  defaultValue: D,
-): PotentialResolver<K, D>;
-```
-
-Creates a resolver function that resolves if the value is `null` or `undefined`.
-
-### createStringResolver
+Creates a `potential resolver` function that resolves if the `input value` is a `string` that satisfies the `isKey` function, or if it is one of the `special` object keys. It returns undefined otherwise.
 
 ```typescript
-function createStringResolver<K extends string>(
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
+function createStringResolver<K extends string, S extends string>(
+  keys: KeyList<K>,
+  special?: SpecialKeys<S, K> | null | undefined,
 ): PotentialResolver<K, boolean>;
 ```
 
-Creates a resolver function that resolves if the value is a string that satisfies the `isKey` function or is one of the `special` keys.
+See [`KeyList`](#type-keylist), [`SpecialKeys`](#type-specialkeys) and [`PotentialResolver`](#type-potentialresolver).
 
-### createArrayResolver
+### *function* `createArrayResolver`
+
+Creates a `potential resolver` function that resolves if the `input value` is an `array of string` and every string satisfies the `isKey` function, or if it is one of the `special` object keys. It returns undefined otherwise.
 
 ```typescript
-function createArrayResolver<K extends string>(
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
+function createArrayResolver<K extends string, S extends string>(
+  keys: KeyList<K>,
+  special?: SpecialKeys<S, K> | null | undefined,
 ): PotentialResolver<K, boolean>;
 ```
 
-Creates a resolver function that resolves if the value is an array of string and every string satisfies the `isKey` function or is one of the `special` keys.
+See [`KeyList`](#type-keylist), [`SpecialKeys`](#type-specialkeys) and [`PotentialResolver`](#type-potentialresolver).
 
-### createObjectResolver
+### *function* `createObjectResolver`
+
+Creates a resolver function that resolves if the `input value` is an `object` and it follows a valid format.
 
 ```typescript
-function createObjectResolver<K extends string, V, D = V, DK extends string = 'default'>(
-  keys: K[],
+function createObjectResolver<K extends string, S extends string, V, O extends string>(
+  keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
-  isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
-  defaultKey2?: DK,
-): PotentialResolver<K, V | D>;
+  defaultValue: V,
+  overrideKey: O,
+  special?: SpecialKeys<S, K> | null | undefined,
+): PotentialResolver<K, V>;
 ```
 
-Creates a resolver function that resolves if the value is an object and it follows a valid format.
+See [`KeyList`](#type-keylist), [`TypeCheckFunction`](#type-typecheckfunction), [`SpecialKeys`](#type-specialkeys) and [`PotentialResolver`](#type-potentialresolver).
 
-### resolveFailed
+### *function* `createResolver`
+
+Creates a resolver base on a series of `potential resolvers`. I will iterate through every `potential resolver` until one resolves and return the resolved result. It will `throw` if no `potential resolver` resolves.
 
 ```typescript
-function resolveFailed(
-  value: unknown,
-): never;
+function createResolver<K extends string, V, I = unknown>(
+  ...resolvers: Array<PotentialResolver<K, V>>
+): Resolver<K, V, I>;
 ```
 
-A function that throws an invalid value error, used internally in `createBoolBasedResolver` and `createValueBasedResolver`.
+See [`PotentialResolver`](#type-potentialresolver) and [`Resolver`](#type-resolver).
 
-### createResult
+### *function* `createResult`
+
+Creates a `resolved object`. Used internally in every potential resolver function. It is exported in case you need to write your own potential resolver.
 
 ```typescript
 function createResult<K extends string, V>(
-  keys: K[],
+  keys: KeyList<K>,
   value: V,
-  input?: Record<K, V>
-): Record<K, V>;
+  input?: Resolved<K, V>
+): Resolved<K, V>;
 ```
 
-Creates a resolved object result. Used internally in every resolver function.
+See [`KeyList`](#type-keylist) and [`Resolved`](#type-resolved).
 
-## Deprecated API
+## Exported Types
 
-### resolveBoolBased
+### *type* `StringOption`
 
 ```typescript
-function resolveBoolBased<K extends string, V, D = V>(
-  value: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special: Record<string, K[]>,
-  isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
-): Record<K, V | D | boolean>;
+export type StringOption<K extends string> = K | KeyList<K>;
 ```
 
-Use [`createBoolBasedResolver`](#createboolbasedresolver) instead.
+See [`KeyList`](#type-keylist). Used in *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption).
 
-### resolveValueBased
+### *type* `ObjectOption`
 
 ```typescript
-function resolveValueBased<K extends string, V, D = V>(
-  value: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special: Record<string, K[]>,
-  isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
-): Record<K, V | D>;
+export type ObjectOption<K extends string, V, O extends string> = Partial<Record<K | O, V | null | undefined>>;
 ```
 
-Use [`createValueBasedResolver`](#createvaluebasedresolver) instead.
+Used in *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption).
 
-### resolveValue
+### *type* `ValueBasedSelectiveOption`
 
 ```typescript
-function resolveValue<K extends string, V>(
-  value: unknown,
-  keys: K[],
-  isValidValue: TypeCheckFunction<V>,
-): Record<K, V> | void;
+export type ValueBasedSelectiveOption<K extends string, V, O extends string> =
+  | V
+  | null
+  | undefined
+  | ObjectOption<K, V, O>;
 ```
 
-Use [`createValueResolver`](#createvalueresolver) instead.
+See [`ObjectOption`](#type-objectoption). Used in *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption) and [`ValueBasedResolver`](#type-valuebasedresolver).
 
-### resolveNullish
+### *type* `BoolBasedSelectiveOption`
 
 ```typescript
-function resolveNullish<K extends string, D>(
-  value: unknown,
-  keys: K[],
-  defaultValue: D,
-): Record<K, D> | void;
+export type BoolBasedSelectiveOption<K extends string, V, O extends string> =
+  | StringOption<K>
+  | ValueBasedSelectiveOption<K, V | boolean, O>;
 ```
 
-Use [`createNullishResolver`](#createnullishresolver) instead.
+See [`StringOption`](#type-stringoption) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *type* [`BoolBasedResolver`](#type-boolbasedresolver).
 
-### resolveString
+### *type* `Resolved`
 
 ```typescript
-function resolveString<K extends string>(
-  value: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
-): Record<K, boolean> | void;
+export type Resolved<K extends string, V> = Readonly<Record<K, V>>;
 ```
 
-Use [`createStringResolver`](#createstringresolver) instead.
+Used in *function* [`createResult`](#function-createresult) and *type* [`PotentialResolver`](#type-potentialresolver), [`Resolver`](#type-resolver).
 
-### resolveArray
+### *type* `InputResolver`
 
 ```typescript
-function resolveArray<K extends string>(
-  value: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special?: Nullable<Record<string, K[]>>,
-): Record<K, boolean> | void;
+export type InputResolver<I, R> = (input: I) => R;
 ```
 
-Use [`createArrayResolver`](#createarrayresolver) instead.
+Used in *type* [`PotentialResolver`](#type-potentialresolver) and [`Resolver`](#type-resolver).
 
-### resolveObject
+### *type* `PotentialResolver`
 
 ```typescript
-function resolveObject<K extends string, V, D = V>(
-  value: unknown,
-  keys: K[],
-  isKey: TypeCheckFunction<K>,
-  special: Nullable<Record<string, K[]>>,
-  isValidValue: TypeCheckFunction<V>,
-  defaultValue: D,
-): Record<K, V | D> | void;
+export type PotentialResolver<K extends string, V> = InputResolver<unknown, Resolved<K, V> | void | undefined>;
 ```
 
-Use [`createObjectResolver`](#createobjectresolver) instead.
+See [`InputResolver`](#type-inputresolver) and [`Resolved`](#type-resolved). Used in *function* [`createValueResolver`](#function-createvalueresolver), [`createStringResolver`](#function-createstringresolver), [`createArrayResolver`](#function-createarrayresolver), [`createObjectResolver`](#function-createobjectresolver) and [`createResolver`](#function-createresolver).
+
+### *type* `Resolver`
+
+```typescript
+export type Resolver<K extends string, V, I = unknown> = InputResolver<I, Resolved<K, V>>;
+```
+
+See [`InputResolver`](#type-inputresolver) and [`Resolved`](#type-resolved). Used in *function* [`createResolver`](#function-createresolver) and *type* [`ValueBasedResolver`](#type-valuebasedresolver) and [`BoolBasedResolver`](#type-boolbasedresolver).
+
+### *type* `ValueBasedResolver`
+
+```typescript
+export type ValueBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V, ValueBasedSelectiveOption<K | S, V, O>>;
+```
+
+See [`Resolver`](#type-resolver) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver).
+
+### *type* `BoolBasedResolver`
+
+```typescript
+export type BoolBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V | boolean, BoolBasedSelectiveOption<K | S, V, O>>;
+```
+
+See [`Resolver`](#type-resolver) and [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption). Used in *function* [`createBoolBasedResolver`](#function-createboolbasedresolver).
+
+## Other Types
+
+### *type* `KeyList`
+
+```typescript
+type KeyList<K> = readonly K[];
+```
+
+Used in *function* [`createStringResolver`](#function-createstringresolver), [`createArrayResolver`](#function-createarrayresolver), [`createObjectResolver`](#function-createobjectresolver), [`createResult`](#function-createresult) and *type* [`StringOption`](#type-stringoption).
+
+### *type* `SpecialKeys`
+
+```typescript
+type SpecialKeys<S extends string, K extends string> = Readonly<Record<S, K[]>>;
+```
+
+Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver), [`createBoolBasedResolver`](#function-createboolbasedresolver), [`createStringResolver`](#function-createstringresolver), [`createArrayResolver`](#function-createarrayresolver) and [`createObjectResolver`](#function-createobjectresolver).
+
+### *type* `TypeCheckFunction`
+
+```typescript
+type TypeCheckFunction<V> = (input: unknown) => input is V;
+```
+
+Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver), [`createBoolBasedResolver`](#function-createboolbasedresolver), [`createValueResolver`](#function-createvalueresolver) and [`createObjectResolver`](#function-createobjectresolver).
 
 ## License
 
