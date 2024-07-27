@@ -3,9 +3,11 @@
   "version": "0.0.2",
   "description": "A simple selective option resolver",
   "keywords": [
+    "selective",
     "option",
     "options",
-    "selective"
+    "resolve",
+    "resolver"
   ],
   "type": "commonjs",
   "exports": {
