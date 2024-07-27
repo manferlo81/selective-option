@@ -6,6 +6,12 @@
 ## In this page
 
 * [Install](#install)
+  * [npm](#npm)
+  * [yarn](#yarn)
+  * [pnpm](#pnpm)
+* [CDN](#cdn)
+  * [jsDelivr](#jsdelivr)
+  * [unpkg](#unpkg)
 * [API](#api)
   * Resolvers
     * *function* [`createValueBasedResolver`](#function-createvaluebasedresolver)
@@ -38,9 +44,81 @@
 
 ## Install
 
+### npm
+
 ```bash
 npm install selective-option
 ```
+
+### yarn
+
+```bash
+yarn add selective-option
+```
+
+### pnpm
+
+```bash
+pnpm add selective-option
+```
+
+## CDN
+
+### jsDelivr
+
+* ***UMD***
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/selective-option@latest/dist/umd/selective.umd.js"></script>
+```
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/selective-option@latest/dist/umd/selective.umd.min.js"></script>
+```
+
+* ***ES Module***
+
+```html
+<script type="module">
+  import selective from "https://cdn.jsdelivr.net/npm/selective-option@latest/dist/esm/selective.mjs";
+</script>
+```
+
+```html
+<script type="module">
+  import selective from "https://cdn.jsdelivr.net/npm/selective-option@latest/dist/esm/selective.min.mjs";
+</script>
+```
+
+[*more options...*](https://www.jsdelivr.com/package/npm/selective-option?version=latest)
+
+### unpkg
+
+* ***UMD***
+
+```html
+<script src="https://unpkg.com/selective-option@latest/dist/umd/selective.umd.js"></script>
+```
+
+```html
+<script src="https://unpkg.com/selective-option@latest/dist/umd/selective.umd.min.js"></script>
+```
+
+* ***ES Module***
+
+```html
+<script type="module">
+  import selective from "https://unpkg.com/selective-option@latest/dist/esm/selective.mjs";
+</script>
+```
+
+```html
+<script type="module">
+  import selective from "https://unpkg.com/selective-option@latest/dist/esm/selective.min.mjs";
+</script>
+```
+
+[*more options...*](https://unpkg.com/selective-option@latest/)
 
 ## API
 
