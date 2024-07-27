@@ -10,11 +10,14 @@ describe('createValueResolver function', () => {
   type K = ArrayItemType<typeof keys>;
   type V = boolean | 'auto';
 
+  const defaultValue: V = false;
+
   const isValidValue = (value: unknown): value is V => validValues.includes(value as never);
 
   const resolve = createValueResolver<K, V>(
     keys,
     isValidValue,
+    defaultValue,
   );
 
   const createExpected = createExpectedCreator<K, V>((value) => ({
@@ -30,10 +33,24 @@ describe('createValueResolver function', () => {
     });
   });
 
-  test('Should resolve to undefined if not valid value', () => {
+  test('Should resolve to default value if input is nullish', () => {
     const inputs = [
       null,
       undefined,
+    ];
+    inputs.forEach((input) => {
+      expect(resolve(input)).toEqual(createExpected(defaultValue));
+    });
+  });
+
+  test('Should resolve to undefined if not valid value', () => {
+    const inputs = [
+      [],
+      {},
+      0,
+      1,
+      '',
+      'string',
     ];
     inputs.forEach((input) => {
       expect(resolve(input)).toBeUndefined();

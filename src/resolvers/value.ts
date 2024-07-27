@@ -5,17 +5,19 @@ import type { KeyList, PotentialResolver } from './types';
 export function createValueResolver<K extends string, V>(
   keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,
+  defaultValue: V,
 ): PotentialResolver<K, V> {
 
   return (value) => {
 
-    // exit if it's not a valid value
-    if (!isValidValue(value)) return;
-
-    // return result
-    return createResult(
+    if (isValidValue(value)) return createResult(
       keys,
       value,
+    );
+
+    if (value == null) return createResult(
+      keys,
+      defaultValue,
     );
 
   };

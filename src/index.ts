@@ -2,7 +2,6 @@ export { createResolver } from './resolvers/create-resolver';
 export { createResult } from './create-result';
 export type * from './input-types';
 export { createArrayResolver } from './resolvers/array';
-export { createNullishResolver } from './resolvers/nullish';
 export { createObjectResolver } from './resolvers/object';
 export { createStringResolver } from './resolvers/string';
 export type * from './resolvers/types';
