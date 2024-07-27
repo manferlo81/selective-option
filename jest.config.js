@@ -9,7 +9,7 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: [
-    process.env.CI ? 'json' : 'lcov',
+    process.env.CI ? 'json' : 'html',
     'text',
   ],
 
