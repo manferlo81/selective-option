@@ -1,6 +1,7 @@
 # Selective Option
 
 [![CI](https://github.com/manferlo81/selective-option/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/manferlo81/selective-option/actions/workflows/ci.yml)
+[![NPM Version](https://img.shields.io/npm/v/selective-option)](https://www.npmjs.com/package/selective-option)
 [![codecov](https://codecov.io/gh/manferlo81/selective-option/branch/main/graph/badge.svg?token=U0GIRWISBJ)](https://codecov.io/gh/manferlo81/selective-option)
 
 ## In this page
