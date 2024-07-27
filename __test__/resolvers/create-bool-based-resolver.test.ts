@@ -161,14 +161,19 @@ describe('createBoolBasedResolver function', () => {
 
   test('Should resolve array of mixed keys', () => {
 
-    const inputs = specialKeys.reduce((list, specialKey) => {
+    interface ItemType {
+      input: ReadonlyArray<RegularKey | SpecialKey>;
+      changed: readonly RegularKey[];
+    }
+
+    const inputs = specialKeys.reduce<ItemType[]>((list, specialKey) => {
       const objects = keys.map((key) => {
         const input = [specialKey, key] as const;
         const changed = [key, ...special[specialKey]];
         return { input, changed };
       });
       return [...list, ...objects];
-    }, [] as Array<{ input: ReadonlyArray<RegularKey | SpecialKey>; changed: readonly RegularKey[] }>);
+    }, []);
 
     inputs.forEach(({ input, changed }) => {
       const expected = createExpected(

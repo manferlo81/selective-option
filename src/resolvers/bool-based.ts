@@ -32,14 +32,7 @@ export function createBoolBasedResolver<K extends string, V, O extends string>(
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V | boolean,
   overrideKey: O,
-  special: Nullish,
-): BoolBasedResolver<K, never, V | boolean, O>;
-
-export function createBoolBasedResolver<K extends string, V, O extends string>(
-  keys: KeyList<K>,
-  isValidValue: TypeCheckFunction<V>,
-  defaultValue: V | boolean,
-  overrideKey: O,
+  special?: Nullish,
 ): BoolBasedResolver<K, never, V | boolean, O>;
 
 export function createBoolBasedResolver<K extends string, S extends string, O extends string>(
@@ -55,14 +48,7 @@ export function createBoolBasedResolver<K extends string, O extends string>(
   isValidValue: Nullish,
   defaultValue: boolean,
   overrideKey: O,
-  special: Nullish,
-): BoolBasedResolver<K, never, boolean, O>;
-
-export function createBoolBasedResolver<K extends string, O extends string>(
-  keys: KeyList<K>,
-  isValidValue: Nullish,
-  defaultValue: boolean,
-  overrideKey: O,
+  special?: Nullish,
 ): BoolBasedResolver<K, never, boolean, O>;
 
 export function createBoolBasedResolver<K extends string, S extends string, V, O extends string>(

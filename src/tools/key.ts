@@ -1,13 +1,10 @@
-import type { AllowNullish, Nullish } from '../private-types';
+import type { AllowNullish } from '../private-types';
 import type { KeyList, SpecialKeys } from '../resolvers/types';
 
-export function resolveKey<K extends string, S extends string>(key: string, keys: KeyList<K>, special: Partial<SpecialKeys<S, K>>): K[] | undefined;
-export function resolveKey<K extends string>(key: string, keys: KeyList<K>, special: Partial<SpecialKeys<string, K>>): K[] | undefined;
-export function resolveKey<K extends string>(key: string, keys: KeyList<K>, special: Nullish): K[] | undefined;
-export function resolveKey<K extends string>(key: string, keys: KeyList<K>): K[] | undefined;
-export function resolveKey<K extends string>(key: string, keys: KeyList<K>, special?: AllowNullish<Partial<SpecialKeys<string, K>>>): K[] | undefined;
-export function resolveKey<K extends string>(key: string, keys: KeyList<K>, special?: AllowNullish<Partial<SpecialKeys<string, K>>>): K[] | undefined {
+export function resolveKey<K extends string, S extends string>(key: string, keys: KeyList<K>, special: SpecialKeys<S, K>): K[] | undefined;
+export function resolveKey<K extends string>(key: string, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<string, K>>): K[] | undefined;
+export function resolveKey<K extends string>(key: string, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<string, K>>): K[] | undefined {
   if (keys.includes(key as K)) return [key as K];
   if (!special) return;
-  return special[key];
+  return special[key] as K[] | undefined;
 }

@@ -12,6 +12,7 @@
     "src",
     "__test__",
     "jest.config.js",
+    "eslint.config.mjs",
     "bundlib.config.ts"
   ]
 }

@@ -1,8 +1,13 @@
 import pluginJs from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
-import { configs as typescriptConfigs } from 'typescript-eslint';
+import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint';
 
+/**
+ * @param { any } options
+ * @param { string } [type ]
+ * @returns { [ string, any ] }
+ */
 const rule = (options, type = 'error') => [type, options];
 
 const rules = {
@@ -29,15 +34,22 @@ const rules = {
     default: 'array-simple',
     readonly: 'array-simple',
   }),
+  '@typescript-eslint/restrict-template-expressions': 'off',
 };
 
-export default [
+const typescriptFlatConfigs = typescriptConfig(
+  ...typescriptConfigs.strictTypeChecked,
+  { languageOptions: { parserOptions: { project: true, tsconfigRootDir: process.cwd() } } },
+  ...typescriptConfigs.stylisticTypeChecked,
+);
+
+export default typescriptConfig(
   { ignores: ['node_modules', 'dist', 'coverage'] },
   { files: ['**/*.{js,mjs,cjs,ts}'] },
   { files: ['**/*.js'], languageOptions: { sourceType: 'script' } },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
-  stylistic.configs['recommended-flat'],
   pluginJs.configs.recommended,
-  ...typescriptConfigs.recommended,
+  ...typescriptFlatConfigs,
+  stylistic.configs['recommended-flat'],
   { rules },
-];
+);

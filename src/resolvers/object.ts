@@ -21,7 +21,7 @@ function processInput<K extends string, S extends string, V>(
   const objectKeys = Object.keys(input);
 
   // return array containing processed data
-  return objectKeys.reduce((output, key) => {
+  return objectKeys.reduce<ObjectProcessed<K, V>>((output, key) => {
 
     // get object key value
     const value = input[key as never];
@@ -30,7 +30,7 @@ function processInput<K extends string, S extends string, V>(
     if (!isValidValue(value)) {
 
       // go to next step if value is nullish
-      if (value == null) return output;
+      if (value as unknown == null) return output;
 
       // throw if value is not valid
       throw errorInvalidValue(value);
@@ -56,7 +56,7 @@ function processInput<K extends string, S extends string, V>(
     if (!special) throw errorInvalidKey(key);
 
     // try to resolve key as special key
-    const specialResolved = special[key as S];
+    const specialResolved = special[key as S] as K[] | undefined;
 
     // throw if key can't be resolved as special key
     if (!specialResolved) throw errorInvalidKey(key);
@@ -66,7 +66,7 @@ function processInput<K extends string, S extends string, V>(
     const newSpecialKeys = [...specialData, item];
     return [override, keysData, newSpecialKeys];
 
-  }, [defaultValue, [], []] as ObjectProcessed<K, V>);
+  }, [defaultValue, [], []]);
 
 }
 
@@ -91,14 +91,7 @@ export function createObjectResolver<K extends string, V>(
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
   overrideKey: string,
-  special: Nullish,
-): PotentialResolver<K, V>;
-
-export function createObjectResolver<K extends string, V>(
-  keys: KeyList<K>,
-  isValidValue: TypeCheckFunction<V>,
-  defaultValue: V,
-  overrideKey: string,
+  special?: Nullish,
 ): PotentialResolver<K, V>;
 
 export function createObjectResolver<K extends string, S extends string, V>(

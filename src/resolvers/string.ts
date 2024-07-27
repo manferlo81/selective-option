@@ -11,11 +11,7 @@ export function createStringResolver<K extends string, S extends string>(
 
 export function createStringResolver<K extends string>(
   keys: KeyList<K>,
-  special: Nullish,
-): PotentialResolver<K, boolean>;
-
-export function createStringResolver<K extends string>(
-  keys: KeyList<K>,
+  special?: Nullish,
 ): PotentialResolver<K, boolean>;
 
 export function createStringResolver<K extends string, S extends string>(
