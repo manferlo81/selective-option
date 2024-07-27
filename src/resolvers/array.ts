@@ -1,9 +1,9 @@
 import { createResult } from '../create-result';
-import type { AllowNullish, Nullish } from '../private-types';
+import type { AllowNullish, KeyList, Nullish, SpecialKeys } from '../private-types';
 import { errorInvalidKey } from '../tools/errors';
 import { is, isArray } from '../tools/is';
 import { resolveKey } from '../tools/key';
-import type { KeyList, PotentialResolver, SpecialKeys } from './types';
+import type { PotentialResolver } from './types';
 
 export function createArrayResolver<K extends string, S extends string>(
   keys: KeyList<K>,

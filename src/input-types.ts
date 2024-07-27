@@ -1,5 +1,4 @@
-import type { AllowNullish } from './private-types';
-import type { KeyList } from './resolvers/types';
+import type { AllowNullish, KeyList } from './private-types';
 
 export type ObjectOption<K extends string, V, O extends string> = Partial<Record<K | O, AllowNullish<V>>>;
 export type StringOption<K extends string> = K | KeyList<K>;

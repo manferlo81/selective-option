@@ -1,5 +1,4 @@
-import type { AllowNullish } from '../private-types';
-import type { KeyList, SpecialKeys } from '../resolvers/types';
+import type { AllowNullish, KeyList, SpecialKeys } from '../private-types';
 
 export function resolveKey<K extends string, S extends string>(key: string, keys: KeyList<K>, special: SpecialKeys<S, K>): K[] | undefined;
 export function resolveKey<K extends string>(key: string, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<string, K>>): K[] | undefined;

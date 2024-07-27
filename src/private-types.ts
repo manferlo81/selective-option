@@ -4,4 +4,7 @@ export type Void = void;
 export type Nullish = null | undefined | Void;
 export type AllowNullish<T> = T | Nullish;
 
+export type KeyList<K> = readonly K[];
+export type SpecialKeys<S extends string, K extends string> = Readonly<Record<S, K[]>>;
+
 export type TypeCheckFunction<T> = (value: unknown) => value is T;
