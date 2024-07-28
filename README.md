@@ -141,6 +141,30 @@ function createValueBasedResolver<K extends string, S extends string, V, O exten
 
 See [`TypeCheckFunction`](#type-typecheckfunction), [`SpecialKeys`](#type-specialkeys) and [`ValueBasedResolver`](#type-valuebasedresolver).
 
+* *Example*
+
+```typescript
+const resolveNumber = createValueBasedResolver(
+  ['a', 'b', 'c'] as const,
+  (value: unknown): value is number => typeof value === 'number',
+  0,
+  'override',
+  { ac: ['a', 'c'] },
+);
+
+resolveNumber(18); // set value { a: 18, b: 18, c: 18 }
+resolveNumber(true); // Throws because true doesn't pass the test
+resolveNumber({}); // default value { a: 0, b: 0, c: 0 }
+resolveNumber({ override: 40 }); // overridden value { a: 40, b: 40, c: 40 }
+resolveNumber({ override: 'string' }); // Throws because 'string' doesn't pass the test
+resolveNumber({ b: 40 }); // default + set value { a: 0, b: 40 c: 0 }
+resolveNumber({ c: [] }); // Throws because [] doesn't pass the test
+resolveNumber({ ac: 40 }); // default + special set value { a: 40, b: 0 c: 40 }
+resolveNumber({ override: 40, a: 12 }); // overridden + set value { a: 12, b: 40, c: 40 }
+resolveNumber({ override: 40, ac: 12 }); // overridden + special set value { a: 12, b: 40, c: 12 }
+// ... you get the idea...
+```
+
 ### *function* `createBoolBasedResolver`
 
 ```typescript
@@ -154,6 +178,34 @@ function createBoolBasedResolver<K extends string, S extends string, V, O extend
 ```
 
 See [`TypeCheckFunction`](#type-typecheckfunction), [`SpecialKeys`](#type-specialkeys) and [`BoolBasedResolver`](#type-boolbasedresolver).
+
+* *Example*
+
+```typescript
+const resolve = createBoolBasedResolver(
+  ['a', 'b', 'c'] as const,
+  (value: unknown): value is ('yes' | 'not' | 'unknown') => {
+    return ['yes', 'no', 'unknown'].includes(value as never);
+  },
+  'unknown',
+  'default',
+  { ab: ['a', 'b'] },
+);
+
+resolveEvenNumber(null); // default value { a: 'unknown', b: 'unknown', c: 'unknown' }
+resolveEvenNumber('yes'); // set value { a: 'yes', b: 'yes', c: 'yes' }
+resolveEvenNumber(17); // Throws because 17 doesn't pass the test
+resolveEvenNumber('a'); // set key { a: true, b: false, c: false }
+resolveEvenNumber('ab'); // set key { a: true, b: true, c: false }
+resolveEvenNumber(['a', 'c']); // set key { a: true, b: false, c: true }
+resolveEvenNumber(['a', 'b', 'c']); // set key { a: true, b: true, c: true }
+resolveEvenNumber(['ab', 'c']); // set key { a: true, b: true, c: true }
+resolveEvenNumber({}); // default value { a: 'unknown', b: 'unknown', c: 'unknown' }
+resolveEvenNumber({ default: true }); // overridden value { a: true, b: true, c: true }
+resolveEvenNumber({ default: 15 }); // Throws because 15 doesn't pass the test
+resolveEvenNumber({ default: 'yes', a: true }); // overridden + set value { a: true, b: 'yes', c: 'yes' }
+// ... you get the idea...
+```
 
 ### *function* `createValueResolver`
 
@@ -236,6 +288,21 @@ function createResult<K extends string, V>(
 ```
 
 See [`KeyList`](#type-keylist) and [`Resolved`](#type-resolved).
+
+* *Example*
+
+```typescript
+createResult(['a', 'b', 'c'], true); // { a: true, b: true, c: true }
+createResult(['a', 'b', 'c'], 10); // { a: 10, b: 10, c: 10 }
+```
+
+* *Example*
+
+```typescript
+const base = createResult(['a', 'b', 'c'], 0); // base = { a: 0, b: 0, c: 0 }
+createResult(['a', 'c'], 40, base); // { a: 40, b: 0, c: 40 }
+createResult(['a', 'b'], 20, base); // { a: 20, b: 20, c: 0 }
+```
 
 ## Exported Types
 
@@ -353,4 +420,4 @@ Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolv
 
 ## License
 
-[MIT](LICENSE) &copy; 2020-2024 [Manuel Fernández](https://github.com/manferlo81)
+[MIT](LICENSE) &copy; 2020-2024 [Manuel Fernández](https://github.com/manferlo81) (@manferlo81)
