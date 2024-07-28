@@ -1,17 +1,13 @@
 import { createResult } from '../create-result';
 import type { AllowNullish, KeyList, Nullish, SpecialKeys } from '../private-types';
 import { errorInvalidKey } from '../tools/errors';
-import { is, isArray } from '../tools/is';
-import { resolveKey_v2 } from '../tools/key';
+import { isArray } from '../tools/is';
+import { resolveKeyIfValid } from '../tools/resolve-valid-key';
 import type { PotentialResolver, Resolved } from './types';
 
-function rrrrr<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<S, K>>): [keys: K[], value: boolean] {
+function resolveKeyOrThrow<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<S, K>>): [keys: K[], value: boolean] {
 
-  // throw if item is not a string
-  if (!is(key, 'string')) throw errorInvalidKey(key);
-
-  // try to resolve as key or special key
-  const resolvedKey = resolveKey_v2(key, keys, special);
+  const resolvedKey = resolveKeyIfValid(key, keys, special);
 
   // throw if it can't be resolved
   if (!resolvedKey) throw errorInvalidKey(key);
@@ -52,12 +48,12 @@ export function createArrayResolver<K extends string, S extends string>(
     );
 
     const [first, ...rest] = input;
-    const [firstKeys, firstValue] = rrrrr(first, keys, special);
+    const [firstKeys, firstValue] = resolveKeyOrThrow(first, keys, special);
 
     return rest.reduce<Resolved<K, boolean>>(
       (output, key) => {
 
-        const [resolvedKeys, resolvedValue] = rrrrr(key, keys, special);
+        const [resolvedKeys, resolvedValue] = resolveKeyOrThrow(key, keys, special);
 
         // return updated result
         return createResult(
