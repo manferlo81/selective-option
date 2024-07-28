@@ -1,4 +1,4 @@
-import { createArrayResolver } from '../../src';
+import { createKeyListResolver } from '../../src';
 import { createExpectedCreator } from '../tools/create-expected';
 import type { ArrayItemType } from '../tools/helper-types';
 
@@ -12,7 +12,7 @@ describe('createArrayResolver function', () => {
 
   const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
-  const resolve = createArrayResolver<K, S>(
+  const resolve = createKeyListResolver<K, S>(
     keys,
     special,
   );

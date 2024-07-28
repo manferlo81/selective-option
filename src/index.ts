@@ -1,8 +1,8 @@
 export { createResult } from './create-result';
 export type * from './input-types';
-export { createArrayResolver } from './resolvers/array';
 export { createBoolBasedResolver } from './resolvers/bool-based';
 export { createResolver } from './resolvers/create-resolver';
+export { createKeyListResolver } from './resolvers/key-list';
 export { createObjectResolver } from './resolvers/object';
 export { createKeyResolver } from './resolvers/single-key';
 export type * from './resolvers/types';

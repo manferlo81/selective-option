@@ -16,22 +16,22 @@ function resolveKeyOrThrow<K extends string, S extends string>(key: unknown, key
 
 }
 
-export function createArrayResolver<K extends string, S extends string>(
+export function createKeyListResolver<K extends string, S extends string>(
   keys: KeyList<K>,
   special: SpecialKeys<S, K>,
 ): PotentialResolver<K, boolean>;
 
-export function createArrayResolver<K extends string>(
+export function createKeyListResolver<K extends string>(
   keys: KeyList<K>,
   special?: Nullish,
 ): PotentialResolver<K, boolean>;
 
-export function createArrayResolver<K extends string, S extends string>(
+export function createKeyListResolver<K extends string, S extends string>(
   keys: KeyList<K>,
   special?: AllowNullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, boolean>;
 
-export function createArrayResolver<K extends string, S extends string>(
+export function createKeyListResolver<K extends string, S extends string>(
   keys: KeyList<K>,
   special?: AllowNullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, boolean> {
