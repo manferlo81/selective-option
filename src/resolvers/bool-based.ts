@@ -3,7 +3,7 @@ import type { AllowNullish, KeyList, Nullish, SpecialKeys, TypeCheckFunction } f
 import { createArrayResolver } from './array';
 import { createResolver } from './create-resolver';
 import { createObjectResolver } from './object';
-import { createStringResolver } from './string';
+import { createKeyResolver } from './single-key';
 import type { BoolBasedResolver } from './types';
 import { createValueResolver } from './value';
 
@@ -71,14 +71,14 @@ export function createBoolBasedResolver<K extends string, S extends string, V, O
 
   // create potential resolvers
   const resolveValue = createValueResolver(keys, isValueOrBool, defaultValue);
-  const resolveString = createStringResolver(keys, special);
+  const resolveSingleKey = createKeyResolver(keys, special);
   const resolveArray = createArrayResolver(keys, special);
   const resolveObject = createObjectResolver(keys, isValueOrBool, defaultValue, overrideKey, special);
 
   // return compiled resolver
   return createResolver<K, V | boolean, BoolBasedSelectiveOption<K | S, V, O>>(
     resolveValue,
-    resolveString,
+    resolveSingleKey,
     resolveArray,
     resolveObject,
   );

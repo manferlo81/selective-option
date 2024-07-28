@@ -3,22 +3,22 @@ import type { AllowNullish, KeyList, Nullish, SpecialKeys } from '../private-typ
 import { resolveKeyIfValid } from '../tools/resolve-valid-key';
 import type { PotentialResolver } from './types';
 
-export function createStringResolver<K extends string, S extends string>(
+export function createKeyResolver<K extends string, S extends string>(
   keys: KeyList<K>,
   special: SpecialKeys<S, K>,
 ): PotentialResolver<K, boolean>;
 
-export function createStringResolver<K extends string>(
+export function createKeyResolver<K extends string>(
   keys: KeyList<K>,
   special?: Nullish,
 ): PotentialResolver<K, boolean>;
 
-export function createStringResolver<K extends string, S extends string>(
+export function createKeyResolver<K extends string, S extends string>(
   keys: KeyList<K>,
   special?: AllowNullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, boolean>;
 
-export function createStringResolver<K extends string, S extends string>(
+export function createKeyResolver<K extends string, S extends string>(
   keys: KeyList<K>,
   special?: AllowNullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, boolean> {

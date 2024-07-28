@@ -1,10 +1,10 @@
-export { createResolver } from './resolvers/create-resolver';
 export { createResult } from './create-result';
 export type * from './input-types';
 export { createArrayResolver } from './resolvers/array';
+export { createBoolBasedResolver } from './resolvers/bool-based';
+export { createResolver } from './resolvers/create-resolver';
 export { createObjectResolver } from './resolvers/object';
-export { createStringResolver } from './resolvers/string';
+export { createKeyResolver } from './resolvers/single-key';
 export type * from './resolvers/types';
 export { createValueResolver } from './resolvers/value';
-export { createBoolBasedResolver } from './resolvers/bool-based';
 export { createValueBasedResolver } from './resolvers/value-based';

@@ -1,8 +1,8 @@
-import { createStringResolver } from '../../src';
+import { createKeyResolver } from '../../src';
 import { createExpectedCreator } from '../tools/create-expected';
 import { ArrayItemType } from '../tools/helper-types';
 
-describe('createStringResolver function', () => {
+describe('createKeyResolver function', () => {
 
   const keys = ['a', 'b', 'c', 'd'] as const;
   const specialKeys = ['first', 'last'] as const;
@@ -12,7 +12,7 @@ describe('createStringResolver function', () => {
 
   const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
 
-  const resolve = createStringResolver<K, S>(
+  const resolve = createKeyResolver<K, S>(
     keys,
     special,
   );

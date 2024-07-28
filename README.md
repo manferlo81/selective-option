@@ -23,7 +23,7 @@
     * *function* [`createBoolBasedResolver`](#function-createboolbasedresolver)
   * Potential Resolvers
     * *function* [`createValueResolver`](#function-createvalueresolver)
-    * *function* [`createStringResolver`](#function-createstringresolver)
+    * *function* [`createKeyResolver`](#function-createkeyresolver)
     * *function* [`createArrayResolver`](#function-createarrayresolver)
     * *function* [`createObjectResolver`](#function-createobjectresolver)
   * Others
@@ -221,12 +221,12 @@ function createValueResolver<K extends string, V>(
 
 See [`TypeCheckFunction`](#type-typecheckfunction) and [`PotentialResolver`](#type-potentialresolver).
 
-### *function* `createStringResolver`
+### *function* `createKeyResolver`
 
 Creates a `potential resolver` function that resolves if the `input value` is a `string` that satisfies the `isKey` function, or if it is one of the `special` object keys. It returns undefined otherwise.
 
 ```typescript
-function createStringResolver<K extends string, S extends string>(
+function createKeyResolver<K extends string, S extends string>(
   keys: KeyList<K>,
   special?: SpecialKeys<S, K> | null | undefined,
 ): PotentialResolver<K, boolean>;
@@ -366,7 +366,7 @@ Used in *type* [`PotentialResolver`](#type-potentialresolver) and [`Resolver`](#
 type PotentialResolver<K extends string, V> = InputResolver<unknown, Resolved<K, V> | void | undefined>;
 ```
 
-See [`InputResolver`](#type-inputresolver) and [`Resolved`](#type-resolved). Used in *function* [`createValueResolver`](#function-createvalueresolver), [`createStringResolver`](#function-createstringresolver), [`createArrayResolver`](#function-createarrayresolver), [`createObjectResolver`](#function-createobjectresolver) and [`createResolver`](#function-createresolver).
+See [`InputResolver`](#type-inputresolver) and [`Resolved`](#type-resolved). Used in *function* [`createValueResolver`](#function-createvalueresolver), [`createKeyResolver`](#function-createkeyresolver), [`createArrayResolver`](#function-createarrayresolver), [`createObjectResolver`](#function-createobjectresolver) and [`createResolver`](#function-createresolver).
 
 ### *type* `Resolver`
 
@@ -400,7 +400,7 @@ See [`Resolver`](#type-resolver) and [`BoolBasedSelectiveOption`](#type-boolbase
 type KeyList<K> = readonly K[];
 ```
 
-Used in *function* [`createStringResolver`](#function-createstringresolver), [`createArrayResolver`](#function-createarrayresolver), [`createObjectResolver`](#function-createobjectresolver), [`createResult`](#function-createresult) and *type* [`StringOption`](#type-stringoption).
+Used in *function* [`createKeyResolver`](#function-createkeyresolver), [`createArrayResolver`](#function-createarrayresolver), [`createObjectResolver`](#function-createobjectresolver), [`createResult`](#function-createresult) and *type* [`StringOption`](#type-stringoption).
 
 ### *type* `SpecialKeys`
 
@@ -408,7 +408,7 @@ Used in *function* [`createStringResolver`](#function-createstringresolver), [`c
 type SpecialKeys<S extends string, K extends string> = Readonly<Record<S, K[]>>;
 ```
 
-Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver), [`createBoolBasedResolver`](#function-createboolbasedresolver), [`createStringResolver`](#function-createstringresolver), [`createArrayResolver`](#function-createarrayresolver) and [`createObjectResolver`](#function-createobjectresolver).
+Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver), [`createBoolBasedResolver`](#function-createboolbasedresolver), [`createKeyResolver`](#function-createkeyresolver), [`createArrayResolver`](#function-createarrayresolver) and [`createObjectResolver`](#function-createobjectresolver).
 
 ### *type* `TypeCheckFunction`
 
