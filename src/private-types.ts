@@ -4,6 +4,8 @@ export type Void = void;
 export type Nullish = null | undefined | Void;
 export type AllowNullish<T> = T | Nullish;
 
+export type KeyResolved<K extends string> = [keys: K[], value: boolean];
+
 export type NegateKey<K extends string> = `!${K}` | `-${K}`;
 export type KeyList<K> = readonly K[];
 export type SpecialKeys<S extends string, K extends string> = Readonly<Record<S, K[]>>;

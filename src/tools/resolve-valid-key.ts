@@ -1,8 +1,6 @@
-import type { KeyList, AllowNullish, SpecialKeys } from '../private-types';
+import type { AllowNullish, KeyList, KeyResolved, SpecialKeys } from '../private-types';
 import { is } from './is';
 import { resolveKey } from './key';
-
-type KeyResolved<K extends string> = [keys: K[], value: boolean];
 
 export function resolveKeyIfValid<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<S, K>>): KeyResolved<K> | undefined {
 

@@ -1,17 +1,19 @@
 import { createResult } from '../create-result';
-import type { AllowNullish, KeyList, Nullish, SpecialKeys } from '../private-types';
+import type { AllowNullish, KeyList, KeyResolved, Nullish, SpecialKeys } from '../private-types';
 import { errorInvalidKey } from '../tools/errors';
 import { isArray } from '../tools/is';
 import { resolveKeyIfValid } from '../tools/resolve-valid-key';
 import type { PotentialResolver, Resolved } from './types';
 
-function resolveKeyOrThrow<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<S, K>>): [keys: K[], value: boolean] {
+function resolveKeyOrThrow<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<S, K>>): KeyResolved<K> {
 
+  // try to resolve key
   const resolvedKey = resolveKeyIfValid(key, keys, special);
 
   // throw if it can't be resolved
   if (!resolvedKey) throw errorInvalidKey(key);
 
+  // return resolved key
   return resolvedKey;
 
 }
@@ -42,35 +44,42 @@ export function createKeyListResolver<K extends string, S extends string>(
     // exit if value is not an array
     if (!isArray(input)) return;
 
+    // resolve to false if input array is empty
     if (input.length === 0) return createResult(
       keys,
       false,
     );
 
+    // get first key independently from the rest
     const [first, ...rest] = input;
+
+    // resolve first key
     const [firstKeys, firstValue] = resolveKeyOrThrow(first, keys, special);
 
-    return rest.reduce<Resolved<K, boolean>>(
-      (output, key) => {
-
-        const [resolvedKeys, resolvedValue] = resolveKeyOrThrow(key, keys, special);
-
-        // return updated result
-        return createResult(
-          resolvedKeys,
-          resolvedValue,
-          output,
-        );
-      },
+    // create result based on first key
+    const baseResult = createResult(
+      firstKeys,
+      firstValue,
       createResult(
-        firstKeys,
-        firstValue,
-        createResult(
-          keys,
-          !firstValue,
-        ),
+        keys,
+        !firstValue,
       ),
     );
+
+    // extend base result according to the rest of the items
+    return rest.reduce<Resolved<K, boolean>>((output, key) => {
+
+      // resolve key
+      const [resolvedKeys, resolvedValue] = resolveKeyOrThrow(key, keys, special);
+
+      // return updated result
+      return createResult(
+        resolvedKeys,
+        resolvedValue,
+        output,
+      );
+
+    }, baseResult);
 
   };
 
