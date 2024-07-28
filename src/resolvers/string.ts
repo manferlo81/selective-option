@@ -1,7 +1,7 @@
 import { createResult } from '../create-result';
 import type { AllowNullish, KeyList, Nullish, SpecialKeys } from '../private-types';
 import { is } from '../tools/is';
-import { resolveKey } from '../tools/key';
+import { resolveKey_v2 } from '../tools/key';
 import type { PotentialResolver } from './types';
 
 export function createStringResolver<K extends string, S extends string>(
@@ -31,18 +31,20 @@ export function createStringResolver<K extends string, S extends string>(
     if (!is(input, 'string')) return;
 
     // try to resolve value as key or special key
-    const resolved = resolveKey(input, keys, special);
+    const resolved = resolveKey_v2(input, keys, special);
 
     // exit if it can't be resolved
     if (!resolved) return;
 
+    const [resolved2, value] = resolved;
+
     // return result
     return createResult(
-      resolved,
-      true,
+      resolved2,
+      value,
       createResult(
         keys,
-        false,
+        !value,
       ),
     );
 

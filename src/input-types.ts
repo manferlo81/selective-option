@@ -1,7 +1,7 @@
-import type { AllowNullish, KeyList } from './private-types';
+import type { AllowNullish, KeyList, NegateKey } from './private-types';
 
 export type ObjectOption<K extends string, V, O extends string> = Partial<Record<K | O, AllowNullish<V>>>;
-export type StringOption<K extends string> = K | KeyList<K>;
+export type StringOption<K extends string> = K | NegateKey<K> | KeyList<K | NegateKey<K>>;
 
 export type ValueBasedSelectiveOption<K extends string, V, O extends string> =
   | AllowNullish<V>

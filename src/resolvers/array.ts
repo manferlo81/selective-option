@@ -2,8 +2,23 @@ import { createResult } from '../create-result';
 import type { AllowNullish, KeyList, Nullish, SpecialKeys } from '../private-types';
 import { errorInvalidKey } from '../tools/errors';
 import { is, isArray } from '../tools/is';
-import { resolveKey } from '../tools/key';
-import type { PotentialResolver } from './types';
+import { resolveKey_v2 } from '../tools/key';
+import type { PotentialResolver, Resolved } from './types';
+
+function rrrrr<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<S, K>>): [keys: K[], value: boolean] {
+
+  // throw if item is not a string
+  if (!is(key, 'string')) throw errorInvalidKey(key);
+
+  // try to resolve as key or special key
+  const resolvedKey = resolveKey_v2(key, keys, special);
+
+  // throw if it can't be resolved
+  if (!resolvedKey) throw errorInvalidKey(key);
+
+  return resolvedKey;
+
+}
 
 export function createArrayResolver<K extends string, S extends string>(
   keys: KeyList<K>,
@@ -31,30 +46,33 @@ export function createArrayResolver<K extends string, S extends string>(
     // exit if value is not an array
     if (!isArray(input)) return;
 
-    // create key list from input array
-    const list = input.reduce<K[]>((output, key) => {
+    if (input.length === 0) return createResult(
+      keys,
+      false,
+    );
 
-      // throw if item is not a string
-      if (!is(key, 'string')) throw errorInvalidKey(key);
+    const [first, ...rest] = input;
+    const [firstKeys, firstValue] = rrrrr(first, keys, special);
 
-      // try to resolve as key or special key
-      const resolved = resolveKey(key, keys, special);
+    return rest.reduce<Resolved<K, boolean>>(
+      (output, key) => {
 
-      // throw if it can't be resolved
-      if (!resolved) throw errorInvalidKey(key);
+        const [resolvedKeys, resolvedValue] = rrrrr(key, keys, special);
 
-      // return updated result
-      return [...output, ...resolved];
-
-    }, []);
-
-    // return result from key list
-    return createResult(
-      list,
-      true,
+        // return updated result
+        return createResult(
+          resolvedKeys,
+          resolvedValue,
+          output,
+        );
+      },
       createResult(
-        keys,
-        false,
+        firstKeys,
+        firstValue,
+        createResult(
+          keys,
+          !firstValue,
+        ),
       ),
     );
 
