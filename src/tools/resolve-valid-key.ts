@@ -7,17 +7,14 @@ export function resolveKeyIfValid<K extends string, S extends string>(key: unkno
   // throw if item is not a string
   if (!is(key, 'string')) return;
 
-  // trim key
-  const trimmedKey = key.trim();
-
   // try to resolve positive key
-  const resolved = resolveKey(trimmedKey, keys, special);
+  const resolved = resolveKey(key, keys, special);
 
   // return positive key result if resolved
   if (resolved) return [resolved, true];
 
   // test for negative key format
-  const matched = /^[!-]([^\s]*)$/.exec(trimmedKey);
+  const matched = /^[!-]([^\s]*)$/.exec(key);
 
   // fail if it doesn't match negative format
   if (!matched) return;
