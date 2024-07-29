@@ -24,19 +24,22 @@ describe('createKeyResolver function', () => {
     d: value,
   }));
 
-  const negationSymbols = ['!', '-'];
+  const positiveSymbols = ['', '+'];
+  const negativeSymbols = ['!', '-'];
 
   test('Should resolve positive key', () => {
     keys.forEach((key) => {
       const expected = createExpected(false, [key], true);
-      expect(resolve(key)).toEqual(expected);
+      positiveSymbols.forEach((sign) => {
+        expect(resolve(`${sign}${key}`)).toEqual(expected);
+      });
     });
   });
 
   test('Should resolve negative key', () => {
     keys.forEach((key) => {
       const expected = createExpected(true, [key], false);
-      negationSymbols.forEach((sign) => {
+      negativeSymbols.forEach((sign) => {
         expect(resolve(`${sign}${key}`)).toEqual(expected);
       });
     });
@@ -46,7 +49,9 @@ describe('createKeyResolver function', () => {
     specialKeys.forEach((specialKey) => {
       const specialResolved = special[specialKey];
       const expected = createExpected(false, specialResolved, true);
-      expect(resolve(specialKey)).toEqual(expected);
+      positiveSymbols.forEach((sign) => {
+        expect(resolve(`${sign}${specialKey}`)).toEqual(expected);
+      });
     });
   });
 
@@ -54,7 +59,7 @@ describe('createKeyResolver function', () => {
     specialKeys.forEach((specialKey) => {
       const specialResolved = special[specialKey];
       const expected = createExpected(true, specialResolved, false);
-      negationSymbols.forEach((sign) => {
+      negativeSymbols.forEach((sign) => {
         expect(resolve(`${sign}${specialKey}`)).toEqual(expected);
       });
     });
@@ -64,9 +69,13 @@ describe('createKeyResolver function', () => {
     const inputs = [
       'invalid',
       '!invalid',
+      '+invalid',
+      '-invalid',
       keys.map((key) => `! ${key}`),
+      keys.map((key) => `+ ${key}`),
       keys.map((key) => `- ${key}`),
       specialKeys.map((key) => `! ${key}`),
+      specialKeys.map((key) => `+ ${key}`),
       specialKeys.map((key) => `- ${key}`),
     ];
     inputs.forEach((input) => {

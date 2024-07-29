@@ -2,7 +2,7 @@ import { createKeyListResolver } from '../../src';
 import { createExpectedCreator } from '../tools/create-expected';
 import type { ArrayItemType } from '../tools/helper-types';
 
-describe('createArrayResolver function', () => {
+describe('createKeyListResolver function', () => {
 
   const keys = ['a', 'b', 'c', 'd'] as const;
   const specialKeys = ['first', 'last'] as const;
@@ -26,7 +26,8 @@ describe('createArrayResolver function', () => {
     };
   });
 
-  const negationSymbols = ['!', '-'] as const;
+  const positiveSymbols = ['', '+'] as const;
+  const negativeSymbols = ['!', '-'] as const;
 
   test('Should throw on invalid input', () => {
     const invalid = [
@@ -51,7 +52,10 @@ describe('createArrayResolver function', () => {
       const otherKey = keys[(i + 1) % keys.length];
       const input = [key, otherKey];
       const expected = createExpected(false, input, true);
-      expect(resolve(input)).toEqual(expected);
+      positiveSymbols.forEach((sign) => {
+        const positiveInput = input.map((key) => `${sign}${key}`);
+        expect(resolve(positiveInput)).toEqual(expected);
+      });
     });
   });
 
@@ -60,9 +64,9 @@ describe('createArrayResolver function', () => {
       const otherKey = keys[(i + 1) % keys.length];
       const input = [key, otherKey];
       const expected = createExpected(true, input, false);
-      negationSymbols.forEach((negation) => {
-        const negatedInput = input.map((key) => `${negation}${key}`);
-        expect(resolve(negatedInput)).toEqual(expected);
+      negativeSymbols.forEach((sign) => {
+        const negativeInput = input.map((key) => `${sign}${key}`);
+        expect(resolve(negativeInput)).toEqual(expected);
       });
     });
   });
@@ -70,28 +74,32 @@ describe('createArrayResolver function', () => {
   test('Should resolve array with positive special keys', () => {
     specialKeys.forEach((specialKey) => {
       const expected = createExpected(false, special[specialKey], true);
-      const input = [specialKey];
-      expect(resolve(input)).toEqual(expected);
+      positiveSymbols.forEach((sign) => {
+        const input = [`${sign}${specialKey}`];
+        expect(resolve(input)).toEqual(expected);
+      });
     });
     specialKeys.forEach((specialKey, i) => {
       const otherKey = specialKeys[(i + 1) % specialKeys.length];
-      const input = [specialKey, otherKey];
       const expected = createExpected(false, [...special[specialKey], ...special[otherKey]], true);
-      expect(resolve(input)).toEqual(expected);
+      positiveSymbols.forEach((sign) => {
+        const input = [specialKey, otherKey].map((key) => `${sign}${key}`);
+        expect(resolve(input)).toEqual(expected);
+      });
     });
   });
 
   test('Should resolve array with negative special keys', () => {
     specialKeys.forEach((specialKey) => {
       const expected = createExpected(true, special[specialKey], false);
-      negationSymbols.forEach((negation) => {
+      negativeSymbols.forEach((negation) => {
         expect(resolve([`${negation}${specialKey}`])).toEqual(expected);
       });
     });
     specialKeys.forEach((specialKey, i) => {
       const otherKey = specialKeys[(i + 1) % specialKeys.length];
       const expected = createExpected(true, [...special[specialKey], ...special[otherKey]], false);
-      negationSymbols.forEach((negation) => {
+      negativeSymbols.forEach((negation) => {
         const input = [specialKey, otherKey].map((key) => `${negation}${key}`);
         expect(resolve(input)).toEqual(expected);
       });
@@ -99,11 +107,12 @@ describe('createArrayResolver function', () => {
   });
 
   test('Should resolve mixed keys', () => {
-    type Negated<T extends string> = `!${T}` | `-${T}`;
-    const inputs: Array<{ input: Array<K | Negated<K> | S | Negated<S>>; expected: ReturnType<typeof createExpected> }> = [
+    type ModifiedKey<T extends string> = `!${T}` | `+${T}` | `-${T}`;
+    const inputs: Array<{ input: Array<K | S | ModifiedKey<K | S>>; expected: ReturnType<typeof createExpected> }> = [
       { input: [], expected: createExpected(false) },
       { input: ['first', '-a'], expected: createExpected(false, ['b'], true) },
       { input: ['!last', 'a'], expected: createExpected(false, ['a', 'b'], true) },
+      { input: ['!last', '+a'], expected: createExpected(false, ['a', 'b'], true) },
     ];
     inputs.forEach(({ input, expected }) => {
       expect(resolve(input)).toEqual(expected);

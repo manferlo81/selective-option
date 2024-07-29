@@ -46,6 +46,7 @@ A simple selective option resolver
     * *type* [`ValueBasedResolver`](#type-valuebasedresolver)
     * *type* [`BoolBasedResolver`](#type-boolbasedresolver)
 * [Other Types](#other-types)
+  * *type* [`PositiveKey`](#type-positivekey)
   * *type* [`NegativeKey`](#type-negativekey)
   * *type* [`KeyList`](#type-keylist)
   * *type* [`SpecialKeys`](#type-specialkeys)
@@ -356,10 +357,10 @@ createResult(['a', 'b'], 20, base); // { a: 20, b: 20, c: 0 }
 ### *type* `SingleKeyOption`
 
 ```typescript
-type SingleKeyOption<K extends string> = K | NegativeKey<K>;
+type SingleKeyOption<K extends string> = PositiveKey<K> | NegativeKey<K>;
 ```
 
-See [`NegativeKey`](#type-negativekey). Used in *type* [`KeyListOption`](#type-keylistoption) and [`KeyOption`](#type-keyoption).
+See [`PositiveKey`](#type-positivekey) and [`NegativeKey`](#type-negativekey). Used in *type* [`KeyListOption`](#type-keylistoption) and [`KeyOption`](#type-keyoption).
 
 * *Example*
 
@@ -530,7 +531,19 @@ See [`Resolver`](#type-resolver) and [`BoolBasedSelectiveOption`](#type-boolbase
 
 These are types which are not exported but help to understand some of the exported types.
 
+### *type* `PositiveKey`
+
+A `key` name or a `key` name prefixed with a `+` sign.
+
+```typescript
+type PositiveKey<K extends string> = K | `+${K}`;
+```
+
+Used in *type* [`SingleKeyOption`](#type-singlekeyoption).
+
 ### *type* `NegativeKey`
+
+A `key` name prefixed with a `!` or `-` sign.
 
 ```typescript
 type NegativeKey<K extends string> = `!${K}` | `-${K}`;

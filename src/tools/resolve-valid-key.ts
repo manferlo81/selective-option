@@ -14,13 +14,13 @@ export function resolveKeyIfValid<K extends string, S extends string>(key: unkno
   if (resolved) return [resolved, true];
 
   // test for negative key format
-  const matched = /^[!-]([^\s]*)$/.exec(key);
+  const matched = /^([+!-])([^\s]*)$/.exec(key);
 
   // fail if it doesn't match negative format
   if (!matched) return;
 
   // get key from matched result
-  const [matchedKey] = matched.slice(1);
+  const [sign, matchedKey] = matched.slice(1);
 
   // try to resolve matched key
   const matchedResolved = resolveKey(matchedKey, keys, special);
@@ -29,6 +29,6 @@ export function resolveKeyIfValid<K extends string, S extends string>(key: unkno
   if (!matchedResolved) return;
 
   // return negative key result
-  return [matchedResolved, false];
+  return [matchedResolved, sign === '+'];
 
 }
