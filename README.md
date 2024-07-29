@@ -8,6 +8,8 @@
 [![Codecov](https://codecov.io/gh/manferlo81/selective-option/branch/main/graph/badge.svg?token=U0GIRWISBJ)](https://codecov.io/gh/manferlo81/selective-option)
 [![Known Vulnerabilities](https://snyk.io/test/github/manferlo81/selective-option/badge.svg)](https://snyk.io/test/github/manferlo81/selective-option)
 
+A simple selective option resolver
+
 ## In this page
 
 * [Install](#install)
@@ -131,6 +133,8 @@ pnpm add selective-option
 
 ### *function* `createValueBasedResolver`
 
+Creates a `value based resolver`. It resolved input as `valid value` (`V`), `null`, `undefined` or [`ObjectOption`](#type-objectoption). It internally uses [`createValueResolver`](#function-createvalueresolver) and [`createObjectResolver`](#function-createobjectresolver) to create a [`Resolver`](#type-resolver)  using [`createResolver`](#function-createresolver). See the examples for more info.
+
 ```typescript
 function createValueBasedResolver<K extends string, S extends string, V, O extends string>(
   keys: readonly K[],
@@ -140,6 +144,13 @@ function createValueBasedResolver<K extends string, S extends string, V, O exten
   special?: SpecialKeys<S, K> | null | undefined,
 ): ValueBasedResolver<K, S, V, O>;
 ```
+
+* *Arguments*
+  * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object. They will also be used to validate `keys` if input is an `object`.
+  * `isValidValue`: A `function` which returns wether or not a `value` is `valid`.
+  * `defaultValue`: A `valid` `value` to be used as default in case the value is `nullish`.
+  * `overrideKey`: A `string` to be used to detect the `override key` if the input is an `object`.
+  * `special`: An optional object mapping `special keys` to multiple `regular keys`. They can be used as `keys` if the input is an `object`.
 
 See [`TypeCheckFunction`](#type-typecheckfunction), [`SpecialKeys`](#type-specialkeys) and [`ValueBasedResolver`](#type-valuebasedresolver).
 
@@ -169,6 +180,8 @@ resolveNumber({ override: 40, ac: 12 }); // overridden + special set value { a: 
 
 ### *function* `createBoolBasedResolver`
 
+Creates a `boolean based resolver`. It resolved input as `valid value` (`V`), `boolean`, `null`, `undefined`, [`KeyOption`](#type-keyoption) or [`ObjectOption`](#type-objectoption). It internally uses [`createValueResolver`](#function-createvalueresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver) and [`createObjectResolver`](#function-createobjectresolver) to create a [`Resolver`](#type-resolver) using [`createResolver`](#function-createresolver). See the examples for more info.
+
 ```typescript
 function createBoolBasedResolver<K extends string, S extends string, V, O extends string>(
   keys: readonly K[],
@@ -178,6 +191,13 @@ function createBoolBasedResolver<K extends string, S extends string, V, O extend
   special?: SpecialKeys<S, K> | null | undefined,
 ): BoolBasedResolver<K, S, V | boolean, O>;
 ```
+
+* *Arguments*
+  * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object. They will also be used to validate `positive keys` and `negative keys` if input is a `string` or an `array`, and to validate `keys` if input is an `object`.
+  * `isValidValue`: A `function` which returns wether or not a `value` is `valid`. Note that this function doesn't need to test for `boolean` values as they will be included by default. If pass a `nullish` value it will only test for `boolean` values.
+  * `defaultValue`: A `valid` `value` to be used as default in case the value is `nullish`.
+  * `overrideKey`: A `string` to be used to detect the `override key` if the input is an `object`.
+  * `special`: An optional object mapping `special keys` to multiple `regular keys`. They can be used as `keys` if the input is an `object` and as `positive keys` or `negative keys` if input is a `string` or an `array`.
 
 See [`TypeCheckFunction`](#type-typecheckfunction), [`SpecialKeys`](#type-specialkeys) and [`BoolBasedResolver`](#type-boolbasedresolver).
 
@@ -221,11 +241,16 @@ function createValueResolver<K extends string, V>(
 ): PotentialResolver<K, V>;
 ```
 
+* *Arguments*
+  * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object.
+  * `isValidValue`: A `function` which returns wether or not a `value` is `valid`.
+  * `defaultValue`: A `valid` `value` to be used as default in case the input value is `nullish`.
+
 See [`TypeCheckFunction`](#type-typecheckfunction) and [`PotentialResolver`](#type-potentialresolver).
 
 ### *function* `createKeyResolver`
 
-Creates a `potential resolver` function that resolves if the `input value` is a `string` that satisfies the `isKey` function, or if it is one of the `special` object keys. It returns undefined otherwise.
+Creates a `potential resolver` function that resolves if the `input value` is a `string` and is present in `keys` `array`, or if it is one of the `special` object keys. It also resolves if input is a `key` in the [`NegativeKey`](#type-negativekey) format. It returns undefined otherwise.
 
 ```typescript
 function createKeyResolver<K extends string, S extends string>(
@@ -234,11 +259,15 @@ function createKeyResolver<K extends string, S extends string>(
 ): PotentialResolver<K, boolean>;
 ```
 
+* *Arguments*
+  * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object. They will also be used to validate `positive keys` or `negative keys`.
+  * `special`: An optional object mapping `special keys` to multiple `regular keys`. These `special keys` can also be used as `positive keys` or `negative keys`.
+
 See [`KeyList`](#type-keylist), [`SpecialKeys`](#type-specialkeys) and [`PotentialResolver`](#type-potentialresolver).
 
 ### *function* `createKeyListResolver`
 
-Creates a `potential resolver` function that resolves if the `input value` is an `array of string` and every string satisfies the `isKey` function, or if it is one of the `special` object keys. It returns undefined otherwise.
+Creates a `potential resolver` function that resolves if the `input value` is an `array` of `string` and every `string` is present in `keys` `array`, or if it is one of the `special` object keys. It also resolves if any of the `string` in the array follow the [`NegativeKey`](#type-negativekey) format. It returns undefined otherwise.
 
 ```typescript
 function createKeyListResolver<K extends string, S extends string>(
@@ -251,7 +280,7 @@ See [`KeyList`](#type-keylist), [`SpecialKeys`](#type-specialkeys) and [`Potenti
 
 ### *function* `createObjectResolver`
 
-Creates a resolver function that resolves if the `input value` is an `object` and it follows a valid format.
+Creates a `potential resolver` function that resolves if the `input value` is an `object` and it follows the [`ObjectOption`](#type-objectoption) format. It returns undefined otherwise.
 
 ```typescript
 function createObjectResolver<K extends string, S extends string, V, O extends string>(
@@ -262,6 +291,13 @@ function createObjectResolver<K extends string, S extends string, V, O extends s
   special?: SpecialKeys<S, K> | null | undefined,
 ): PotentialResolver<K, V>;
 ```
+
+* *Arguments*
+  * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object. They will also be used to validate input object `keys`.
+  * `isValidValue`: A `function` which returns wether or not a `value` is `valid`.
+  * `defaultValue`: A `valid` `value` to be used as default in case the value is `nullish`.
+  * `overrideKey`: A `string` to be used to detect the `override key` if the input is an `object`.
+  * `special`: An optional object mapping `special keys` to multiple `regular keys`. They can also be used as `keys` in input `object`.
 
 See [`KeyList`](#type-keylist), [`TypeCheckFunction`](#type-typecheckfunction), [`SpecialKeys`](#type-specialkeys) and [`PotentialResolver`](#type-potentialresolver).
 
@@ -279,7 +315,7 @@ See [`PotentialResolver`](#type-potentialresolver) and [`Resolver`](#type-resolv
 
 ### *function* `createResult`
 
-Creates a `resolved object`. Used internally in every potential resolver function. It is exported in case you need to write your own potential resolver.
+Creates a [`Resolved`](#type-resolved) `object`. Used internally in every `potential resolver` function. It is exported in case you need to write your own `potential resolver` function.
 
 ```typescript
 function createResult<K extends string, V>(
@@ -289,9 +325,16 @@ function createResult<K extends string, V>(
 ): Resolved<K, V>;
 ```
 
+* *Arguments*
+  * `keys`: An `array` of `string` to be used as `keys` in the [`Resolved`](#type-resolved) object.
+  * `value`: A value to be assigned to every `key` in the [`Resolved`](#type-resolved) object.
+  * `input`: An optional [`Resolved`](#type-resolved) object to be used as base for the new [`Resolved`](#type-resolved) object. This `input` object won't be modified, a new one will be created instead. If you pass an empty array as `keys`, the input object will be returned, unless `input` is `nullish` in which case a new empty `object` will be returned.
+
 See [`KeyList`](#type-keylist) and [`Resolved`](#type-resolved).
 
 * *Example*
+
+Creating a [`Resolved`](#type-resolved) `object`.
 
 ```typescript
 createResult(['a', 'b', 'c'], true); // { a: true, b: true, c: true }
@@ -299,6 +342,8 @@ createResult(['a', 'b', 'c'], 10); // { a: 10, b: 10, c: 10 }
 ```
 
 * *Example*
+
+Extending a previously created [`Resolved`](#type-resolved) `object`.
 
 ```typescript
 const base = createResult(['a', 'b', 'c'], 0); // base = { a: 0, b: 0, c: 0 }
@@ -316,6 +361,25 @@ type SingleKeyOption<K extends string> = K | NegativeKey<K>;
 
 See [`NegativeKey`](#type-negativekey). Used in *type* [`KeyListOption`](#type-keylistoption) and [`KeyOption`](#type-keyoption).
 
+* *Example*
+
+```typescript
+function logKey(key: SingleKeyOption<'a' | 'b'>) {
+  console.log(key);
+}
+
+logKey('a'); // OK
+logKey('b'); // OK
+logKey('!a'); // OK
+logKey('!b'); // OK
+logKey('-a'); // OK
+logKey('-b'); // OK
+
+logKey('x') // Type Error
+logKey('z') // Type Error
+logKey('!z') // Type Error
+```
+
 ### *type* `KeyListOption`
 
 ```typescript
@@ -323,6 +387,24 @@ type KeyListOption<K extends string> = KeyList<SingleKeyOption<K>>;
 ```
 
 See [`KeyList`](#type-keylist) and [`SingleKeyOption`](#type-singlekeyoption). Used in *type* [`KeyOption`](#type-keyoption).
+
+* *Example*
+
+```typescript
+function logKeys(keys: KeyListOption<'a' | 'b'>) {
+  console.log(keys);
+}
+
+logKeys(['a']); // OK
+logKeys(['a', '!b']); // OK
+logKeys(['b', '-a']); // OK
+logKeys(['a', 'b', '-a']); // OK
+
+logKeys(['x']) // Type Error
+logKeys(['!z']) // Type Error
+logKeys(['x', 'a']) // Type Error
+logKeys(['a', '!z']) // Type Error
+```
 
 ### *type* `KeyOption`
 
@@ -332,13 +414,55 @@ type KeyOption<K extends string> = SingleKeyOption<K> | KeyListOption<K>;
 
 See [`SingleKeyOption`](#type-singlekeyoption) and [`KeyListOption`](#type-keylistoption). Used in *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption).
 
+* *Example*
+
+```typescript
+function logOption(option: KeyOption<'a' | 'b'>) {
+  console.log(option);
+}
+
+logOption('a'); // OK
+logOption('b'); // OK
+logOption('!a'); // OK
+logOption('-b'); // OK
+logOption(['-b', 'a']); // OK
+logOption(['-b', '!a']); // OK
+
+logOption('z') // Type Error
+logOption('!z') // Type Error
+logOption(['!z']) // Type Error
+logOption(['!z', 'a']) // Type Error
+```
+
 ### *type* `ObjectOption`
+
+An object containing the keys defined by `K` | `O` and the values of `V` or `nullish` (`null` | `undefined`). It will be used by the [`PotentialResolver`](#type-potentialresolver) created by [`createObjectResolver`](#function-createobjectresolver) in order to create a `result` using [`createResult`](#function-createresult).
 
 ```typescript
 type ObjectOption<K extends string, V, O extends string> = Partial<Record<K | O, V | null | undefined>>;
 ```
 
 Used in *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption).
+
+* *Example*
+
+```typescript
+function logOption(option: ObjectOption<'a' | 'b', number, 'override'>) {
+  console.log(option);
+}
+
+logOption({}); // OK
+logOption({ override: 10 }); // OK
+logOption({ override: 10, a: 8 }); // OK
+logOption({ a: 45 }); // OK
+logOption({ a: 45, b: 10 }); // OK
+
+logOption('z') // Type Error
+logOption([]) // Type Error
+logOption({ override: 'string' }) // Type Error
+logOption({ override: 'string', b: 0 }) // Type Error
+logOption({ a: 10, b: true }) // Type Error
+```
 
 ### *type* `ValueBasedSelectiveOption`
 
