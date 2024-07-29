@@ -39,7 +39,6 @@
     * *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption)
   * Resolver Types
     * *type* [`Resolved`](#type-resolved)
-    * *type* [`InputResolver`](#type-inputresolver)
     * *type* [`PotentialResolver`](#type-potentialresolver)
     * *type* [`Resolver`](#type-resolver)
     * *type* [`ValueBasedResolver`](#type-valuebasedresolver)
@@ -371,29 +370,21 @@ type Resolved<K extends string, V> = Readonly<Record<K, V>>;
 
 Used in *function* [`createResult`](#function-createresult) and *type* [`PotentialResolver`](#type-potentialresolver), [`Resolver`](#type-resolver).
 
-### *type* `InputResolver`
-
-```typescript
-type InputResolver<I, R> = (input: I) => R;
-```
-
-Used in *type* [`PotentialResolver`](#type-potentialresolver) and [`Resolver`](#type-resolver).
-
 ### *type* `PotentialResolver`
 
 ```typescript
-type PotentialResolver<K extends string, V> = InputResolver<unknown, Resolved<K, V> | void | undefined>;
+type PotentialResolver<K extends string, V> = (input: unknown) => Resolved<K, V> | void | undefined;
 ```
 
-See [`InputResolver`](#type-inputresolver) and [`Resolved`](#type-resolved). Used in *function* [`createValueResolver`](#function-createvalueresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver), [`createObjectResolver`](#function-createobjectresolver) and [`createResolver`](#function-createresolver).
+See [`Resolved`](#type-resolved). Used in *function* [`createValueResolver`](#function-createvalueresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver), [`createObjectResolver`](#function-createobjectresolver) and [`createResolver`](#function-createresolver).
 
 ### *type* `Resolver`
 
 ```typescript
-type Resolver<K extends string, V, I = unknown> = InputResolver<I, Resolved<K, V>>;
+type Resolver<K extends string, V, I> = (input: I) => Resolved<K, V>;
 ```
 
-See [`InputResolver`](#type-inputresolver) and [`Resolved`](#type-resolved). Used in *function* [`createResolver`](#function-createresolver) and *type* [`ValueBasedResolver`](#type-valuebasedresolver) and [`BoolBasedResolver`](#type-boolbasedresolver).
+See [`Resolved`](#type-resolved). Used in *function* [`createResolver`](#function-createresolver) and *type* [`ValueBasedResolver`](#type-valuebasedresolver) and [`BoolBasedResolver`](#type-boolbasedresolver).
 
 ### *type* `ValueBasedResolver`
 
