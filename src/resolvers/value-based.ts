@@ -42,7 +42,7 @@ export function createValueBasedResolver<K extends string, S extends string, V, 
   const resolveObject = createObjectResolver(keys, isValidValue, defaultValue, overrideKey, special);
 
   // return compiled resolver
-  return createResolver<K, V, ValueBasedSelectiveOption<K | S, V, O>>(
+  return createResolver<K, V, ValueBasedSelectiveOption<K | S | O, V>>(
     resolveValue,
     resolveObject,
   );

@@ -467,11 +467,11 @@ logOption({ a: 10, b: true }) // Type Error
 ### *type* `ValueBasedSelectiveOption`
 
 ```typescript
-type ValueBasedSelectiveOption<K extends string, V, O extends string> =
+type ValueBasedSelectiveOption<K extends string, V> =
   | V
   | null
   | undefined
-  | ObjectOption<K | O, V>;
+  | ObjectOption<K, V>;
 ```
 
 See [`ObjectOption`](#type-objectoption). Used in *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption) and [`ValueBasedResolver`](#type-valuebasedresolver).
@@ -481,7 +481,7 @@ See [`ObjectOption`](#type-objectoption). Used in *type* [`BoolBasedSelectiveOpt
 ```typescript
 type BoolBasedSelectiveOption<K extends string, V, O extends string> =
   | KeyOption<K>
-  | ValueBasedSelectiveOption<K, V | boolean, O>;
+  | ValueBasedSelectiveOption<K | O, V | boolean>;
 ```
 
 See [`KeyOption`](#type-keyoption) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *type* [`BoolBasedResolver`](#type-boolbasedresolver).
@@ -513,7 +513,7 @@ See [`Resolved`](#type-resolved). Used in *function* [`createResolver`](#functio
 ### *type* `ValueBasedResolver`
 
 ```typescript
-type ValueBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V, ValueBasedSelectiveOption<K | S, V, O>>;
+type ValueBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V, ValueBasedSelectiveOption<K | S | O, V>>;
 ```
 
 See [`Resolver`](#type-resolver) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver).

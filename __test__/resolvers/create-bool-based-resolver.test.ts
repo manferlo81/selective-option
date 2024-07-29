@@ -264,7 +264,7 @@ describe('createBoolBasedResolver function', () => {
 
     const defaultResult = createExpected(defaultValue);
 
-    const inputs: Array<{ input: ValueBasedSelectiveOption<RegularKey | SpecialKey, BoolBaseValue, OverrideKey>; expected: Partial<Record<RegularKey, BoolBaseValue>> }> = [
+    const inputs: Array<{ input: ValueBasedSelectiveOption<RegularKey | SpecialKey | OverrideKey, BoolBaseValue>; expected: Partial<Record<RegularKey, BoolBaseValue>> }> = [
       { input: { male: 'yes', john: 'no' }, expected: { john: 'no', peter: 'yes' } },
       { input: { john: 'no', specified: false }, expected: { john: 'no', peter: false, gloria: false, maggie: false } },
     ];
