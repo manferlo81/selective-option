@@ -31,7 +31,9 @@
     * *function* [`createResult`](#function-createresult)
 * [Exported Types](#exported-types)
   * Input Types
-    * *type* [`StringOption`](#type-stringoption)
+    * *type* [`SingleKeyOption`](#type-singlekeyoption)
+    * *type* [`KeyListOption`](#type-keylistoption)
+    * *type* [`KeyOption`](#type-keyoption)
     * *type* [`ObjectOption`](#type-objectoption)
     * *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption)
     * *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption)
@@ -43,6 +45,7 @@
     * *type* [`ValueBasedResolver`](#type-valuebasedresolver)
     * *type* [`BoolBasedResolver`](#type-boolbasedresolver)
 * [Other Types](#other-types)
+  * *type* [`NegateKey`](#type-negatekey)
   * *type* [`KeyList`](#type-keylist)
   * *type* [`SpecialKeys`](#type-specialkeys)
   * *type* [`TypeCheckFunction`](#type-typecheckfunction)
@@ -306,13 +309,29 @@ createResult(['a', 'b'], 20, base); // { a: 20, b: 20, c: 0 }
 
 ## Exported Types
 
-### *type* `StringOption`
+### *type* `SingleKeyOption`
 
 ```typescript
-type StringOption<K extends string> = K | KeyList<K>;
+type SingleKeyOption<K extends string> = K | NegateKey<K>;
 ```
 
-See [`KeyList`](#type-keylist). Used in *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption).
+See [`NegateKey`](#type-negatekey). Used in *type* [`KeyListOption`](#type-keylistoption) and [`KeyOption`](#type-keyoption).
+
+### *type* `KeyListOption`
+
+```typescript
+type KeyListOption<K extends string> = KeyList<SingleKeyOption<K>>;
+```
+
+See [`KeyList`](#type-keylist) and [`SingleKeyOption`](#type-singlekeyoption). Used in *type* [`KeyOption`](#type-keyoption).
+
+### *type* `KeyOption`
+
+```typescript
+type KeyOption<K extends string> = SingleKeyOption<K> | KeyListOption<K>;
+```
+
+See [`SingleKeyOption`](#type-singlekeyoption) and [`KeyListOption`](#type-keylistoption). Used in *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption).
 
 ### *type* `ObjectOption`
 
@@ -338,11 +357,11 @@ See [`ObjectOption`](#type-objectoption). Used in *type* [`BoolBasedSelectiveOpt
 
 ```typescript
 type BoolBasedSelectiveOption<K extends string, V, O extends string> =
-  | StringOption<K>
+  | KeyOption<K>
   | ValueBasedSelectiveOption<K, V | boolean, O>;
 ```
 
-See [`StringOption`](#type-stringoption) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *type* [`BoolBasedResolver`](#type-boolbasedresolver).
+See [`KeyOption`](#type-keyoption) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *type* [`BoolBasedResolver`](#type-boolbasedresolver).
 
 ### *type* `Resolved`
 
@@ -394,13 +413,23 @@ See [`Resolver`](#type-resolver) and [`BoolBasedSelectiveOption`](#type-boolbase
 
 ## Other Types
 
+These are types which are not exported but help to understand some of the exported types.
+
+### *type* `NegateKey`
+
+```typescript
+type NegateKey<K extends string> = `!${K}` | `-${K}`;
+```
+
+Used in *type* [`SingleKeyOption`](#type-singlekeyoption).
+
 ### *type* `KeyList`
 
 ```typescript
 type KeyList<K> = readonly K[];
 ```
 
-Used in *function* [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver), [`createObjectResolver`](#function-createobjectresolver), [`createResult`](#function-createresult) and *type* [`StringOption`](#type-stringoption).
+Used in *function* [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver), [`createObjectResolver`](#function-createobjectresolver), [`createResult`](#function-createresult) and *type* [`KeyOption`](#type-keyoption).
 
 ### *type* `SpecialKeys`
 
