@@ -134,7 +134,7 @@ pnpm add selective-option
 
 ### *function* `createValueBasedResolver`
 
-Creates a `value based resolver`. It resolved input as `valid value` (`V`), `null`, `undefined` or [`ObjectOption`](#type-objectoption). It internally uses [`createValueResolver`](#function-createvalueresolver) and [`createObjectResolver`](#function-createobjectresolver) to create a [`Resolver`](#type-resolver)  using [`createResolver`](#function-createresolver). See the examples for more info.
+Creates a `value based resolver`. It resolves input as `valid value` (`V`), `null`, `undefined` or [`ObjectOption`](#type-objectoption). It internally uses [`createValueResolver`](#function-createvalueresolver) and [`createObjectResolver`](#function-createobjectresolver) to create a [`Resolver`](#type-resolver)  using [`createResolver`](#function-createresolver). See the examples for more info.
 
 ```typescript
 function createValueBasedResolver<K extends string, S extends string, V, O extends string>(
@@ -181,7 +181,7 @@ resolveNumber({ override: 40, ac: 12 }); // overridden + special set value { a: 
 
 ### *function* `createBoolBasedResolver`
 
-Creates a `boolean based resolver`. It resolved input as `valid value` (`V`), `boolean`, `null`, `undefined`, [`KeyOption`](#type-keyoption) or [`ObjectOption`](#type-objectoption). It internally uses [`createValueResolver`](#function-createvalueresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver) and [`createObjectResolver`](#function-createobjectresolver) to create a [`Resolver`](#type-resolver) using [`createResolver`](#function-createresolver). See the examples for more info.
+Creates a `boolean based resolver`. It resolves input as `valid value` (`V`), `boolean`, `null`, `undefined`, [`KeyOption`](#type-keyoption) or [`ObjectOption`](#type-objectoption). It internally uses [`createValueResolver`](#function-createvalueresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver) and [`createObjectResolver`](#function-createobjectresolver) to create a [`Resolver`](#type-resolver) using [`createResolver`](#function-createresolver). See the examples for more info.
 
 ```typescript
 function createBoolBasedResolver<K extends string, S extends string, V, O extends string>(
@@ -304,7 +304,7 @@ See [`KeyList`](#type-keylist), [`TypeCheckFunction`](#type-typecheckfunction), 
 
 ### *function* `createResolver`
 
-Creates a resolver base on a series of `potential resolvers`. I will iterate through every `potential resolver` until one resolves and return the resolved result. It will `throw` if no `potential resolver` resolves.
+Creates a resolver base on a series of `potential resolvers`. I will iterate through every `potential resolver` until one resolves and return the [`Resolved`](#type-resolved) object result. It will `throw` if no `potential resolver` resolves.
 
 ```typescript
 function createResolver<K extends string, V, I = unknown>(
@@ -443,6 +443,10 @@ An object containing the keys defined by `K` | `O` and the values of `V` or `nul
 type ObjectOption<K extends string, V> = Partial<Record<K, V | null | undefined>>;
 ```
 
+* *Generics*
+  `K`: `keys` allowed in the input `object`.
+  `V`: `value` type allowed inside input `object`.
+
 Used in *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption).
 
 * *Example*
@@ -475,6 +479,10 @@ type ValueBasedSelectiveOption<K extends string, V> =
   | ObjectOption<K, V>;
 ```
 
+* *Generics*
+  `K`: `keys` allowed if the input is an `object`.
+  `V`: `value` type allowed as input value and inside input if it's an `object`.
+
 See [`ObjectOption`](#type-objectoption). Used in *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption) and [`ValueBasedResolver`](#type-valuebasedresolver).
 
 ### *type* `BoolBasedSelectiveOption`
@@ -484,6 +492,11 @@ type BoolBasedSelectiveOption<K extends string, V, O extends string> =
   | KeyOption<K>
   | ValueBasedSelectiveOption<K | O, V | boolean>;
 ```
+
+* *Generics*
+  `K`: `keys` allowed as `positive keys` or `negative keys`, and as keys if input is an `object`.
+  `V`: `value` type allowed as input value and inside input if it's an `object`. It will also allow `boolean` as valid value.
+  `O`: `key` name allowed for the `override` key if input is an `object`.
 
 See [`KeyOption`](#type-keyoption) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *type* [`BoolBasedResolver`](#type-boolbasedresolver).
 
@@ -553,6 +566,8 @@ Used in *type* [`SingleKeyOption`](#type-singlekeyoption).
 
 ### *type* `KeyList`
 
+An immutable list of keys.
+
 ```typescript
 type KeyList<K> = readonly K[];
 ```
@@ -561,11 +576,25 @@ Used in *function* [`createKeyResolver`](#function-createkeyresolver), [`createK
 
 ### *type* `SpecialKeys`
 
+An object mapping `special keys` to a list of `regular keys`.
+
 ```typescript
 type SpecialKeys<S extends string, K extends string> = Readonly<Record<S, K[]>>;
 ```
 
 Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver), [`createBoolBasedResolver`](#function-createboolbasedresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver) and [`createObjectResolver`](#function-createobjectresolver).
+
+* *Example*
+
+```typescript
+type Country = 'american' | 'japanese';
+type Car = 'chevrolet' | 'toyota' | 'suzuki' | 'ford';
+
+const special: SpecialKeys<Country, Car> = {
+  american: ['ford', 'chevrolet'],
+  japanese: ['toyota', 'suzuki'],
+};
+```
 
 ### *type* `TypeCheckFunction`
 
@@ -574,6 +603,18 @@ type TypeCheckFunction<V> = (input: unknown) => input is V;
 ```
 
 Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver), [`createBoolBasedResolver`](#function-createboolbasedresolver), [`createValueResolver`](#function-createvalueresolver) and [`createObjectResolver`](#function-createobjectresolver).
+
+* *Example*
+
+```typescript
+const isString: TypeCheckFunction<string> = (input) => {
+  return typeof input === 'string';
+};
+
+const isRGB: TypeCheckFunction<'red' | 'green' | 'blue'> = (input) => {
+  return ['red', 'green', 'blue'].includes(input as never);
+}
+```
 
 ## License
 
