@@ -1,9 +1,10 @@
 import type { Nullish, TypeCheckFunction } from '../private-types';
 
-type IsValidResult<V> = [isValid: true, validValue: V];
-type IsNullishResult = [isValid: false, value: Nullish];
+type ValueOrNullishResult<V, T> = [isValid: V, value: T];
+type IsValidResult<V> = ValueOrNullishResult<true, V>;
+type IsNullishResult = ValueOrNullishResult<false, Nullish>;
 
-export function resolveValue<V>(value: unknown, isValidValue: TypeCheckFunction<V>): IsValidResult<V> | IsNullishResult | undefined {
+export function resolveValueOrNullish<V>(value: unknown, isValidValue: TypeCheckFunction<V>): IsValidResult<V> | IsNullishResult | undefined {
 
   // return "success" result if value is valid
   if (isValidValue(value)) return [true, value];

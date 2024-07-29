@@ -1,6 +1,6 @@
 import { createResult } from '../create-result';
 import type { KeyList, TypeCheckFunction } from '../private-types';
-import { resolveValue } from '../tools/value-nullish';
+import { resolveValueOrNullish } from '../tools/value-nullish';
 import type { PotentialResolver } from './types';
 
 export function createValueResolver<K extends string, V>(
@@ -11,7 +11,7 @@ export function createValueResolver<K extends string, V>(
 
   return (value) => {
 
-    const valueResolved = resolveValue(value, isValidValue);
+    const valueResolved = resolveValueOrNullish(value, isValidValue);
 
     if (!valueResolved) return;
 

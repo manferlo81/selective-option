@@ -3,7 +3,7 @@ import type { AllowNullish, KeyList, Nullish, SpecialKeys, TypeCheckFunction } f
 import { errorInvalidKey, errorInvalidValue } from '../tools/errors';
 import { is, isArray } from '../tools/is';
 import { resolveKey } from '../tools/key';
-import { resolveValue } from '../tools/value-nullish';
+import { resolveValueOrNullish } from '../tools/value-nullish';
 import type { PotentialResolver, Resolved } from './types';
 
 type ResultExtendItem<K extends string, V> = [keys: KeyList<K>, value: V];
@@ -28,7 +28,7 @@ function processInput<K extends string, S extends string, V, O extends string>(
     const value = input[key as never];
 
     // resolve value
-    const valueResolved = resolveValue(value, isValidValue);
+    const valueResolved = resolveValueOrNullish(value, isValidValue);
 
     // throw if value is not valid
     if (!valueResolved) throw errorInvalidValue(value);
