@@ -73,7 +73,7 @@ jobs:
   job_upload_coverage:
     name: Upload Coverage
 
-    if: ${{ github.ref_type == 'branch' }}
+    if: ${{ github.event_name == 'push' && github.ref_type == 'branch' }}
     needs: job_test_and_build
     runs-on: ubuntu-latest
 
