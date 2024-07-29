@@ -439,7 +439,7 @@ logOption(['!z', 'a']) // Type Error
 An object containing the keys defined by `K` | `O` and the values of `V` or `nullish` (`null` | `undefined`). It will be used by the [`PotentialResolver`](#type-potentialresolver) created by [`createObjectResolver`](#function-createobjectresolver) in order to create a `result` using [`createResult`](#function-createresult).
 
 ```typescript
-type ObjectOption<K extends string, V, O extends string> = Partial<Record<K | O, V | null | undefined>>;
+type ObjectOption<K extends string, V> = Partial<Record<K, V | null | undefined>>;
 ```
 
 Used in *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption).
@@ -447,7 +447,7 @@ Used in *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption).
 * *Example*
 
 ```typescript
-function logOption(option: ObjectOption<'a' | 'b', number, 'override'>) {
+function logOption(option: ObjectOption<'a' | 'b' | 'override', number>) {
   console.log(option);
 }
 
@@ -471,7 +471,7 @@ type ValueBasedSelectiveOption<K extends string, V, O extends string> =
   | V
   | null
   | undefined
-  | ObjectOption<K, V, O>;
+  | ObjectOption<K | O, V>;
 ```
 
 See [`ObjectOption`](#type-objectoption). Used in *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption) and [`ValueBasedResolver`](#type-valuebasedresolver).

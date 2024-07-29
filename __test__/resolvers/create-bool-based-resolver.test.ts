@@ -245,7 +245,7 @@ describe('createBoolBasedResolver function', () => {
 
   test('Should resolve keys after override', () => {
 
-    const inputs: Array<{ input: ObjectOption<RegularKey | SpecialKey, LiteralValue, OverrideKey>; override: LiteralValue; expected: Partial<Record<RegularKey, BoolBaseValue>> }> = [
+    const inputs: Array<{ input: ObjectOption<RegularKey | SpecialKey | OverrideKey, LiteralValue>; override: LiteralValue; expected: Partial<Record<RegularKey, BoolBaseValue>> }> = [
       { input: { john: 'no' }, override: 'yes', expected: { john: 'no' } },
       { input: { male: 'yes' }, override: 'no', expected: { john: 'yes', peter: 'yes' } },
     ];
