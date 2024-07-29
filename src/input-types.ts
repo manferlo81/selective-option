@@ -1,6 +1,6 @@
-import type { AllowNullish, KeyList, NegateKey } from './private-types';
+import type { AllowNullish, KeyList, NegativeKey } from './private-types';
 
-export type SingleKeyOption<K extends string> = K | NegateKey<K>;
+export type SingleKeyOption<K extends string> = K | NegativeKey<K>;
 export type KeyListOption<K extends string> = KeyList<SingleKeyOption<K>>;
 export type KeyOption<K extends string> = SingleKeyOption<K> | KeyListOption<K>;
 
