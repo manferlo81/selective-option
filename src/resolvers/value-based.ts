@@ -11,7 +11,7 @@ export function createValueBasedResolver<K extends string, S extends string, V, 
   defaultValue: V,
   overrideKey: O,
   special: SpecialKeys<S, K>,
-): ValueBasedResolver<K, S, V, O>;
+): ValueBasedResolver<K, S | O, V>;
 
 export function createValueBasedResolver<K extends string, V, O extends string>(
   keys: KeyList<K>,
@@ -19,7 +19,7 @@ export function createValueBasedResolver<K extends string, V, O extends string>(
   defaultValue: V,
   overrideKey: O,
   special?: Nullish,
-): ValueBasedResolver<K, never, V, O>;
+): ValueBasedResolver<K, O, V>;
 
 export function createValueBasedResolver<K extends string, S extends string, V, O extends string>(
   keys: KeyList<K>,
@@ -27,7 +27,7 @@ export function createValueBasedResolver<K extends string, S extends string, V, 
   defaultValue: V,
   overrideKey: O,
   special?: AllowNullish<SpecialKeys<S, K>>,
-): ValueBasedResolver<K, S, V, O>;
+): ValueBasedResolver<K, S | O, V>;
 
 export function createValueBasedResolver<K extends string, S extends string, V, O extends string>(
   keys: KeyList<K>,
@@ -35,7 +35,7 @@ export function createValueBasedResolver<K extends string, S extends string, V, 
   defaultValue: V,
   overrideKey: O,
   special?: AllowNullish<SpecialKeys<S, K>>,
-): ValueBasedResolver<K, S, V, O> {
+): ValueBasedResolver<K, S | O, V> {
 
   // create potential resolvers
   const resolveValue = createValueResolver(keys, isValidValue, defaultValue);

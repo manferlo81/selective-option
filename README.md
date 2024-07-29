@@ -142,7 +142,7 @@ function createValueBasedResolver<K extends string, S extends string, V, O exten
   defaultValue: V,
   overrideKey: O,
   special?: SpecialKeys<S, K> | null | undefined,
-): ValueBasedResolver<K, S, V, O>;
+): ValueBasedResolver<K, S | O, V>;
 ```
 
 * *Arguments*
@@ -513,7 +513,7 @@ See [`Resolved`](#type-resolved). Used in *function* [`createResolver`](#functio
 ### *type* `ValueBasedResolver`
 
 ```typescript
-type ValueBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V, ValueBasedSelectiveOption<K | S | O, V>>;
+type ValueBasedResolver<K extends string, X extends string, V> = Resolver<K, V, ValueBasedSelectiveOption<K | X, V>>;
 ```
 
 See [`Resolver`](#type-resolver) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver).
