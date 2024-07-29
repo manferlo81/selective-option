@@ -14,7 +14,7 @@ const rules = {
   'no-useless-rename': 'error',
   'object-shorthand': 'error',
 
-  '@stylistic/linebreak-style': rule('windows'),
+  '@stylistic/linebreak-style': rule('unix'),
   '@stylistic/indent': rule(2),
   '@stylistic/semi': rule('always'),
   '@stylistic/quotes': rule('single'),

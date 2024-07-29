@@ -4,7 +4,6 @@
 
 ### [0.0.2](https://github.com/manferlo81/selective-option/compare/v0.0.1...v0.0.2) (2024-07-22)
 
-
 ### Features
 
 * Allow to set default key name ([5f77dfd](https://github.com/manferlo81/selective-option/commit/5f77dfdbfff63eb10c1bbdbb2e5fd96c621f3353))
