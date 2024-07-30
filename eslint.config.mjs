@@ -1,55 +1,60 @@
-import pluginJs from '@eslint/js';
+import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
-import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint';
+import { config, configs as typescriptConfigs } from 'typescript-eslint';
 
-/**
- * @param { any } options
- * @param { string } [type ]
- * @returns { [ string, any ] }
- */
-const rule = (options, type = 'error') => [type, options];
+const rule = (options) => ['error', options];
 
-const rules = {
+const pluginRules = (pluginName, rules) => Object.keys(rules).reduce((output, ruleName) => {
+  const pluginPrefixedRuleName = `${pluginName}/${ruleName}`;
+  const ruleEntry = rules[ruleName];
+  return { ...output, [pluginPrefixedRuleName]: ruleEntry };
+}, {});
+
+const eslintRules = {
   'no-useless-rename': 'error',
   'object-shorthand': 'error',
+};
 
-  '@stylistic/linebreak-style': rule('unix'),
-  '@stylistic/indent': rule(2),
-  '@stylistic/semi': rule('always'),
-  '@stylistic/quotes': rule('single'),
-  '@stylistic/comma-dangle': rule('always-multiline'),
-  '@stylistic/member-delimiter-style': rule({}),
-  '@stylistic/quote-props': rule('as-needed'),
-  '@stylistic/arrow-parens': rule('always'),
-  '@stylistic/padded-blocks': 'off',
+const typescriptRules = pluginRules('@typescript-eslint', {
+  'array-type': rule({
+    default: 'array-simple',
+    readonly: 'array-simple',
+  }),
+  'restrict-template-expressions': 'off',
+});
 
-  '@stylistic/no-multiple-empty-lines': rule({
+const stylisticRules = pluginRules('@stylistic', {
+  'indent': rule(2),
+  'linebreak-style': rule('unix'),
+  'quotes': rule('single'),
+  'semi': rule('always'),
+
+  'no-multiple-empty-lines': rule({
     max: 1,
     maxBOF: 0,
     maxEOF: 0,
   }),
 
-  '@typescript-eslint/array-type': rule({
-    default: 'array-simple',
-    readonly: 'array-simple',
-  }),
-  '@typescript-eslint/restrict-template-expressions': 'off',
-};
+  'member-delimiter-style': rule({}),
+  'arrow-parens': rule('always'),
+  'padded-blocks': 'off',
+});
 
-const typescriptFlatConfigs = typescriptConfig(
+const rules = { ...eslintRules, ...typescriptRules, ...stylisticRules };
+
+const typescriptFlatConfig = config(
   ...typescriptConfigs.strictTypeChecked,
-  { languageOptions: { parserOptions: { project: true, tsconfigRootDir: process.cwd() } } },
   ...typescriptConfigs.stylisticTypeChecked,
+  { languageOptions: { parserOptions: { project: true } } },
+  { files: ['**/*.{js,mjs,cjs}'], ...typescriptConfigs.disableTypeChecked },
 );
 
-export default typescriptConfig(
-  { ignores: ['node_modules', 'dist', 'coverage'] },
+export default config(
   { files: ['**/*.{js,mjs,cjs,ts}'] },
-  { files: ['**/*.js'], languageOptions: { sourceType: 'script' } },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
-  pluginJs.configs.recommended,
-  ...typescriptFlatConfigs,
+  js.configs.recommended,
+  ...typescriptFlatConfig,
   stylistic.configs['recommended-flat'],
   { rules },
 );
