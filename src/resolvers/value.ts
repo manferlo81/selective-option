@@ -3,11 +3,11 @@ import type { KeyList, TypeCheckFunction } from '../private-types';
 import { resolveValueOrNullish } from '../tools/value-nullish';
 import type { PotentialResolver } from './types';
 
-export function createValueResolver<K extends string, V>(
+export function createValueResolver<K extends string, V, D = V>(
   keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,
-  defaultValue: V,
-): PotentialResolver<K, V> {
+  defaultValue: D,
+): PotentialResolver<K, V | D> {
 
   return (value) => {
 
