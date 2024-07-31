@@ -1,7 +1,7 @@
 import { createResult } from '../create-result';
-import type { AllowNullish, KeyList, Nullish, SpecialKeys } from '../private-types';
+import type { AllowNullish, Nullish } from '../private-types';
 import { resolveKeyIfValid } from '../tools/resolve-valid-key';
-import type { PotentialResolver } from './types';
+import type { KeyList, PotentialResolver, SpecialKeys } from './types';
 
 export function createKeyResolver<K extends string, S extends string>(
   keys: KeyList<K>,

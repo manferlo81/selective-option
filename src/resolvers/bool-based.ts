@@ -1,9 +1,9 @@
-import type { AllowNullish, KeyList, Nullish, SpecialKeys, TypeCheckFunction } from '../private-types';
+import type { AllowNullish, Nullish, TypeCheckFunction } from '../private-types';
 import { createResolver } from './create-resolver';
 import { createKeyListResolver } from './key-list';
 import { createObjectResolver } from './object';
 import { createKeyResolver } from './single-key';
-import type { BoolBasedResolver } from './types';
+import type { BoolBasedResolver, KeyList, SpecialKeys } from './types';
 import { createValueResolver } from './value';
 
 function wrapValueValidator<V>(isValidValue: AllowNullish<TypeCheckFunction<V>>): TypeCheckFunction<V | boolean> {

@@ -1,4 +1,5 @@
-import type { AllowNullish, KeyList, KeyResolved, NegativeKeyPrefix, PositiveKeyPrefix, SpecialKeys } from '../private-types';
+import type { AllowNullish, KeyResolved, NegativeKeyPrefix, PositiveKeyPrefix } from '../private-types';
+import type { KeyList, SpecialKeys } from '../resolvers/types';
 import { is } from './is';
 import { resolveKey } from './key';
 

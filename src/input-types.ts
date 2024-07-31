@@ -1,4 +1,5 @@
-import type { AllowNullish, KeyList, PolarizedKey } from './private-types';
+import type { AllowNullish, PolarizedKey } from './private-types';
+import type { KeyList } from './resolvers/types';
 
 export type SingleKeyOption<K extends string> = PolarizedKey<K>;
 export type KeyListOption<K extends string> = KeyList<PolarizedKey<K>>;

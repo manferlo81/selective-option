@@ -42,6 +42,8 @@ A simple selective option resolver
     * *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption)
     * *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption)
   * Resolver Types
+    * *type* [`KeyList`](#type-keylist)
+    * *type* [`SpecialKeys`](#type-specialkeys)
     * *type* [`Resolved`](#type-resolved)
     * *type* [`PotentialResolver`](#type-potentialresolver)
     * *type* [`Resolver`](#type-resolver)
@@ -50,8 +52,6 @@ A simple selective option resolver
 * [Other Types](#other-types)
   * *type* [`PositiveKey`](#type-positivekey)
   * *type* [`NegativeKey`](#type-negativekey)
-  * *type* [`KeyList`](#type-keylist)
-  * *type* [`SpecialKeys`](#type-specialkeys)
   * *type* [`TypeCheckFunction`](#type-typecheckfunction)
 
 ## Install
@@ -566,6 +566,38 @@ type BoolBasedSelectiveOption<K extends string, V, O extends string> =
 
 See [`KeyOption`](#type-keyoption) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *type* [`BoolBasedResolver`](#type-boolbasedresolver).
 
+### *type* `KeyList`
+
+An immutable list of keys.
+
+```typescript
+type KeyList<K> = readonly K[];
+```
+
+Used in *function* [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver), [`createObjectResolver`](#function-createobjectresolver), [`createResult`](#function-createresult) and *type* [`SpecialKeys`](#type-specialkeys).
+
+### *type* `SpecialKeys`
+
+An object mapping `special keys` to a list of `regular keys`.
+
+```typescript
+type SpecialKeys<S extends string, K extends string> = Readonly<Record<S, KeyList<K>>>;
+```
+
+See type [`KeyList`](#type-keylist). Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver), [`createBoolBasedResolver`](#function-createboolbasedresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver) and [`createObjectResolver`](#function-createobjectresolver).
+
+* *Example*
+
+```typescript
+type Country = 'american' | 'japanese';
+type Car = 'chevrolet' | 'toyota' | 'suzuki' | 'ford';
+
+const special: SpecialKeys<Country, Car> = {
+  american: ['ford', 'chevrolet'],
+  japanese: ['toyota', 'suzuki'],
+};
+```
+
 ### *type* `Resolved`
 
 ```typescript
@@ -629,38 +661,6 @@ type NegativeKey<K extends string> = `!${K}` | `-${K}`;
 ```
 
 Used in *type* [`SingleKeyOption`](#type-singlekeyoption).
-
-### *type* `KeyList`
-
-An immutable list of keys.
-
-```typescript
-type KeyList<K> = readonly K[];
-```
-
-Used in *function* [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver), [`createObjectResolver`](#function-createobjectresolver), [`createResult`](#function-createresult) and *type* [`KeyOption`](#type-keyoption).
-
-### *type* `SpecialKeys`
-
-An object mapping `special keys` to a list of `regular keys`.
-
-```typescript
-type SpecialKeys<S extends string, K extends string> = Readonly<Record<S, K[]>>;
-```
-
-Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver), [`createBoolBasedResolver`](#function-createboolbasedresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver) and [`createObjectResolver`](#function-createobjectresolver).
-
-* *Example*
-
-```typescript
-type Country = 'american' | 'japanese';
-type Car = 'chevrolet' | 'toyota' | 'suzuki' | 'ford';
-
-const special: SpecialKeys<Country, Car> = {
-  american: ['ford', 'chevrolet'],
-  japanese: ['toyota', 'suzuki'],
-};
-```
 
 ### *type* `TypeCheckFunction`
 

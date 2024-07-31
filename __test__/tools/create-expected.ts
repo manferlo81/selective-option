@@ -1,4 +1,4 @@
-import { KeyList } from '../../src/private-types';
+import type { KeyList } from '../../src';
 
 type CreateInitial<K extends string, B> = <V extends B>(initialValue: V) => Record<K, V>;
 
