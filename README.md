@@ -10,6 +10,8 @@
 
 A simple selective option resolver
 
+> Version `0.1.0` is a complete rewrite. Please read the documentation before you consider to switch, many exports have been removed and new ones have been added. It is highly recommended to switch to `0.1.0`, just read the documentation before you do.
+
 ## In this page
 
 * [Install](#install)
