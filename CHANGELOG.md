@@ -2,6 +2,13 @@
 
 ## Version History
 
+### [0.1.1](https://github.com/manferlo81/selective-option/compare/v0.1.0...v0.1.1) (2024-07-31)
+
+
+### Bug Fixes
+
+* SpecialKeys with readonly key list ([0c13e1f](https://github.com/manferlo81/selective-option/commit/0c13e1ffb6ce11377416f57985f797e42e389c57))
+
 ## [0.1.0](https://github.com/manferlo81/selective-option/compare/v0.0.2...v0.1.0) (2024-07-31)
 
 
