@@ -251,7 +251,9 @@ See [`TypeCheckFunction`](#type-typecheckfunction) and [`PotentialResolver`](#ty
 
 ### *function* `createKeyResolver`
 
-Creates a `potential resolver` function that resolves if the `input value` is a `string` and is present in `keys` `array`, or if it is one of the `special` object keys. It also resolves if input is a `key` in the [`NegativeKey`](#type-negativekey) format. It returns undefined otherwise.
+Creates a `potential resolver` function that resolves if the `input value` is a `string` and is present in `keys` `array`, or if it is one of the `special` object keys. It also resolves if input follow the [`PositiveKey`](#type-positivekey) or [`NegativeKey`](#type-negativekey) format. It returns undefined otherwise.
+
+This `key` determines the result. A positive `key` means "only that key". A negative `key` means "all other keys but that one". See example.
 
 ```typescript
 function createKeyResolver<K extends string, S extends string>(
@@ -266,11 +268,29 @@ function createKeyResolver<K extends string, S extends string>(
 
 See [`KeyList`](#type-keylist), [`SpecialKeys`](#type-specialkeys) and [`PotentialResolver`](#type-potentialresolver).
 
+* *Example*
+
+```typescript
+const resolve = createKeyResolver<'a' | 'b' | 'c', 'd'>(
+  ['a', 'b', 'c'],
+  { d: ['a', 'c'] },
+);
+
+resolve('c'); // Resolves to { a: false, b: false, c: true }
+resolve('b'); // Resolves to { a: false, b: true, c: false }
+
+resolve('a') // Resolves to { a: true, b: false, c: false } ::: Only "a" is set
+resolve('!a') // Resolves to { a: false, b: true, c: true } ::: Everything but "a" is set
+
+resolve('d'); // Resolves to { a: true, b: false, c: true } ::: Only "a" & "c" is set
+resolve('!d'); // Resolves to { a: false, b: true, c: false } ::: Everything but "a" & "c" is set
+```
+
 ### *function* `createKeyListResolver`
 
 Creates a `potential resolver` function that resolves if the `input value` is an `array` of `string` and every `string` is present in `keys` `array`, or if it is one of the `special` object keys. It also resolves if any of the `string` in the array follow the [`PositiveKey`](#type-positivekey) or [`NegativeKey`](#type-negativekey) format. It returns undefined otherwise.
 
-The `keys` will be processed in the order they were added. The first `key` in the `array` will determine the default result, and the rest will mutate the result accordingly. A positive first `key` means "only that key". A negative first `key` means "all other keys but that one".
+The `keys` will be processed in the order they were added. The first `key` in the `array` will determine the default result, and the rest will mutate the result accordingly. A positive first `key` means "only that key". A negative first `key` means "all other keys but that one". See example.
 
 ```typescript
 function createKeyListResolver<K extends string, S extends string>(
@@ -284,7 +304,7 @@ See [`KeyList`](#type-keylist), [`SpecialKeys`](#type-specialkeys) and [`Potenti
 * *Example*
 
 ```typescript
-const resolve = createKeyListResolver<'a' | 'b' | 'c', 'ac'>(
+const resolve = createKeyListResolver<'a' | 'b' | 'c', 'd'>(
   ['a', 'b', 'c'],
   { d: ['a', 'c'] },
 );
@@ -293,27 +313,31 @@ resolve([]); // Resolves to { a: false, b: false, c: false }
 resolve(['a', 'b']); // Resolves to { a: true, b: true, c: false }
 
 // The first item sets the default
-resolve(['a']) // Resolves to { a: true, b: false, c: false }
-resolve(['!a']) // Resolves to { a: false, b: true, c: true }
+resolve(['a']) // Resolves to { a: true, b: false, c: false } ::: Only "a" is set
+resolve(['!a']) // Resolves to { a: false, b: true, c: true } ::: Everything but "a" is set
 
-// Watch the items order
+// Watch the items order!!!
 
 resolve(['a', '!a']) // Resolves to { a: false, b: false, c: false }
+// because...
 // step1 - 'a' => { a: true, b: false, c: false }
 // step2 - '!a' => { ...step1, a: false }
 // return step2
 
 resolve(['!a', 'a']) // Resolves to { a: true, b: true, c: true }
+// because...
 // step1 - '!a' => { a: false, b: true, c: true }
 // step2 - 'a' => { ...step1, a: true }
 // return step2
 
 resolve(['d', '!c']); // Resolves to { a: true, b: false, c: false }
+// because...
 // step1 = 'd' => { a: true, b: false, c: true }
 // step2 = '!c' => { ...step1, c: false }
 // return step2
 
 resolve(['!c', 'd']); // Resolves to { a: true, b: true, c: true }
+// because...
 // step1 '!c' => { a: true, b: true, c: false }
 // step2 'd' => { ...step1, a: true, c: true }
 // return step2
