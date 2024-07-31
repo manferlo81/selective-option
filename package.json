@@ -40,7 +40,7 @@
   },
   "bundlib": "./bundlib.config.ts",
   "devDependencies": {
-    "@babel/core": "^7.24.9",
+    "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.0",
     "@eslint/js": "^9.8.0",
     "@stylistic/eslint-plugin": "^2.4.0",
