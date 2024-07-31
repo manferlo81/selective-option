@@ -1,3 +1,4 @@
+import './array';
 export { createResult } from './create-result';
 export type * from './input-types';
 export { createBoolBasedResolver } from './resolvers/bool-based';
