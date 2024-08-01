@@ -51,6 +51,7 @@ const typescriptFlatConfig = config(
 );
 
 export default config(
+  { ignores: ['dist', 'coverage'] },
   { files: ['**/*.{js,mjs,cjs,ts}'] },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   js.configs.recommended,
