@@ -12,7 +12,6 @@ export type PositiveKeyPrefix = '+';
 export type PositiveKey<K extends string> = K | `${PositiveKeyPrefix}${K}`;
 export type NegativeKeyPrefix = '!' | '-';
 export type NegativeKey<K extends string> = `${NegativeKeyPrefix}${K}`;
-export type PolarizedKey<K extends string> = PositiveKey<K> | NegativeKey<K>;
 
 export type TypeCheckFunction<T> = (value: unknown) => value is T;
 
