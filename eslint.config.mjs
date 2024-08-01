@@ -46,7 +46,7 @@ const rules = { ...eslintRules, ...typescriptRules, ...stylisticRules };
 const typescriptFlatConfig = config(
   ...typescriptConfigs.strictTypeChecked,
   ...typescriptConfigs.stylisticTypeChecked,
-  { languageOptions: { parserOptions: { project: true } } },
+  { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } } },
   { files: ['**/*.{js,mjs,cjs}'], ...typescriptConfigs.disableTypeChecked },
 );
 
