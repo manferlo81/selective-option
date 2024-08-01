@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
-import { createResult } from '../create-result';
-import type { AllowNullish, Nullish, TypeCheckFunction } from '../private-types';
+import { createResult } from '../tools/create-result';
+import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types';
 import { errorInvalidKey, errorInvalidValue } from '../tools/errors';
 import { is, isArray } from '../tools/is';
 import { resolveKey } from '../tools/key';
 import { resolveValueOrNullish } from '../tools/value-nullish';
-import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from './types';
+import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types';
 
 type ResultExtendItem<K extends string, V> = [keys: KeyList<K>, value: V];
 type ObjectProcessed<K extends string, V, D> = [override: V | D, keys: Array<ResultExtendItem<K, V>>, special: Array<ResultExtendItem<K, V>>];

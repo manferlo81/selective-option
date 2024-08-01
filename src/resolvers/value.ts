@@ -1,7 +1,7 @@
-import { createResult } from '../create-result';
-import type { TypeCheckFunction } from '../private-types';
+import { createResult } from '../tools/create-result';
+import type { TypeCheckFunction } from '../types/private-types';
 import { resolveValueOrNullish } from '../tools/value-nullish';
-import type { KeyList, PotentialResolver } from './types';
+import type { KeyList, PotentialResolver } from '../types/resolver-types';
 
 export function createValueResolver<K extends string, V, D = V>(
   keys: KeyList<K>,

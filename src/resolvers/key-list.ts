@@ -1,9 +1,9 @@
-import { createResult } from '../create-result';
-import type { AllowNullish, KeyResolved, Nullish } from '../private-types';
+import { createResult } from '../tools/create-result';
+import type { AllowNullish, KeyResolved, Nullish } from '../types/private-types';
 import { errorInvalidKey } from '../tools/errors';
 import { isArray } from '../tools/is';
 import { resolveKeyIfValid } from '../tools/resolve-valid-key';
-import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from './types';
+import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types';
 
 function resolveKeyOrThrow<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<S, K>>): KeyResolved<K> {
 

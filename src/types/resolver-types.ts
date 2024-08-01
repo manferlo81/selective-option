@@ -1,5 +1,5 @@
-import type { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from '../input-types';
-import type { InputResolver, Void } from '../private-types';
+import type { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from './input-types';
+import type { InputResolver, Void } from './private-types';
 
 export type KeyList<K extends string> = readonly K[];
 export type SpecialKeys<S extends string, K extends string> = Readonly<Record<S, KeyList<K>>>;

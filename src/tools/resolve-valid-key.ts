@@ -1,5 +1,5 @@
-import type { AllowNullish, KeyResolved, NegativeKeyPrefix, PositiveKeyPrefix } from '../private-types';
-import type { KeyList, SpecialKeys } from '../resolvers/types';
+import type { AllowNullish, KeyResolved, NegativeKeyPrefix, PositiveKeyPrefix } from '../types/private-types';
+import type { KeyList, SpecialKeys } from '../types/resolver-types';
 import { is } from './is';
 import { resolveKey } from './key';
 
@@ -20,7 +20,7 @@ export function resolveKeyIfValid<K extends string, S extends string>(key: unkno
   const sign = key.charAt(0);
 
   // fail if first character in not a polarity prefix
-  if (!polarityPrefixes.includes(sign)) return;
+  if (!polarityPrefixes.includes(sign as never)) return;
 
   // get key without polarity
   const absoluteKey = key.slice(1);

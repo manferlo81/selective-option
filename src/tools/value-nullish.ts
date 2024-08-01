@@ -1,4 +1,4 @@
-import type { Nullish, TypeCheckFunction } from '../private-types';
+import type { Nullish, TypeCheckFunction } from '../types/private-types';
 
 type ValueOrNullishResult<V, T> = [isValid: V, value: T];
 type IsValidResult<V> = ValueOrNullishResult<true, V>;
