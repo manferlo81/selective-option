@@ -16,6 +16,16 @@ describe('createValueBasedResolver function', () => {
   const isValidValue = (value: unknown): value is ValidValue => value === null || typeof value === 'number';
   const defaultValue: ValidValue = 0;
 
+  const validValues: ValidValue[] = [
+    null,
+    0,
+    1,
+    100,
+    -100,
+    NaN,
+    Infinity,
+  ];
+
   const resolve = createValueBasedResolver(
     keys,
     isValidValue,
@@ -49,12 +59,7 @@ describe('createValueBasedResolver function', () => {
   });
 
   test('Should resolve valid value', () => {
-    const inputs: ValidValue[] = [
-      10,
-      NaN,
-      null,
-    ];
-    inputs.forEach((input) => {
+    validValues.forEach((input) => {
       const expected = createExpected(input);
       expect(resolve(input)).toEqual(expected);
     });
@@ -66,9 +71,33 @@ describe('createValueBasedResolver function', () => {
   });
 
   test('Should resolve object with default value', () => {
-    const newDefaultValue = 99;
-    const expected = createExpected(newDefaultValue);
-    expect(resolve({ default: newDefaultValue })).toEqual(expected);
+    validValues.forEach((newDefaultValue) => {
+      const expected = createExpected(newDefaultValue);
+      expect(resolve({ default: newDefaultValue })).toEqual(expected);
+    });
+  });
+
+  test('Should resolve object with regular key value', () => {
+    keys.forEach((key) => {
+      validValues.forEach((input) => {
+        const expected = {
+          ...createExpected(defaultValue),
+          [key]: input,
+        };
+        expect(resolve({ [key]: input })).toEqual(expected);
+      });
+    });
+  });
+
+  test('Should resolve object with special key value', () => {
+    specialKeys.forEach((specialKey) => {
+      validValues.forEach((input) => {
+        const expected = special[specialKey].reduce((output, key) => {
+          return { ...output, [key]: input };
+        }, createExpected(defaultValue));
+        expect(resolve({ [specialKey]: input })).toEqual(expected);
+      });
+    });
   });
 
   test('Should resolve valid value before nullish value', () => {
