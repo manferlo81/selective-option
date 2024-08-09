@@ -43,7 +43,7 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@eslint/js": "^9.8.0",
-    "@stylistic/eslint-plugin": "^2.6.1",
+    "@stylistic/eslint-plugin": "^2.6.2",
     "@types/eslint__js": "^8.42.3",
     "@types/jest": "^29.5.12",
     "@types/node": "^22.1.0",
@@ -67,6 +67,7 @@
     "name": "Manuel Fernandez",
     "email": "manferlo81@gmail.com"
   },
+  "homepage": "https://github.com/manferlo81/selective-option#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/manferlo81/selective-option.git"
@@ -74,6 +75,5 @@
   "bugs": {
     "url": "https://github.com/manferlo81/selective-option/issues"
   },
-  "homepage": "https://github.com/manferlo81/selective-option#readme",
   "license": "MIT"
 }
