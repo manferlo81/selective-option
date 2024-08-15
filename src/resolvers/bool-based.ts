@@ -1,9 +1,10 @@
+import type { BoolBasedSelectiveOption } from '../types/input-types';
 import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types';
+import type { BoolBasedResolver, KeyList, SpecialKeys } from '../types/resolver-types';
 import { createResolver } from './create-resolver';
 import { createKeyListResolver } from './key-list';
 import { createObjectResolver } from './object';
 import { createKeyResolver } from './single-key';
-import type { BoolBasedResolver, KeyList, SpecialKeys } from '../types/resolver-types';
 import { createValueResolver } from './value';
 
 function wrapValueValidator<V>(isValidValue: AllowNullish<TypeCheckFunction<V>>): TypeCheckFunction<V | boolean> {
@@ -107,7 +108,7 @@ export function createBoolBasedResolver<K extends string, S extends string, V, O
   const resolveObject = createObjectResolver(keys, isValueOrBool, defaultValue, overrideKey, special);
 
   // return compiled resolver
-  return createResolver(
+  return createResolver<K, boolean | V | D, BoolBasedSelectiveOption<K, S, boolean | V, O>>(
     resolveValue,
     resolveSingleKey,
     resolveKeyList,

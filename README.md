@@ -538,11 +538,11 @@ logOption({ a: 10, b: true }) // Type Error
 ### *type* `ValueBasedSelectiveOption`
 
 ```typescript
-type ValueBasedSelectiveOption<K extends string, V> =
+type ValueBasedSelectiveOption<K extends string, X extends string, V> =
   | V
   | null
   | undefined
-  | ObjectOption<K, V>;
+  | ObjectOption<K | X, V>;
 ```
 
 * *Generics*
@@ -554,9 +554,9 @@ See [`ObjectOption`](#type-objectoption). Used in *type* [`BoolBasedSelectiveOpt
 ### *type* `BoolBasedSelectiveOption`
 
 ```typescript
-type BoolBasedSelectiveOption<K extends string, V, O extends string> =
-  | KeyOption<K>
-  | ValueBasedSelectiveOption<K | O, V | boolean>;
+type BoolBasedSelectiveOption<K extends string, S extends string, V, O extends string> =
+  | KeyOption<K | S>
+  | ValueBasedSelectiveOption<K, S | O, V | boolean>;
 ```
 
 * *Generics*
@@ -625,7 +625,7 @@ See [`Resolved`](#type-resolved). Used in *function* [`createResolver`](#functio
 ### *type* `ValueBasedResolver`
 
 ```typescript
-type ValueBasedResolver<K extends string, X extends string, V> = Resolver<K, V, ValueBasedSelectiveOption<K | X, V>>;
+type ValueBasedResolver<K extends string, X extends string, V> = Resolver<K, V, ValueBasedSelectiveOption<K, X, V>>;
 ```
 
 See [`Resolver`](#type-resolver) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver).
@@ -633,7 +633,7 @@ See [`Resolver`](#type-resolver) and [`ValueBasedSelectiveOption`](#type-valueba
 ### *type* `BoolBasedResolver`
 
 ```typescript
-type BoolBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V | boolean, BoolBasedSelectiveOption<K | S, V, O>>;
+type BoolBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V | boolean, BoolBasedSelectiveOption<K, S, V, O>>;
 ```
 
 See [`Resolver`](#type-resolver) and [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption). Used in *function* [`createBoolBasedResolver`](#function-createboolbasedresolver).
