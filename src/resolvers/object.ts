@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 import { createResult } from '../tools/create-result';
-import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types';
-import { errorInvalidKey, errorInvalidValue } from '../tools/errors';
+import { errorInvalidKey } from '../tools/errors';
 import { is, isArray } from '../tools/is';
 import { resolveKey } from '../tools/key';
-import { resolveValueOrNullish } from '../tools/value-nullish';
+import { validateValueOrThrow } from '../tools/value-nullish';
+import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types';
 import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types';
 
 type ResultExtendItem<K extends string, V> = [keys: KeyList<K>, value: V];
@@ -28,19 +28,13 @@ function processInput<K extends string, S extends string, V, D = V>(
     // get object key value
     const value = input[key as never];
 
-    // resolve value
-    const valueResolved = resolveValueOrNullish(value, isValidValue);
-
-    // throw if value is not valid
-    if (!valueResolved) throw errorInvalidValue(value);
-
-    // get validation result
-    const [isValid, validatedValue] = valueResolved;
+    // get data from value if it's valid or nullish
+    const [isValid, validatedValue] = validateValueOrThrow(value, isValidValue);
 
     // return output without changes if value is nullish
     if (!isValid) return output;
 
-    // destructure data array
+    // destructure output array
     const [override, keysData, specialData] = output;
 
     // set override value if key equals override key
@@ -52,8 +46,8 @@ function processInput<K extends string, S extends string, V, D = V>(
     // extend regular key data if regular key resolved
     if (keyResolved) {
       const item: ResultExtendItem<K, V> = [keyResolved, validatedValue];
-      const newItems = [...keysData, item];
-      return [override, newItems, specialData];
+      const newKeysData = [...keysData, item];
+      return [override, newKeysData, specialData];
     }
 
     // throw if special is not defined at this point
@@ -67,8 +61,8 @@ function processInput<K extends string, S extends string, V, D = V>(
 
     // extend special key data if special key resolved
     const item: ResultExtendItem<K, V> = [specialResolved, validatedValue];
-    const newSpecialKeys = [...specialData, item];
-    return [override, keysData, newSpecialKeys];
+    const newSpecialData = [...specialData, item];
+    return [override, keysData, newSpecialData];
 
   }, [defaultValue, [], []]);
 

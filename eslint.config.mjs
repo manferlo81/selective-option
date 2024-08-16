@@ -37,6 +37,8 @@ const stylisticRules = pluginRules('@stylistic', {
   }),
 
   'member-delimiter-style': rule({}),
+  'no-extra-parens': rule('all'),
+  'no-extra-semi': 'error',
   'arrow-parens': rule('always'),
   'padded-blocks': 'off',
 });

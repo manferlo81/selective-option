@@ -1,8 +1,9 @@
-import type { TypeCheckFunction } from '../types/private-types';
-import type { KeyList, PotentialResolver, Resolved } from '../types/resolver-types';
+import { createResultGetValue } from '../tools/create-result';
 import { is } from '../tools/is';
-import { resolveValueOrNullish } from '../tools/value-nullish';
-import { errorInvalidValue } from '../tools/errors';
+import { validateValueOrThrow } from '../tools/value-nullish';
+import type { FunctionOption } from '../types/input-types';
+import type { TypeCheckFunction } from '../types/private-types';
+import type { KeyList, PotentialResolver } from '../types/resolver-types';
 
 export function createFunctionResolver<K extends string, V, D = V>(
   keys: KeyList<K>,
@@ -10,23 +11,33 @@ export function createFunctionResolver<K extends string, V, D = V>(
   defaultValue: D,
 ): PotentialResolver<K, V | D> {
 
+  // return function resolver
   return (input) => {
 
-    if (!is(input, 'function')) return;
+    // exit if input is not a function
+    if (!is<FunctionOption<K, V>>(input, 'function')) return;
 
     const getValue = (key: K) => {
-      const value = input(key) as V;
-      const valueResolved = resolveValueOrNullish(value, isValidValue);
-      if (!valueResolved) throw errorInvalidValue(value);
-      const [isValid, validatedValue] = valueResolved;
-      if (!isValid) return defaultValue;
-      return validatedValue;
+
+      // get value from input
+      const value = input(key);
+
+      // get data from value if it's valid or nullish
+      const [isValid, validatedValue] = validateValueOrThrow(value, isValidValue);
+
+      // return value if it's valid
+      if (isValid) return validatedValue;
+
+      // return default value if value is nullish
+      return defaultValue;
+
     };
 
-    return keys.reduce<Partial<Resolved<K, V>>>((output, key) => {
-      const value = getValue(key);
-      return { ...output, [key]: value };
-    }, {}) as Resolved<K, V>;
+    // return result
+    return createResultGetValue(
+      keys,
+      getValue,
+    );
 
   };
 
