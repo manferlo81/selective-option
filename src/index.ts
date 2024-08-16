@@ -1,5 +1,6 @@
 export { createBoolBasedResolver } from './resolvers/bool-based';
 export { createResolver } from './resolvers/create-resolver';
+export { createFunctionResolver } from './resolvers/function';
 export { createKeyListResolver } from './resolvers/key-list';
 export { createObjectResolver } from './resolvers/object';
 export { createKeyResolver } from './resolvers/single-key';
@@ -8,6 +9,7 @@ export { createValueBasedResolver } from './resolvers/value-based';
 export { createResult } from './tools/create-result';
 export type {
   BoolBasedSelectiveOption,
+  FunctionOption,
   KeyListOption,
   KeyOption,
   ObjectOption,

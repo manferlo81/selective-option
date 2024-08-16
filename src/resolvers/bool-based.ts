@@ -2,6 +2,7 @@ import type { BoolBasedSelectiveOption } from '../types/input-types';
 import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types';
 import type { BoolBasedResolver, KeyList, SpecialKeys } from '../types/resolver-types';
 import { createResolver } from './create-resolver';
+import { createFunctionResolver } from './function';
 import { createKeyListResolver } from './key-list';
 import { createObjectResolver } from './object';
 import { createKeyResolver } from './single-key';
@@ -103,6 +104,7 @@ export function createBoolBasedResolver<K extends string, S extends string, V, O
 
   // create potential resolvers
   const resolveValue = createValueResolver(keys, isValueOrBool, defaultValue);
+  const resolveFunction = createFunctionResolver(keys, isValueOrBool, defaultValue);
   const resolveSingleKey = createKeyResolver(keys, special);
   const resolveKeyList = createKeyListResolver(keys, special);
   const resolveObject = createObjectResolver(keys, isValueOrBool, defaultValue, overrideKey, special);
@@ -110,6 +112,7 @@ export function createBoolBasedResolver<K extends string, S extends string, V, O
   // return compiled resolver
   return createResolver<K, boolean | V | D, BoolBasedSelectiveOption<K, S, boolean | V, O>>(
     resolveValue,
+    resolveFunction,
     resolveSingleKey,
     resolveKeyList,
     resolveObject,

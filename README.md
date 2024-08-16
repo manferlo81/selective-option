@@ -27,6 +27,7 @@ A simple selective option resolver
     * *function* [`createBoolBasedResolver`](#function-createboolbasedresolver)
   * Potential Resolvers
     * *function* [`createValueResolver`](#function-createvalueresolver)
+    * *function* [`createFunctionResolver`](#function-createfunctionresolver)
     * *function* [`createKeyResolver`](#function-createkeyresolver)
     * *function* [`createKeyListResolver`](#function-createkeylistresolver)
     * *function* [`createObjectResolver`](#function-createobjectresolver)
@@ -35,13 +36,14 @@ A simple selective option resolver
     * *function* [`createResult`](#function-createresult)
 * [Exported Types](#exported-types)
   * Input Types
+    * *type* [`FunctionOption`](#type-functionoption)
     * *type* [`SingleKeyOption`](#type-singlekeyoption)
     * *type* [`KeyListOption`](#type-keylistoption)
     * *type* [`KeyOption`](#type-keyoption)
     * *type* [`ObjectOption`](#type-objectoption)
     * *type* [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption)
     * *type* [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption)
-  * Resolver Types
+  * Resolver related Types
     * *type* [`KeyList`](#type-keylist)
     * *type* [`SpecialKeys`](#type-specialkeys)
     * *type* [`Resolved`](#type-resolved)
@@ -136,16 +138,16 @@ pnpm add selective-option
 
 ### *function* `createValueBasedResolver`
 
-Creates a `value based resolver`. It resolves input as `valid value` (`V`), `null`, `undefined` or [`ObjectOption`](#type-objectoption). It internally uses [`createValueResolver`](#function-createvalueresolver) and [`createObjectResolver`](#function-createobjectresolver) to create a [`Resolver`](#type-resolver)  using [`createResolver`](#function-createresolver). See the examples for more info.
+Creates a `value based resolver`. It resolves input as `valid value` (`V`), `null`, `undefined`, [`FunctionOption`](#type-functionoption) or [`ObjectOption`](#type-objectoption). It internally uses [`createValueResolver`](#function-createvalueresolver), [`createFunctionResolver`](#function-createfunctionresolver) and [`createObjectResolver`](#function-createobjectresolver) to create a [`Resolver`](#type-resolver)  using [`createResolver`](#function-createresolver). See the examples for more info.
 
 ```typescript
-function createValueBasedResolver<K extends string, S extends string, V, O extends string>(
+function createValueBasedResolver<K extends string, S extends string, V, O extends string, D = V>(
   keys: readonly K[],
   isValidValue: TypeCheckFunction<V>,
-  defaultValue: V,
+  defaultValue: D,
   overrideKey: O,
   special?: SpecialKeys<S, K> | null | undefined,
-): ValueBasedResolver<K, S | O, V>;
+): ValueBasedResolver<K, S | O, V, D>;
 ```
 
 * *Arguments*
@@ -183,16 +185,16 @@ resolveNumber({ override: 40, ac: 12 }); // overridden + special set value { a: 
 
 ### *function* `createBoolBasedResolver`
 
-Creates a `boolean based resolver`. It resolves input as `valid value` (`V`), `boolean`, `null`, `undefined`, [`KeyOption`](#type-keyoption) or [`ObjectOption`](#type-objectoption). It internally uses [`createValueResolver`](#function-createvalueresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver) and [`createObjectResolver`](#function-createobjectresolver) to create a [`Resolver`](#type-resolver) using [`createResolver`](#function-createresolver). See the examples for more info.
+Creates a `boolean based resolver`. It resolves input as `valid value` (`V`), `boolean`, `null`, `undefined`, [`FunctionOption`](#type-functionoption), [`KeyOption`](#type-keyoption) or [`ObjectOption`](#type-objectoption). It internally uses [`createValueResolver`](#function-createvalueresolver), [`createFunctionResolver`](#function-createfunctionresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver) and [`createObjectResolver`](#function-createobjectresolver) to create a [`Resolver`](#type-resolver) using [`createResolver`](#function-createresolver). See the examples for more info.
 
 ```typescript
-function createBoolBasedResolver<K extends string, S extends string, V, O extends string>(
+function createBoolBasedResolver<K extends string, S extends string, V, O extends string, D = V>(
   keys: readonly K[],
-  isValidValue: TypeCheckFunction<V> | null | undefined,
-  defaultValue: V | boolean,
+  isValidValue: AllowNullish<TypeCheckFunction<V>>,
+  defaultValue: D,
   overrideKey: O,
   special?: SpecialKeys<S, K> | null | undefined,
-): BoolBasedResolver<K, S, V | boolean, O>;
+): BoolBasedResolver<K, S, V | boolean, O, D>;
 ```
 
 * *Arguments*
@@ -248,6 +250,18 @@ function createValueResolver<K extends string, V>(
   * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object.
   * `isValidValue`: A `function` which returns wether or not a `value` is `valid`.
   * `defaultValue`: A `valid` `value` to be used as default in case the input value is `nullish`.
+
+See [`TypeCheckFunction`](#type-typecheckfunction) and [`PotentialResolver`](#type-potentialresolver).
+
+### *function* `createFunctionResolver`
+
+```typescript
+function createFunctionResolver<K extends string, V, D = V>(
+  keys: readonly K[],
+  isValidValue: TypeCheckFunction<V>,
+  defaultValue: D,
+): PotentialResolver<K, V | D>;
+```
 
 See [`TypeCheckFunction`](#type-typecheckfunction) and [`PotentialResolver`](#type-potentialresolver).
 
@@ -419,6 +433,14 @@ createResult(['a', 'b'], 20, base); // { a: 20, b: 20, c: 0 }
 ```
 
 ## Exported Types
+
+### *type* `FunctionOption`
+
+A function to be called for every `key` in the the final [`Resolved`](#type-resolved) object.
+
+```typescript
+export type FunctionOption<K extends string, V> = (key: K) => V | null | undefined;
+```
 
 ### *type* `SingleKeyOption`
 
@@ -612,7 +634,7 @@ Used in *function* [`createResult`](#function-createresult) and *type* [`Potenti
 type PotentialResolver<K extends string, V> = (input: unknown) => Resolved<K, V> | void | undefined;
 ```
 
-See [`Resolved`](#type-resolved). Used in *function* [`createValueResolver`](#function-createvalueresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver), [`createObjectResolver`](#function-createobjectresolver) and [`createResolver`](#function-createresolver).
+See [`Resolved`](#type-resolved). Used in *function* [`createValueResolver`](#function-createvalueresolver), [`createFunctionResolver`](#function-createfunctionresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver), [`createObjectResolver`](#function-createobjectresolver) and [`createResolver`](#function-createresolver).
 
 ### *type* `Resolver`
 
@@ -625,7 +647,7 @@ See [`Resolved`](#type-resolved). Used in *function* [`createResolver`](#functio
 ### *type* `ValueBasedResolver`
 
 ```typescript
-type ValueBasedResolver<K extends string, X extends string, V> = Resolver<K, V, ValueBasedSelectiveOption<K, X, V>>;
+type ValueBasedResolver<K extends string, X extends string, V, D = V> = Resolver<K, V | D, ValueBasedSelectiveOption<K, X, V>>;
 ```
 
 See [`Resolver`](#type-resolver) and [`ValueBasedSelectiveOption`](#type-valuebasedselectiveoption). Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver).
@@ -633,7 +655,7 @@ See [`Resolver`](#type-resolver) and [`ValueBasedSelectiveOption`](#type-valueba
 ### *type* `BoolBasedResolver`
 
 ```typescript
-type BoolBasedResolver<K extends string, S extends string, V, O extends string> = Resolver<K, V | boolean, BoolBasedSelectiveOption<K, S, V, O>>;
+type BoolBasedResolver<K extends string, S extends string, V, O extends string, D = V> = Resolver<K, V | D | boolean, BoolBasedSelectiveOption<K, S, V, O>>;
 ```
 
 See [`Resolver`](#type-resolver) and [`BoolBasedSelectiveOption`](#type-boolbasedselectiveoption). Used in *function* [`createBoolBasedResolver`](#function-createboolbasedresolver).
@@ -668,7 +690,7 @@ Used in *type* [`SingleKeyOption`](#type-singlekeyoption).
 type TypeCheckFunction<V> = (input: unknown) => input is V;
 ```
 
-Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver), [`createBoolBasedResolver`](#function-createboolbasedresolver), [`createValueResolver`](#function-createvalueresolver) and [`createObjectResolver`](#function-createobjectresolver).
+Used in *function* [`createValueBasedResolver`](#function-createvaluebasedresolver), [`createBoolBasedResolver`](#function-createboolbasedresolver), [`createValueResolver`](#function-createvalueresolver), [`createFunctionResolver`](#function-createfunctionresolver) and [`createObjectResolver`](#function-createobjectresolver).
 
 * *Example*
 

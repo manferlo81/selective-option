@@ -1,4 +1,4 @@
-import { createValueBasedResolver } from '../../src';
+import { createValueBasedResolver, Resolved } from '../../src';
 import { createExpectedCreator } from '../tools/create-expected';
 
 describe('createValueBasedResolver function', () => {
@@ -43,16 +43,24 @@ describe('createValueBasedResolver function', () => {
     };
   });
 
+  const nullishValues = [
+    // null, null is a valid value in this case and doesn't resolve to default value
+    undefined,
+  ];
+
+  const invalidValues = [
+    true,
+  ];
+
   test('Should throw on invalid value', () => {
-    expect(() => resolve(true as never)).toThrow();
+    invalidValues.forEach((input) => {
+      const exec = () => resolve(input as never);
+      expect(exec).toThrow();
+    });
   });
 
   test('Should resolve nullish value', () => {
-    const inputs = [
-      // null, null is a valid value in this case and doesn't resolve to default value
-      undefined,
-    ];
-    inputs.forEach((input) => {
+    nullishValues.forEach((input) => {
       const expected = createExpected(defaultValue);
       expect(resolve(input)).toEqual(expected);
     });
@@ -65,44 +73,86 @@ describe('createValueBasedResolver function', () => {
     });
   });
 
-  test('Should resolve object', () => {
-    const expected = createExpected(defaultValue);
-    expect(resolve({})).toEqual(expected);
-  });
+  describe('input as a function', () => {
 
-  test('Should resolve object with default value', () => {
-    validValues.forEach((newDefaultValue) => {
-      const expected = createExpected(newDefaultValue);
-      expect(resolve({ default: newDefaultValue })).toEqual(expected);
+    test('Should throw if input function returns invalid value', () => {
+      const input = () => true;
+      expect(() => resolve(input as never)).toThrow();
     });
-  });
 
-  test('Should resolve object with regular key value', () => {
-    keys.forEach((key) => {
-      validValues.forEach((input) => {
-        const expected = {
-          ...createExpected(defaultValue),
-          [key]: input,
-        };
-        expect(resolve({ [key]: input })).toEqual(expected);
+    test('Should resolve if input function returns nullish value', () => {
+      nullishValues.forEach((value) => {
+        const input = () => value;
+        const expected = createExpected(defaultValue);
+        expect(resolve(input)).toEqual(expected);
       });
     });
-  });
 
-  test('Should resolve object with special key value', () => {
-    specialKeys.forEach((specialKey) => {
-      validValues.forEach((input) => {
-        const expected = special[specialKey].reduce((output, key) => {
-          return { ...output, [key]: input };
-        }, createExpected(defaultValue));
-        expect(resolve({ [specialKey]: input })).toEqual(expected);
+    test('Should resolve if input function returns valid value', () => {
+      validValues.forEach((value) => {
+        const input = () => value;
+        const expected = createExpected(value);
+        expect(resolve(input)).toEqual(expected);
       });
     });
+
+    test('Should resolve using input function', () => {
+      interface AdvancedFunctionTestEntry {
+        input: (key: RegularKey) => ValidValue;
+        expected: Resolved<RegularKey, ValidValue>;
+      }
+      const testCases: AdvancedFunctionTestEntry[] = [
+        { input: (key) => key === 'c' ? 20 : 10, expected: createExpected(10, ['c'], 20) },
+      ];
+      testCases.forEach(({ input, expected }) => {
+        expect(resolve(input)).toEqual(expected);
+      });
+    });
+
   });
 
-  test('Should resolve valid value before nullish value', () => {
-    expect(resolve({ default: null })).toEqual(createExpected(null));
-    expect(resolve({ default: undefined })).toEqual(createExpected(defaultValue));
+  describe('input as an object', () => {
+
+    test('Should resolve object', () => {
+      const expected = createExpected(defaultValue);
+      expect(resolve({})).toEqual(expected);
+    });
+
+    test('Should resolve object with default value', () => {
+      validValues.forEach((newDefaultValue) => {
+        const expected = createExpected(newDefaultValue);
+        expect(resolve({ default: newDefaultValue })).toEqual(expected);
+      });
+    });
+
+    test('Should resolve object with regular key value', () => {
+      keys.forEach((key) => {
+        validValues.forEach((input) => {
+          const expected = {
+            ...createExpected(defaultValue),
+            [key]: input,
+          };
+          expect(resolve({ [key]: input })).toEqual(expected);
+        });
+      });
+    });
+
+    test('Should resolve object with special key value', () => {
+      specialKeys.forEach((specialKey) => {
+        validValues.forEach((input) => {
+          const expected = special[specialKey].reduce((output, key) => {
+            return { ...output, [key]: input };
+          }, createExpected(defaultValue));
+          expect(resolve({ [specialKey]: input })).toEqual(expected);
+        });
+      });
+    });
+
+    test('Should resolve valid value before nullish value', () => {
+      expect(resolve({ default: null })).toEqual(createExpected(null));
+      expect(resolve({ default: undefined })).toEqual(createExpected(defaultValue));
+    });
+
   });
 
 });
