@@ -4,32 +4,47 @@ import { ArrayItemType } from '../tools/helper-types';
 
 describe('createValueResolver function', () => {
 
-  const keys = ['a', 'b', 'c', 'd'] as const;
+  const keys = ['node', 'deno', 'chrome', 'firefox'] as const;
   const validValues = [true, false, 'auto'] as const;
+  const defaultValue = 0;
 
   type K = ArrayItemType<typeof keys>;
-  type V = boolean | 'auto';
-
-  const defaultValue: V = false;
+  type V = ArrayItemType<typeof validValues>;
+  type D = typeof defaultValue;
 
   const isValidValue = (value: unknown): value is V => validValues.includes(value as never);
 
-  const resolve = createValueResolver<K, V>(
+  const resolve = createValueResolver<K, V, D>(
     keys,
     isValidValue,
     defaultValue,
   );
 
-  const createExpected = createExpectedCreator<K, V>((value) => ({
-    a: value,
-    b: value,
-    c: value,
-    d: value,
+  const createExpected = createExpectedCreator<K, V | D>((value) => ({
+    node: value,
+    deno: value,
+    chrome: value,
+    firefox: value,
   }));
+
+  test('Should not resolve if input is not a valid value', () => {
+    const invalidValues = [
+      [],
+      {},
+      0,
+      1,
+      '',
+      'string',
+    ];
+    invalidValues.forEach((input) => {
+      expect(resolve(input)).toBeUndefined();
+    });
+  });
 
   test('Should resolve valid value', () => {
     validValues.forEach((input) => {
-      expect(resolve(input)).toEqual(createExpected(input));
+      const expected = createExpected(input);
+      expect(resolve(input)).toEqual(expected);
     });
   });
 
@@ -39,21 +54,8 @@ describe('createValueResolver function', () => {
       undefined,
     ];
     inputs.forEach((input) => {
-      expect(resolve(input)).toEqual(createExpected(defaultValue));
-    });
-  });
-
-  test('Should resolve to undefined if not valid value', () => {
-    const inputs = [
-      [],
-      {},
-      0,
-      1,
-      '',
-      'string',
-    ];
-    inputs.forEach((input) => {
-      expect(resolve(input)).toBeUndefined();
+      const expected = createExpected(defaultValue);
+      expect(resolve(input)).toEqual(expected);
     });
   });
 

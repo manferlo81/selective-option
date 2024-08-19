@@ -5,6 +5,18 @@ import type { FunctionOption } from '../types/input-types';
 import type { TypeCheckFunction } from '../types/private-types';
 import type { KeyList, PotentialResolver } from '../types/resolver-types';
 
+export function createFunctionResolver<K extends string, V>(
+  keys: KeyList<K>,
+  isValidValue: TypeCheckFunction<V>,
+  defaultValue: V,
+): PotentialResolver<K, V>;
+
+export function createFunctionResolver<K extends string, V, D = V>(
+  keys: KeyList<K>,
+  isValidValue: TypeCheckFunction<V>,
+  defaultValue: D,
+): PotentialResolver<K, V | D>;
+
 export function createFunctionResolver<K extends string, V, D = V>(
   keys: KeyList<K>,
   isValidValue: TypeCheckFunction<V>,

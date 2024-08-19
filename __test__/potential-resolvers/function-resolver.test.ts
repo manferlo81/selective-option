@@ -1,48 +1,52 @@
-import { createFunctionResolver } from '../../src';
+import { createFunctionResolver, FunctionOption, Resolved } from '../../src';
 import { createExpectedCreator } from '../tools/create-expected';
 import type { ArrayItemType } from '../tools/helper-types';
 
 describe('createFunctionResolver function', () => {
 
-  const keys = ['a', 'b', 'c', 'd'] as const;
+  const keys = ['node', 'deno', 'chrome', 'firefox'] as const;
   const validValues = [true, false, 'auto'] as const;
+  const defaultValue = 0;
 
   type K = ArrayItemType<typeof keys>;
-  type V = boolean | 'auto';
-
-  const defaultValue: V = false;
+  type V = ArrayItemType<typeof validValues>;
+  type D = typeof defaultValue;
 
   const isValidValue = (value: unknown): value is V => validValues.includes(value as never);
 
-  const resolve = createFunctionResolver<K, V>(
+  const resolve = createFunctionResolver<K, V, D>(
     keys,
     isValidValue,
     defaultValue,
   );
 
-  const createExpected = createExpectedCreator<K, V>((value) => ({
-    a: value,
-    b: value,
-    c: value,
-    d: value,
+  const createExpected = createExpectedCreator<K, V | D>((value) => ({
+    node: value,
+    deno: value,
+    chrome: value,
+    firefox: value,
   }));
 
   test('Should not resolve if input is not a function', () => {
-    const inputs = [
-      [],
-      {},
+    const nonFunctionInputs = [
       0,
       1,
+      NaN,
+      Infinity,
       '',
       'string',
+      true,
+      false,
+      [],
+      {},
     ];
-    inputs.forEach((input) => {
+    nonFunctionInputs.forEach((input) => {
       expect(resolve(input)).toBeUndefined();
     });
   });
 
   test('Should throw if input function returns invalid value', () => {
-    const inputs = [
+    const invalidValues = [
       [],
       {},
       0,
@@ -50,7 +54,7 @@ describe('createFunctionResolver function', () => {
       '',
       'string',
     ];
-    inputs.forEach((value) => {
+    invalidValues.forEach((value) => {
       const input = () => value;
       const exec = () => resolve(input);
       expect(exec).toThrow();
@@ -73,6 +77,16 @@ describe('createFunctionResolver function', () => {
     nullishValues.forEach((value) => {
       const input = () => value;
       const expected = createExpected(defaultValue);
+      expect(resolve(input)).toEqual(expected);
+    });
+  });
+
+  test('Should resolve using input function', () => {
+    const cases: Array<{ input: FunctionOption<K, V>; expected: Resolved<K, V | D> }> = [
+      { input: (key) => key == 'chrome' ? false : 'auto', expected: createExpected('auto', ['chrome'], false) },
+      { input: (key) => key == 'deno' || key === 'node' ? true : 'auto', expected: createExpected('auto', ['node', 'deno'], true) },
+    ];
+    cases.forEach(({ input, expected }) => {
       expect(resolve(input)).toEqual(expected);
     });
   });
