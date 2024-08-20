@@ -4,13 +4,13 @@ import { ArrayItemType } from '../tools/helper-types';
 
 describe('createKeyResolver function', () => {
 
-  const keys = ['a', 'b', 'c', 'd'] as const;
-  const specialKeys = ['first', 'last'] as const;
+  const keys = ['node', 'deno', 'chrome', 'firefox'] as const;
+  const specialKeys = ['server', 'browser'] as const;
 
   type K = ArrayItemType<typeof keys>;
   type S = ArrayItemType<typeof specialKeys>;
 
-  const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
+  const special: Record<S, K[]> = { server: ['node', 'deno'], browser: ['chrome', 'firefox'] };
 
   const resolve = createKeyResolver<K, S>(
     keys,
@@ -18,14 +18,15 @@ describe('createKeyResolver function', () => {
   );
 
   const createExpected = createExpectedCreator<K, boolean>((value) => ({
-    a: value,
-    b: value,
-    c: value,
-    d: value,
+    node: value,
+    deno: value,
+    chrome: value,
+    firefox: value,
   }));
 
-  const positiveSymbols = ['', '+'];
-  const negativeSymbols = ['!', '-'];
+  const positiveSign = '+';
+  const positiveSymbols = ['', positiveSign] as const;
+  const negativeSymbols = ['!', '-'] as const;
 
   test('Should resolve positive key', () => {
     keys.forEach((key) => {
@@ -65,18 +66,18 @@ describe('createKeyResolver function', () => {
     });
   });
 
-  test('Should resolve to undefined if invalid', () => {
+  test('Should not resolve if key is not valid', () => {
     const inputs = [
       'invalid',
       '!invalid',
       '+invalid',
       '-invalid',
-      keys.map((key) => `! ${key}`),
-      keys.map((key) => `+ ${key}`),
-      keys.map((key) => `- ${key}`),
-      specialKeys.map((key) => `! ${key}`),
-      specialKeys.map((key) => `+ ${key}`),
-      specialKeys.map((key) => `- ${key}`),
+      ...keys.map((key) => `! ${key}`),
+      ...keys.map((key) => `+ ${key}`),
+      ...keys.map((key) => `- ${key}`),
+      ...specialKeys.map((key) => `! ${key}`),
+      ...specialKeys.map((key) => `+ ${key}`),
+      ...specialKeys.map((key) => `- ${key}`),
     ];
     inputs.forEach((input) => {
       expect(resolve(input)).toBeUndefined();

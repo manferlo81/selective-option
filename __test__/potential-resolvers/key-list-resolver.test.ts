@@ -1,16 +1,16 @@
-import { createKeyListResolver } from '../../src';
+import { createKeyListResolver, KeyListOption } from '../../src';
 import { createExpectedCreator } from '../tools/create-expected';
 import type { ArrayItemType } from '../tools/helper-types';
 
 describe('createKeyListResolver function', () => {
 
-  const keys = ['a', 'b', 'c', 'd'] as const;
-  const specialKeys = ['first', 'last'] as const;
+  const keys = ['node', 'deno', 'chrome', 'firefox'] as const;
+  const specialKeys = ['server', 'browser'] as const;
 
   type K = ArrayItemType<typeof keys>;
   type S = ArrayItemType<typeof specialKeys>;
 
-  const special: Record<S, K[]> = { first: ['a', 'b'], last: ['c', 'd'] };
+  const special: Record<S, K[]> = { server: ['node', 'deno'], browser: ['chrome', 'firefox'] };
 
   const resolve = createKeyListResolver<K, S>(
     keys,
@@ -19,23 +19,40 @@ describe('createKeyListResolver function', () => {
 
   const createExpected = createExpectedCreator<K, boolean>((value) => {
     return {
-      a: value,
-      b: value,
-      c: value,
-      d: value,
+      node: value,
+      deno: value,
+      chrome: value,
+      firefox: value,
     };
   });
 
   const positiveSymbols = ['', '+'] as const;
   const negativeSymbols = ['!', '-'] as const;
 
-  test('Should throw on invalid input', () => {
+  test('Should not resolve if input is not an array', () => {
+    const nonArrayInputs = [
+      '',
+      'string',
+      '0',
+      '1',
+      true,
+      false,
+      {},
+      setTimeout,
+    ];
+    nonArrayInputs.forEach((input) => {
+      expect(resolve(input)).toBeUndefined();
+    });
+  });
+
+  test('Should throw if input array has invalid keys', () => {
     const invalid = [
       ['invalid'],
-      ['a', true],
-      ['a', 10],
-      ['! a', 'b'],
-      ['a', '! b'],
+      ['node', true],
+      ['node', 10],
+      ['! node', 'deno'],
+      ['node', '! deno'],
+      ['node', 'deno', 'chrome', 'firefox', 'server', 'browser', 'invalid'],
     ];
     invalid.forEach((input) => {
       expect(() => resolve(input)).toThrow();
@@ -48,13 +65,13 @@ describe('createKeyListResolver function', () => {
   });
 
   test('Should resolve array with positive keys', () => {
-    keys.forEach((key, i) => {
-      const otherKey = keys[(i + 1) % keys.length];
-      const input = [key, otherKey];
-      const expected = createExpected(false, input, true);
+    keys.forEach((key, i, { length }) => {
+      const otherKey = keys[(i + 1) % length];
+      const doubleKey = [key, otherKey];
+      const expected = createExpected(false, doubleKey, true);
       positiveSymbols.forEach((sign) => {
-        const positiveInput = input.map((key) => `${sign}${key}`);
-        expect(resolve(positiveInput)).toEqual(expected);
+        const input = doubleKey.map((key) => `${sign}${key}`);
+        expect(resolve(input)).toEqual(expected);
       });
     });
   });
@@ -62,11 +79,11 @@ describe('createKeyListResolver function', () => {
   test('Should resolve array with negative keys', () => {
     keys.forEach((key, i) => {
       const otherKey = keys[(i + 1) % keys.length];
-      const input = [key, otherKey];
-      const expected = createExpected(true, input, false);
+      const doubleKey = [key, otherKey];
+      const expected = createExpected(true, doubleKey, false);
       negativeSymbols.forEach((sign) => {
-        const negativeInput = input.map((key) => `${sign}${key}`);
-        expect(resolve(negativeInput)).toEqual(expected);
+        const input = doubleKey.map((key) => `${sign}${key}`);
+        expect(resolve(input)).toEqual(expected);
       });
     });
   });
@@ -107,20 +124,16 @@ describe('createKeyListResolver function', () => {
   });
 
   test('Should resolve mixed keys', () => {
-    type ModifiedKey<T extends string> = `!${T}` | `+${T}` | `-${T}`;
-    const inputs: Array<{ input: Array<K | S | ModifiedKey<K | S>>; expected: ReturnType<typeof createExpected> }> = [
+    const inputs: Array<{ input: KeyListOption<K | S>; expected: ReturnType<typeof createExpected> }> = [
       { input: [], expected: createExpected(false) },
-      { input: ['first', '-a'], expected: createExpected(false, ['b'], true) },
-      { input: ['!last', 'a'], expected: createExpected(false, ['a', 'b'], true) },
-      { input: ['!last', '+a'], expected: createExpected(false, ['a', 'b'], true) },
+      { input: ['server', '-node'], expected: createExpected(false, ['deno'], true) },
+      { input: ['server', '!chrome'], expected: createExpected(false, ['node', 'deno'], true) },
+      { input: ['!browser', 'node'], expected: createExpected(false, ['node', 'deno'], true) },
+      { input: ['!browser', '+node'], expected: createExpected(false, ['node', 'deno'], true) },
     ];
     inputs.forEach(({ input, expected }) => {
       expect(resolve(input)).toEqual(expected);
     });
-  });
-
-  test('Should resolve to undefined if not array', () => {
-    expect(resolve('invalid')).toBeUndefined();
   });
 
 });
