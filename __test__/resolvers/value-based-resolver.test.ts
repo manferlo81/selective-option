@@ -1,22 +1,22 @@
-import { createValueBasedResolver, Resolved } from '../../src';
+import { createValueBasedResolver, FunctionOption, ObjectOption, Resolved } from '../../src';
 import { createExpectedCreator } from '../tools/create-expected';
 
 describe('createValueBasedResolver function', () => {
 
-  const keys = ['a', 'b', 'c', 'd'] as const;
-  const specialKeys = ['first', 'last'] as const;
-  const overrideKey = 'default';
+  const keys = ['node', 'deno', 'chrome', 'firefox'] as const;
+  const specialKeys = ['server', 'browser'] as const;
+  const overrideKey = 'override';
 
-  type RegularKey = (typeof keys)[number];
-  type SpecialKey = (typeof specialKeys)[number];
-  type ValidValue = number | null;
+  type K = (typeof keys)[number];
+  type S = (typeof specialKeys)[number];
+  type V = number | null;
 
-  const special: Record<SpecialKey, RegularKey[]> = { first: ['a', 'b'], last: ['c', 'd'] };
+  const special: Record<S, K[]> = { server: ['node', 'deno'], browser: ['chrome', 'firefox'] };
 
-  const isValidValue = (value: unknown): value is ValidValue => value === null || typeof value === 'number';
-  const defaultValue: ValidValue = 0;
+  const isValidValue = (value: unknown): value is V => value === null || typeof value === 'number';
+  const defaultValue: V = 0;
 
-  const validValues: ValidValue[] = [
+  const validValues: V[] = [
     null,
     0,
     1,
@@ -34,14 +34,12 @@ describe('createValueBasedResolver function', () => {
     special,
   );
 
-  const createExpected = createExpectedCreator<RegularKey, ValidValue>((initial) => {
-    return {
-      a: initial,
-      b: initial,
-      c: initial,
-      d: initial,
-    };
-  });
+  const createExpected = createExpectedCreator<K, V>((initial) => ({
+    node: initial,
+    deno: initial,
+    chrome: initial,
+    firefox: initial,
+  }));
 
   const nullishValues = [
     // null, null is a valid value in this case and doesn't resolve to default value
@@ -50,6 +48,12 @@ describe('createValueBasedResolver function', () => {
 
   const invalidValues = [
     true,
+    false,
+    '',
+    'string',
+    [],
+    [true, 'string'],
+    validValues, // validValues (not spread) is an array
   ];
 
   test('Should throw on invalid value', () => {
@@ -76,13 +80,15 @@ describe('createValueBasedResolver function', () => {
   describe('input as a function', () => {
 
     test('Should throw if input function returns invalid value', () => {
-      const input = () => true;
-      expect(() => resolve(input as never)).toThrow();
+      invalidValues.forEach((invalidValue) => {
+        const input = () => invalidValue;
+        expect(() => resolve(input as never)).toThrow();
+      });
     });
 
     test('Should resolve if input function returns nullish value', () => {
-      nullishValues.forEach((value) => {
-        const input = () => value;
+      nullishValues.forEach((nullish) => {
+        const input = () => nullish;
         const expected = createExpected(defaultValue);
         expect(resolve(input)).toEqual(expected);
       });
@@ -98,13 +104,14 @@ describe('createValueBasedResolver function', () => {
 
     test('Should resolve using input function', () => {
       interface AdvancedFunctionTestEntry {
-        input: (key: RegularKey) => ValidValue;
-        expected: Resolved<RegularKey, ValidValue>;
+        input: FunctionOption<K, V>;
+        expected: Resolved<K, V>;
       }
-      const testCases: AdvancedFunctionTestEntry[] = [
-        { input: (key) => key === 'c' ? 20 : 10, expected: createExpected(10, ['c'], 20) },
+      const cases: AdvancedFunctionTestEntry[] = [
+        { input: (key) => key === 'chrome' ? 20 : 10, expected: createExpected(10, ['chrome'], 20) },
+        { input: (key) => key === 'chrome' ? 20 : undefined, expected: createExpected(defaultValue, ['chrome'], 20) },
       ];
-      testCases.forEach(({ input, expected }) => {
+      cases.forEach(({ input, expected }) => {
         expect(resolve(input)).toEqual(expected);
       });
     });
@@ -121,17 +128,14 @@ describe('createValueBasedResolver function', () => {
     test('Should resolve object with default value', () => {
       validValues.forEach((newDefaultValue) => {
         const expected = createExpected(newDefaultValue);
-        expect(resolve({ default: newDefaultValue })).toEqual(expected);
+        expect(resolve({ override: newDefaultValue })).toEqual(expected);
       });
     });
 
     test('Should resolve object with regular key value', () => {
       keys.forEach((key) => {
         validValues.forEach((input) => {
-          const expected = {
-            ...createExpected(defaultValue),
-            [key]: input,
-          };
+          const expected = createExpected(defaultValue, [key], input);
           expect(resolve({ [key]: input })).toEqual(expected);
         });
       });
@@ -140,17 +144,30 @@ describe('createValueBasedResolver function', () => {
     test('Should resolve object with special key value', () => {
       specialKeys.forEach((specialKey) => {
         validValues.forEach((input) => {
-          const expected = special[specialKey].reduce((output, key) => {
-            return { ...output, [key]: input };
-          }, createExpected(defaultValue));
+          const expected = createExpected(defaultValue, special[specialKey], input);
           expect(resolve({ [specialKey]: input })).toEqual(expected);
         });
       });
     });
 
     test('Should resolve valid value before nullish value', () => {
-      expect(resolve({ default: null })).toEqual(createExpected(null));
-      expect(resolve({ default: undefined })).toEqual(createExpected(defaultValue));
+      expect(resolve({ override: null })).toEqual(createExpected(null));
+      expect(resolve({ override: undefined })).toEqual(createExpected(defaultValue));
+    });
+
+    test('Should resolve advanced input objects', () => {
+      interface AdvancedObjectTestCaseEntry {
+        input: ObjectOption<K | S | 'override', V>;
+        expected: Resolved<K, V>;
+      }
+      const cases: AdvancedObjectTestCaseEntry[] = [
+        { input: { override: 40, browser: 20 }, expected: createExpected(40, ['chrome', 'firefox'], 20) },
+        { input: { browser: 20, override: 40 }, expected: createExpected(40, ['chrome', 'firefox'], 20) },
+        { input: { browser: 20, firefox: 15 }, expected: { ...createExpected(defaultValue, ['chrome', 'firefox'], 20), firefox: 15 } },
+      ];
+      cases.forEach(({ input, expected }) => {
+        expect(resolve(input)).toEqual(expected);
+      });
     });
 
   });
