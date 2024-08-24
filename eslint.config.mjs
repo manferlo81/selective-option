@@ -43,13 +43,11 @@ const stylisticRules = pluginRules('@stylistic', {
   'padded-blocks': 'off',
 });
 
-const rules = { ...eslintRules, ...typescriptRules, ...stylisticRules };
-
 const typescriptFlatConfig = config(
   ...typescriptConfigs.strictTypeChecked,
   ...typescriptConfigs.stylisticTypeChecked,
   { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } } },
-  { files: ['**/*.{js,mjs,cjs}'], ...typescriptConfigs.disableTypeChecked },
+  { files: ['**/*.{js,cjs,mjs}'], ...typescriptConfigs.disableTypeChecked },
 );
 
 export default config(
@@ -57,7 +55,7 @@ export default config(
   { files: ['**/*.{js,mjs,cjs,ts}'] },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   js.configs.recommended,
-  ...typescriptFlatConfig,
   stylistic.configs['recommended-flat'],
-  { rules },
+  ...typescriptFlatConfig,
+  { rules: { ...eslintRules, ...stylisticRules, ...typescriptRules } },
 );
