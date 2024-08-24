@@ -25,21 +25,17 @@ const typescriptRules = pluginRules('@typescript-eslint', {
 });
 
 const stylisticRules = pluginRules('@stylistic', {
-  'indent': rule(2),
+  indent: rule(2),
+  quotes: rule('single'),
+  semi: rule('always'),
   'linebreak-style': rule('unix'),
-  'quotes': rule('single'),
-  'semi': rule('always'),
 
-  'no-multiple-empty-lines': rule({
-    max: 1,
-    maxBOF: 0,
-    maxEOF: 0,
-  }),
-
-  'member-delimiter-style': rule({}),
+  'quote-props': rule('as-needed'),
+  'arrow-parens': rule('always'),
   'no-extra-parens': rule('all'),
   'no-extra-semi': 'error',
-  'arrow-parens': rule('always'),
+
+  'member-delimiter-style': rule({}),
   'padded-blocks': 'off',
 });
 
