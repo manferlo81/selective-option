@@ -1,7 +1,7 @@
-module.exports = {
-
-  testEnvironment: 'node',
+/** @type { import("jest").Config } */
+const config = {
   cacheDirectory: 'node_modules/.cache/jest',
+  preset: 'ts-jest',
 
   collectCoverage: true,
   collectCoverageFrom: [
@@ -17,10 +17,7 @@ module.exports = {
     '**/__test__/**/*.test.ts',
   ],
 
-  transform: {
-    '\\.ts$': 'ts-jest',
-  },
-
   verbose: true,
-
 };
+
+export default config;
