@@ -8,10 +8,9 @@ const config = {
     'src/**/*.ts',
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: [
-    process.env.CI ? 'json' : 'html',
-    'text',
-  ],
+  coverageReporters: process.env.CI
+    ? ['json', 'clover', 'cobertura']
+    : ['html', 'text'],
 
   testMatch: [
     '**/__test__/**/*.test.ts',
