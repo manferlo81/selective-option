@@ -153,7 +153,7 @@ function createValueBasedResolver<K extends string, S extends string, V, O exten
 * *Arguments*
   * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object. They will also be used to validate `keys` if input is an `object`.
   * `isValidValue`: A `function` which returns wether or not a `value` is `valid`.
-  * `defaultValue`: A `valid` `value` to be used as default in case the value is `nullish`.
+  * `defaultValue`: A `valid` `value` to be used as default in case the value is `null` or `undefined`.
   * `overrideKey`: A `string` to be used to detect the `override key` if the input is an `object`.
   * `special`: An optional object mapping `special keys` to multiple `regular keys`. They can be used as `keys` if the input is an `object`.
 
@@ -199,8 +199,8 @@ function createBoolBasedResolver<K extends string, S extends string, V, O extend
 
 * *Arguments*
   * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object. They will also be used to validate `positive keys` and `negative keys` if input is a `string` or an `array`, and to validate `keys` if input is an `object`.
-  * `isValidValue`: A `function` which returns wether or not a `value` is `valid`. Note that this function doesn't need to test for `boolean` values as they will be included by default. If pass a `nullish` value it will only test for `boolean` values.
-  * `defaultValue`: A `valid` `value` to be used as default in case the value is `nullish`.
+  * `isValidValue`: A `function` which returns wether or not a `value` is `valid`. Note that this function doesn't need to test for `boolean` values as they will be included by default. If pass `null` or `undefined`, it will only test for `boolean` values.
+  * `defaultValue`: A `valid` `value` to be used as default in case the value is `null` or `undefined`.
   * `overrideKey`: A `string` to be used to detect the `override key` if the input is an `object`.
   * `special`: An optional object mapping `special keys` to multiple `regular keys`. They can be used as `keys` if the input is an `object` and as `positive keys` or `negative keys` if input is a `string` or an `array`.
 
@@ -236,7 +236,7 @@ resolveEvenNumber({ default: 'yes', a: true }); // overridden + set value { a: t
 
 ### *function* `createValueResolver`
 
-Creates a `potential resolver` function that resolves to the `input value` if it satisfies `isValidValue` function, or `defaultValue` if input is nullish. It returns undefined otherwise.
+Creates a `potential resolver` function that resolves to the `input value` if it satisfies `isValidValue` function, or `defaultValue` if input is `null` or `undefined`. It returns `undefined` otherwise.
 
 ```typescript
 function createValueResolver<K extends string, V>(
@@ -249,11 +249,15 @@ function createValueResolver<K extends string, V>(
 * *Arguments*
   * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object.
   * `isValidValue`: A `function` which returns wether or not a `value` is `valid`.
-  * `defaultValue`: A `valid` `value` to be used as default in case the input value is `nullish`.
+  * `defaultValue`: A `value` to be used as default in case the input value is `null` or `undefined`.
 
 See [`TypeCheckFunction`](#type-typecheckfunction) and [`PotentialResolver`](#type-potentialresolver).
 
 ### *function* `createFunctionResolver`
+
+Creates a `potential resolver` function that resolves if the `input value` is a `function`. It returns `undefined` otherwise.
+
+The `input function` will receive the `result key` as only argument. The value returned by the `input function` will be used as value for the specific result key if it satisfies `isValidValue`, if it's `null` or `undefined`, `defaultValue` will be used instead. It will `throw` otherwise. See example below...
 
 ```typescript
 function createFunctionResolver<K extends string, V, D = V>(
@@ -261,6 +265,26 @@ function createFunctionResolver<K extends string, V, D = V>(
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
 ): PotentialResolver<K, V | D>;
+```
+
+* *Arguments*
+  * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object.
+  * `isValidValue`: A `function` which returns wether or not a `value` is `valid`.
+  * `defaultValue`: A `value` to be used as default in case the input function returns `null` or `undefined`.
+
+* *Example*
+
+```typescript
+const resolve = createFunctionResolver(['a', 'b', 'c'], isNumber, 'none');
+
+resolve((key) => key === 'b' ? 40 : 10); // resolves to { a: 10, b: 40, c: 10 }
+resolve((key) => key === 'a' ? null : 33); // resolves to { a: 'none', b: 33, c: 33 }
+
+// function returning an invalid value will throw
+resolve((key) => 40) // throws
+
+// non function inputs will be ignored by this resolver
+resolve(40) // resolves to undefined
 ```
 
 See [`TypeCheckFunction`](#type-typecheckfunction) and [`PotentialResolver`](#type-potentialresolver).
@@ -376,7 +400,7 @@ function createObjectResolver<K extends string, S extends string, V, O extends s
 * *Arguments*
   * `keys`: An `array` of `string` to be used as `keys` in the final [`Resolved`](#type-resolved) object. They will also be used to validate input object `keys`.
   * `isValidValue`: A `function` which returns wether or not a `value` is `valid`.
-  * `defaultValue`: A `valid` `value` to be used as default in case the value is `nullish`.
+  * `defaultValue`: A `valid` `value` to be used as default in case the value is `null` or `undefined`.
   * `overrideKey`: A `string` to be used to detect the `override key` if the input is an `object`.
   * `special`: An optional object mapping `special keys` to multiple `regular keys`. They can also be used as `keys` in input `object`.
 
@@ -409,7 +433,7 @@ function createResult<K extends string, V>(
 * *Arguments*
   * `keys`: An `array` of `string` to be used as `keys` in the [`Resolved`](#type-resolved) object.
   * `value`: A value to be assigned to every `key` in the [`Resolved`](#type-resolved) object.
-  * `input`: An optional [`Resolved`](#type-resolved) object to be used as base for the new [`Resolved`](#type-resolved) object. This `input` object won't be modified, a new one will be created instead. If you pass an empty array as `keys`, the input object will be returned, unless `input` is `nullish` in which case a new empty `object` will be returned.
+  * `input`: An optional [`Resolved`](#type-resolved) object to be used as base for the new [`Resolved`](#type-resolved) object. This `input` object won't be modified, a new one will be created instead. If you pass an empty array as `keys`, the input object will be returned, unless `input` is `null` or `undefined` in which case a new empty `object` will be returned.
 
 See [`KeyList`](#type-keylist) and [`Resolved`](#type-resolved).
 
@@ -525,7 +549,7 @@ logOption(['!z', 'a']) // Type Error
 
 ### *type* `ObjectOption`
 
-An object containing the keys defined by `K` | `O` and the values of `V` or `nullish` (`null` | `undefined`). It will be used by the [`PotentialResolver`](#type-potentialresolver) created by [`createObjectResolver`](#function-createobjectresolver) in order to create a `result` using [`createResult`](#function-createresult).
+An object containing the keys defined by `K` | `O` and the values of `V`, `null`  or `undefined`. It will be used by the [`PotentialResolver`](#type-potentialresolver) created by [`createObjectResolver`](#function-createobjectresolver) in order to create a `result` using [`createResult`](#function-createresult).
 
 ```typescript
 type ObjectOption<K extends string, V> = Partial<Record<K, V | null | undefined>>;
