@@ -34,7 +34,7 @@ jobs:
       - name: Lint code
         run: npm run lint
 
-  job_test_and_build:
+  job_ci:
     name: Test and Build
 
     needs: job_lint
@@ -74,7 +74,7 @@ jobs:
     name: Upload Coverage
 
     if: ${{ github.event_name == 'push' && github.ref_type == 'branch' }}
-    needs: job_test_and_build
+    needs: job_ci
     runs-on: ubuntu-latest
 
     steps:
@@ -102,11 +102,22 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage/coverage-final.json
 
+  job_create_release:
+    name: Create GitHub Release
+
+    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name,'v') }}
+    needs: job_ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Echo dummy message
+        run: echo create release
+
   job_publish_to_npm:
     name: Publish to npm registry
 
     if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name,'v') }}
-    needs: job_test_and_build
+    needs: job_ci
     runs-on: ubuntu-latest
 
     steps:
@@ -135,7 +146,7 @@ jobs:
 
     # skip for now
     if: false
-    needs: job_test_and_build
+    needs: job_ci
     runs-on: ubuntu-latest
 
     steps:
