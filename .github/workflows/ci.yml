@@ -102,6 +102,17 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage/coverage-final.json
 
+  job_create-release:
+    name: Create GitHub Release
+
+    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name,'v') }}
+    needs: job_test_and_build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Echo dummy message
+        run: echo create release
+
   job_publish_to_npm:
     name: Publish to npm registry
 
