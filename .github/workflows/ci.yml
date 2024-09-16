@@ -113,9 +113,17 @@ jobs:
     if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name,'v') }}
     needs: job_ci
 
+    permissions:
+      contents: write
+
     steps:
-      - name: Echo dummy message
-        run: echo create release
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
 
   job_publish_to_npm:
     name: Publish to npm registry
