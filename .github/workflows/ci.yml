@@ -37,18 +37,21 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
+          - name: Ubuntu
+            machine: ubuntu-latest
+          - name: Window
+            machine: windows-latest
+          - name: MacOS
+            machine: macos-latest
         node-version:
           - 18.x
           - 20.x
           - 21.x
           - 22.x
 
-    name: Test and Build
+    name: Test and Build on ${{ matrix.os.name }} using NodeJS v${{ matrix.node-version }}
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os.machine }}
     needs: job_lint
 
     steps:
