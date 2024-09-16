@@ -1,5 +1,5 @@
 name: CI
-run-name: CI
+run-name: ${{ github.event_name }} ${{ github.ref_name }}
 
 on:
   push:
@@ -144,12 +144,15 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   job_publish_to_gpr:
-    name: Publish to Github Packages
+    name: Publish to GitHub Packages
 
-    # skip for now
-    if: false
+    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name,'v') }}
     needs: job_ci
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout code
