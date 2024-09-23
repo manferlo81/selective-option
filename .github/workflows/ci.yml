@@ -20,18 +20,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Checkout, Setup Node.js 20.x and Install dependencies
+        uses: manferlo81/action-checkout-node-install@initial
         with:
           node-version: 20.x
-          cache: "npm"
-          cache-dependency-path: "./package-lock.json"
-
-      - name: Install dependencies
-        run: npm ci
+          registry-url: https://registry.npmjs.org/
 
       - name: Lint code
         run: npm run lint
@@ -58,18 +51,10 @@ jobs:
     needs: job_lint
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - name: Checkout, Setup Node.js ${{ matrix.node-version }} and Install dependencies
+        uses: manferlo81/action-checkout-node-install@initial
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: "./package-lock.json"
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Run tests
         run: npm test
@@ -85,18 +70,10 @@ jobs:
     needs: job_ci
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Checkout, Setup Node.js 20.x and Install dependencies
+        uses: manferlo81/action-checkout-node-install@initial
         with:
           node-version: 20.x
-          cache: "npm"
-          cache-dependency-path: "./package-lock.json"
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Run tests
         run: npm test
@@ -120,8 +97,13 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout, Setup Node.js 20.x and Install dependencies
+        uses: manferlo81/action-checkout-node-install@initial
+        with:
+          node-version: 20.x
+
+      - name: Build
+        run: npm run build
 
       - name: Create Release
         uses: manferlo81/action-create-release@v0
@@ -134,17 +116,11 @@ jobs:
     needs: job_ci
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Checkout, Setup Node.js 20.x and Install dependencies
+        uses: manferlo81/action-checkout-node-install@initial
         with:
           node-version: 20.x
           registry-url: https://registry.npmjs.org/
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Build
         run: npm run build
@@ -166,17 +142,11 @@ jobs:
       packages: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Checkout, Setup Node.js 20.x and Install dependencies
+        uses: manferlo81/action-checkout-node-install@initial
         with:
           node-version: 20.x
           registry-url: https://npm.pkg.github.com/
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Build
         run: npm run build
