@@ -43,14 +43,14 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
-    "@eslint/js": "^9.10.0",
+    "@eslint/js": "^9.11.1",
     "@stylistic/eslint-plugin": "^2.8.0",
     "@types/eslint__js": "^8.42.3",
     "@types/jest": "^29.5.13",
-    "@types/node": "^22.5.5",
+    "@types/node": "^22.7.0",
     "bundlib": "^0.21.1",
     "core-js": "^3.38.1",
-    "eslint": "^9.10.0",
+    "eslint": "^9.11.1",
     "globals": "^15.9.0",
     "husky": "^9.1.6",
     "jest": "^29.7.0",
@@ -59,10 +59,10 @@
     "standard-version": "^9.5.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.6.2",
-    "typescript-eslint": "^8.6.0"
+    "typescript-eslint": "^8.7.0"
   },
   "overrides": {
-    "eslint": "^9.10.0"
+    "eslint": "^9.11.1"
   },
   "author": {
     "name": "Manuel Fernandez",
