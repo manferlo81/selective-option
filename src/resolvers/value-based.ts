@@ -1,10 +1,10 @@
+import { createFunctionResolver } from '../potential/function';
+import { createObjectResolver } from '../potential/object';
+import { createValueResolver } from '../potential/value';
+import { createResolver } from '../tools/create-resolver';
 import type { ValueBasedSelectiveOption } from '../types/input-types';
 import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types';
 import type { KeyList, SpecialKeys, ValueBasedResolver } from '../types/resolver-types';
-import { createResolver } from './create-resolver';
-import { createFunctionResolver } from './function';
-import { createObjectResolver } from './object';
-import { createValueResolver } from './value';
 
 export function createValueBasedResolver<K extends string, S extends string, V, O extends string, D = V>(
   keys: KeyList<K>,

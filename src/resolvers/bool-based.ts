@@ -1,12 +1,12 @@
+import { createFunctionResolver } from '../potential/function';
+import { createKeyListResolver } from '../potential/key-list';
+import { createObjectResolver } from '../potential/object';
+import { createKeyResolver } from '../potential/single-key';
+import { createValueResolver } from '../potential/value';
+import { createResolver } from '../tools/create-resolver';
 import type { BoolBasedSelectiveOption } from '../types/input-types';
 import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types';
 import type { BoolBasedResolver, KeyList, SpecialKeys } from '../types/resolver-types';
-import { createResolver } from './create-resolver';
-import { createFunctionResolver } from './function';
-import { createKeyListResolver } from './key-list';
-import { createObjectResolver } from './object';
-import { createKeyResolver } from './single-key';
-import { createValueResolver } from './value';
 
 function wrapValueValidator<V>(isValidValue: AllowNullish<TypeCheckFunction<V>>): TypeCheckFunction<V | boolean> {
   const isBoolean: TypeCheckFunction<boolean> = (value) => {

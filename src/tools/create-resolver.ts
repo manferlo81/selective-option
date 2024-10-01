@@ -1,5 +1,5 @@
-import { errorInvalidValue } from '../tools/errors';
 import type { PotentialResolver, Resolver } from '../types/resolver-types';
+import { errorInvalidValue } from './errors';
 
 export function createResolver<K extends string, V, I = unknown>(...resolvers: Array<PotentialResolver<K, V>>): Resolver<K, V, I>;
 export function createResolver<K extends string, V, I = unknown>(...resolvers: Array<PotentialResolver<K, V>>): Resolver<K, V, I> {

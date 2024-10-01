@@ -1,11 +1,11 @@
-export { createBoolBasedResolver } from './potential/bool-based';
-export { createResolver } from './potential/create-resolver';
 export { createFunctionResolver } from './potential/function';
 export { createKeyListResolver } from './potential/key-list';
 export { createObjectResolver } from './potential/object';
 export { createKeyResolver } from './potential/single-key';
 export { createValueResolver } from './potential/value';
-export { createValueBasedResolver } from './potential/value-based';
+export { createBoolBasedResolver } from './resolvers/bool-based';
+export { createValueBasedResolver } from './resolvers/value-based';
+export { createResolver } from './tools/create-resolver';
 export { createResult } from './tools/create-result';
 export type {
   BoolBasedSelectiveOption,
@@ -19,8 +19,8 @@ export type {
 export type {
   BoolBasedResolver,
   KeyList,
-  PotentiallyResolved,
   PotentialResolver,
+  PotentiallyResolved,
   Resolved,
   Resolver,
   SpecialKeys,
