@@ -7,8 +7,7 @@ import { validateValueOrThrow } from '../tools/value-nullish';
 import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types';
 import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types';
 
-type ResultExtendItem<K extends string, V> = [keys: KeyList<K>, value: V];
-type ObjectProcessed<K extends string, V, D> = [override: V | D, keys: Array<ResultExtendItem<K, V>>, special: Array<ResultExtendItem<K, V>>];
+type ObjectProcessed<K extends string, V, D> = [override: V | D, keys: Array<Resolved<K, V>>, special: Array<Resolved<K, V>>];
 
 function processInput<K extends string, S extends string, V, D = V>(
   input: object,
@@ -45,7 +44,7 @@ function processInput<K extends string, S extends string, V, D = V>(
 
     // extend regular key data if regular key resolved
     if (keyResolved) {
-      const item: ResultExtendItem<K, V> = [keyResolved, validatedValue];
+      const item = createResult(keyResolved, validatedValue);
       const newKeysData = [...keysData, item];
       return [override, newKeysData, specialData];
     }
@@ -60,7 +59,7 @@ function processInput<K extends string, S extends string, V, D = V>(
     if (!specialResolved) throw errorInvalidKey(key);
 
     // extend special key data if special key resolved
-    const item: ResultExtendItem<K, V> = [specialResolved, validatedValue];
+    const item = createResult(specialResolved, validatedValue);
     const newSpecialData = [...specialData, item];
     return [override, keysData, newSpecialData];
 
@@ -68,12 +67,8 @@ function processInput<K extends string, S extends string, V, D = V>(
 
 }
 
-function resultReducer<K extends string, V>(output: Resolved<K, V>, [keys, value]: ResultExtendItem<K, V>): Resolved<K, V> {
-  return createResult(
-    keys,
-    value,
-    output,
-  );
+function extendResolved<K extends string, V>(output: Resolved<K, V>, extension: Resolved<K, V>): Resolved<K, V> {
+  return { ...output, ...extension };
 }
 
 export function createObjectResolver<K extends string, S extends string, V, O extends string, D = V>(
@@ -142,9 +137,9 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
 
     // return result create from processed input object
     return keysData.reduce(
-      resultReducer,
+      extendResolved,
       specialData.reduce(
-        resultReducer,
+        extendResolved,
         createResult(keys, overrideValue),
       ),
     );

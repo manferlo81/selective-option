@@ -1,8 +1,8 @@
 import { createResult } from '../tools/create-result';
-import type { AllowNullish, KeyResolved, Nullish } from '../types/private-types';
 import { errorInvalidKey } from '../tools/errors';
 import { isArray } from '../tools/is';
 import { resolveKeyIfValid } from '../tools/resolve-valid-key';
+import type { AllowNullish, KeyResolved, Nullish } from '../types/private-types';
 import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types';
 
 function resolveKeyOrThrow<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<S, K>>): KeyResolved<K> {
@@ -57,14 +57,17 @@ export function createKeyListResolver<K extends string, S extends string>(
     const [firstKeys, firstValue] = resolveKeyOrThrow(first, keys, special);
 
     // create result based on first key
-    const baseResult = createResult(
+    const base = createResult(
+      keys,
+      !firstValue,
+    );
+
+    const override = createResult(
       firstKeys,
       firstValue,
-      createResult(
-        keys,
-        !firstValue,
-      ),
     );
+
+    const baseResult = { ...base, ...override };
 
     // extend base result according to the rest of the items
     return rest.reduce<Resolved<K, boolean>>((output, key) => {
@@ -73,11 +76,8 @@ export function createKeyListResolver<K extends string, S extends string>(
       const [resolvedKeys, resolvedValue] = resolveKeyOrThrow(key, keys, special);
 
       // return updated result
-      return createResult(
-        resolvedKeys,
-        resolvedValue,
-        output,
-      );
+      const override = createResult(resolvedKeys, resolvedValue);
+      return { ...output, ...override };
 
     }, baseResult);
 

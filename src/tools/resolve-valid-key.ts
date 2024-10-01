@@ -23,7 +23,7 @@ export function resolveKeyIfValid<K extends string, S extends string>(key: unkno
   if (!polarityPrefixes.includes(sign as never)) return;
 
   // get key without polarity
-  const absoluteKey = key.slice(1);
+  const absoluteKey = key.slice(1) as K;
 
   // try to resolve key
   const matchedResolved = resolveKey(absoluteKey, keys, special);

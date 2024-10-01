@@ -1,6 +1,6 @@
 import { createResult } from '../tools/create-result';
-import type { AllowNullish, Nullish } from '../types/private-types';
 import { resolveKeyIfValid } from '../tools/resolve-valid-key';
+import type { AllowNullish, Nullish } from '../types/private-types';
 import type { KeyList, PotentialResolver, SpecialKeys } from '../types/resolver-types';
 
 export function createKeyResolver<K extends string, S extends string>(
@@ -35,15 +35,18 @@ export function createKeyResolver<K extends string, S extends string>(
     // get data from resolved input
     const [resolvedKeys, resolvedValue] = resolvedInput;
 
-    // return result
-    return createResult(
+    const base = createResult(
+      keys,
+      !resolvedValue,
+    );
+
+    const override = createResult(
       resolvedKeys,
       resolvedValue,
-      createResult(
-        keys,
-        !resolvedValue,
-      ),
     );
+
+    // return result
+    return { ...base, ...override };
 
   };
 

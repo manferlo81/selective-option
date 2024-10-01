@@ -427,14 +427,12 @@ Creates a [`Resolved`](#type-resolved) `object`. Used internally in every `poten
 function createResult<K extends string, V>(
   keys: KeyList<K>,
   value: V,
-  input?: Resolved<K, V>
 ): Resolved<K, V>;
 ```
 
 * *Arguments*
   * `keys`: An `array` of `string` to be used as `keys` in the [`Resolved`](#type-resolved) object.
   * `value`: A value to be assigned to every `key` in the [`Resolved`](#type-resolved) object.
-  * `input`: An optional [`Resolved`](#type-resolved) object to be used as base for the new [`Resolved`](#type-resolved) object. This `input` object won't be modified, a new one will be created instead. If you pass an empty array as `keys`, the input object will be returned, unless `input` is `null` or `undefined` in which case a new empty `object` will be returned.
 
 See [`KeyList`](#type-keylist) and [`Resolved`](#type-resolved).
 
@@ -447,14 +445,39 @@ createResult(['a', 'b', 'c'], true); // { a: true, b: true, c: true }
 createResult(['a', 'b', 'c'], 10); // { a: 10, b: 10, c: 10 }
 ```
 
+***DEPRECATION NOTICE***
+
+This function accepts a third argument as input object, this is deprecated now and will be removed in the future. To extend a previous result use the object spread operator or `Object.assign`.
+
+```typescript
+/** @deprecated */
+function createResult<K extends string, V>(
+  keys: KeyList<K>,
+  value: V,
+  input?: Resolved<K, V>
+): Resolved<K, V>;
+```
+
+* *Arguments*
+  * `keys`: An `array` of `string` to be used as `keys` in the [`Resolved`](#type-resolved) object.
+  * `value`: A value to be assigned to every `key` in the [`Resolved`](#type-resolved) object.
+  * `input`: An optional [`Resolved`](#type-resolved) object to be used as base for the new [`Resolved`](#type-resolved) object. This `input` object won't be modified, a new one will be created instead. If you pass an empty array as `keys`, the input object will be returned, unless `input` is `null` or `undefined` in which case a new empty `object` will be returned.
+
 * *Example*
 
-Extending a previously created [`Resolved`](#type-resolved) `object`.
+Extending a previously created [`Resolved`](#type-resolved) `object` (**DEPRECATED**).
 
 ```typescript
 const base = createResult(['a', 'b', 'c'], 0); // base = { a: 0, b: 0, c: 0 }
-createResult(['a', 'c'], 40, base); // { a: 40, b: 0, c: 40 }
-createResult(['a', 'b'], 20, base); // { a: 20, b: 20, c: 0 }
+const result = createResult(['a', 'c'], 40, base); // { a: 40, b: 0, c: 40 }
+```
+
+To extend a previously create result use...
+
+```typescript
+const base = createResult(['a', 'b', 'c'], 0); // base = { a: 0, b: 0, c: 0 }
+const override = createResult(['a', 'c'], 40); // { a: 40, c: 40 }
+const result = { ...base, ...override }; // { a: 40, b: 0, c: 40 };
 ```
 
 ## Exported Types

@@ -6,7 +6,7 @@ export { createValueResolver } from './potential/value';
 export { createBoolBasedResolver } from './resolvers/bool-based';
 export { createValueBasedResolver } from './resolvers/value-based';
 export { createResolver } from './tools/create-resolver';
-export { createResult } from './tools/create-result';
+export { deprecatedCreateResult as createResult } from './tools/create-result';
 export type {
   BoolBasedSelectiveOption,
   FunctionOption,

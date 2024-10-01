@@ -20,8 +20,9 @@ describe('createResult function', () => {
     });
   });
 
-  test('Should create result extending given input', () => {
+  test('Should create result extending given input (DEPRECATED)', () => {
     const input = { a: 'A' };
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     const result = createResult<string, boolean | string>(['b', 'c', 'd'], true, input);
     expect(result).toEqual({
       a: 'A',
