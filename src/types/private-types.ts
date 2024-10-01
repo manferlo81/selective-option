@@ -15,4 +15,4 @@ export type NegativeKey<K extends string> = `${NegativeKeyPrefix}${K}`;
 
 export type TypeCheckFunction<T> = (value: unknown) => value is T;
 
-export type InputResolver<I, R> = (input: I) => R;
+export type ReadonlyObject<K extends string, V> = Readonly<Record<K, V>>;
