@@ -47,6 +47,7 @@ A simple selective option resolver
     * *type* [`KeyList`](#type-keylist)
     * *type* [`SpecialKeys`](#type-specialkeys)
     * *type* [`Resolved`](#type-resolved)
+    * *type* [`PotentiallyResolved`](#type-potentiallyresolved)
     * *type* [`PotentialResolver`](#type-potentialresolver)
     * *type* [`Resolver`](#type-resolver)
     * *type* [`ValueBasedResolver`](#type-valuebasedresolver)
@@ -652,13 +653,21 @@ type Resolved<K extends string, V> = Readonly<Record<K, V>>;
 
 Used in *function* [`createResult`](#function-createresult) and *type* [`PotentialResolver`](#type-potentialresolver), [`Resolver`](#type-resolver).
 
+### *type* `PotentiallyResolved`
+
+```typescript
+type PotentiallyResolved<K extends string, V> = Resolved<K, V> | null | undefined;
+```
+
+Used in *type* [`PotentialResolver`](#type-potentialresolver).
+
 ### *type* `PotentialResolver`
 
 ```typescript
-type PotentialResolver<K extends string, V> = (input: unknown) => Resolved<K, V> | void | undefined;
+type PotentialResolver<K extends string, V> = (input: unknown) => PotentiallyResolved<K, V> | void;
 ```
 
-See [`Resolved`](#type-resolved). Used in *function* [`createValueResolver`](#function-createvalueresolver), [`createFunctionResolver`](#function-createfunctionresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver), [`createObjectResolver`](#function-createobjectresolver) and [`createResolver`](#function-createresolver).
+See [`PotentiallyResolved`](#type-potentiallyresolved). Used in *function* [`createValueResolver`](#function-createvalueresolver), [`createFunctionResolver`](#function-createfunctionresolver), [`createKeyResolver`](#function-createkeyresolver), [`createKeyListResolver`](#function-createkeylistresolver), [`createObjectResolver`](#function-createobjectresolver) and [`createResolver`](#function-createresolver).
 
 ### *type* `Resolver`
 

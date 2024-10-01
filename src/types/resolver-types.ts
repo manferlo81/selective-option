@@ -6,7 +6,9 @@ export type SpecialKeys<S extends string, K extends string> = ReadonlyObject<S, 
 
 export type Resolved<K extends string, V> = ReadonlyObject<K, V>;
 
-export type PotentialResolver<K extends string, V> = (input: unknown) => Resolved<K, V> | Nullish | Void;
+export type PotentiallyResolved<K extends string, V> = Resolved<K, V> | Nullish;
+export type PotentialResolver<K extends string, V> = (input: unknown) => PotentiallyResolved<K, V> | Void;
+
 export type Resolver<K extends string, V, I = unknown> = (input: I) => Resolved<K, V>;
 
 export type ValueBasedResolver<K extends string, X extends string, V, D = V> = Resolver<K, V | D, ValueBasedSelectiveOption<K, X, V>>;
