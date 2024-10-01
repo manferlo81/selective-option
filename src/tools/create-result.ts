@@ -7,8 +7,9 @@ export function createResult<K extends string, V>(keys: KeyList<K>, value: V, in
 }
 
 export function createResultGetValue<K extends string, V>(keys: KeyList<K>, getValue: (key: K) => V): Resolved<K, V> {
-  return keys.reduce((output, key) => {
+  const entries = keys.map<readonly [K, V]>((key) => {
     const value = getValue(key);
-    return { ...output, [key]: value };
-  }, {}) as Resolved<K, V>;
+    return [key, value];
+  });
+  return Object.fromEntries(entries) as Resolved<K, V>;
 }
