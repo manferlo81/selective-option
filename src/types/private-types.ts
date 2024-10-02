@@ -6,7 +6,8 @@ export type Void = void;
 export type Nullish = null | undefined;
 export type AllowNullish<T> = T | Nullish;
 
-export type KeyResolved<K extends string> = [keys: KeyList<K>, isPositive: boolean];
+export type KeyResolved<K extends string> = [resolvedKeys: KeyList<K>, isSpecial: boolean];
+export type PolarKeyResolved<K extends string> = [resolvedKeys: KeyList<K>, isPositive: boolean];
 
 export type PositiveKeyPrefix = '+';
 export type PositiveKey<K extends string> = K | `${PositiveKeyPrefix}${K}`;

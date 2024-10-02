@@ -1,14 +1,14 @@
 import { createResult } from '../tools/create-result';
 import { errorInvalidKey } from '../tools/errors';
 import { isArray } from '../tools/is';
-import { resolveKeyIfValid } from '../tools/resolve-valid-key';
-import type { AllowNullish, KeyResolved, Nullish } from '../types/private-types';
+import { resolvePolarKey } from '../tools/resolve-polar-key';
+import type { AllowNullish, Nullish, PolarKeyResolved } from '../types/private-types';
 import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types';
 
-function resolveKeyOrThrow<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<S, K>>): KeyResolved<K> {
+function resolveKeyOrThrow<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: AllowNullish<SpecialKeys<S, K>>): PolarKeyResolved<K> {
 
   // try to resolve key
-  const resolvedKey = resolveKeyIfValid(key, keys, special);
+  const resolvedKey = resolvePolarKey(key, keys, special);
 
   // throw if it can't be resolved
   if (!resolvedKey) throw errorInvalidKey(key);
@@ -54,17 +54,17 @@ export function createKeyListResolver<K extends string, S extends string>(
     const [first, ...rest] = input;
 
     // resolve first key
-    const [firstKeys, firstValue] = resolveKeyOrThrow(first, keys, special);
+    const [firstKeys, firstPolarity] = resolveKeyOrThrow(first, keys, special);
 
     // create result based on first key
     const base = createResult(
       keys,
-      !firstValue,
+      !firstPolarity,
     );
 
     const override = createResult(
       firstKeys,
-      firstValue,
+      firstPolarity,
     );
 
     const baseResult = { ...base, ...override };
@@ -73,10 +73,10 @@ export function createKeyListResolver<K extends string, S extends string>(
     return rest.reduce<Resolved<K, boolean>>((output, key) => {
 
       // resolve key
-      const [resolvedKeys, resolvedValue] = resolveKeyOrThrow(key, keys, special);
+      const [resolvedKeys, resolvedPolarity] = resolveKeyOrThrow(key, keys, special);
 
       // return updated result
-      const override = createResult(resolvedKeys, resolvedValue);
+      const override = createResult(resolvedKeys, resolvedPolarity);
       return { ...output, ...override };
 
     }, baseResult);

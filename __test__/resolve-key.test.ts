@@ -1,4 +1,4 @@
-import { resolveKey } from '../src/tools/key';
+import { resolveKey } from '../src/tools/resolve-key';
 
 describe('resolveKey function', () => {
 
@@ -13,12 +13,12 @@ describe('resolveKey function', () => {
     color: ['red', 'green', 'blue'],
   };
 
-  const resolveRegular = (key: string) => resolveKey(key, keys);
+  const resolveRegular = (key: string) => resolveKey(key, keys, null);
   const resolve = (key: string) => resolveKey(key, keys, special);
 
-  test('Should resolve key', () => {
+  test('Should resolve regular key', () => {
     keys.forEach((key) => {
-      const expected = [key];
+      const expected = [[key], false];
       expect(resolveRegular(key)).toEqual(expected);
       expect(resolve(key)).toEqual(expected);
     });
@@ -26,7 +26,7 @@ describe('resolveKey function', () => {
 
   test('Should resolve special key', () => {
     specialKeys.forEach((specialKey) => {
-      const expected = special[specialKey];
+      const expected = [special[specialKey], true];
       expect(resolve(specialKey)).toEqual(expected);
       expect(resolveRegular(specialKey)).toBeUndefined();
     });

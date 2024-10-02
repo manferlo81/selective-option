@@ -1,5 +1,5 @@
 import { createResult } from '../tools/create-result';
-import { resolveKeyIfValid } from '../tools/resolve-valid-key';
+import { resolvePolarKey } from '../tools/resolve-polar-key';
 import type { AllowNullish, Nullish } from '../types/private-types';
 import type { KeyList, PotentialResolver, SpecialKeys } from '../types/resolver-types';
 
@@ -27,22 +27,24 @@ export function createKeyResolver<K extends string, S extends string>(
   return (input) => {
 
     // try to resolve value as key or special key
-    const resolvedInput = resolveKeyIfValid(input, keys, special);
+    const resolvedInput = resolvePolarKey(input, keys, special);
 
     // exit if it can't be resolved
     if (!resolvedInput) return;
 
     // get data from resolved input
-    const [resolvedKeys, resolvedValue] = resolvedInput;
+    const [resolvedKeys, polarity] = resolvedInput;
 
+    // create base result
     const base = createResult(
       keys,
-      !resolvedValue,
+      !polarity,
     );
 
+    // create override result
     const override = createResult(
       resolvedKeys,
-      resolvedValue,
+      polarity,
     );
 
     // return result

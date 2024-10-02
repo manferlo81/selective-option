@@ -2,7 +2,7 @@
 import { createResult } from '../tools/create-result';
 import { errorInvalidKey } from '../tools/errors';
 import { is, isArray } from '../tools/is';
-import { resolveKey } from '../tools/key';
+import { resolveKey } from '../tools/resolve-key';
 import { validateValueOrThrow } from '../tools/value-nullish';
 import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types';
 import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types';
@@ -39,29 +39,44 @@ function processInput<K extends string, S extends string, V, D = V>(
     // set override value if key equals override key
     if (key === overrideKey) return [validatedValue, keysData, specialData];
 
-    // try to resolve key as regular key
-    const keyResolved = resolveKey(key, keys);
+    const keyResolved__ = resolveKey(key, keys, special);
 
-    // extend regular key data if regular key resolved
-    if (keyResolved) {
-      const item = createResult(keyResolved, validatedValue);
-      const newKeysData = [...keysData, item];
-      return [override, newKeysData, specialData];
+    if (!keyResolved__) throw errorInvalidKey(key);
+
+    const [keyResolved, isSpecial] = keyResolved__;
+    const item = createResult(keyResolved, validatedValue);
+
+    if (isSpecial) {
+      const newSpecialData = [...specialData, item];
+      return [override, keysData, newSpecialData];
     }
 
-    // throw if special is not defined at this point
-    if (!special) throw errorInvalidKey(key);
+    const newKeysData = [...keysData, item];
+    return [override, newKeysData, specialData];
 
-    // try to resolve key as special key
-    const specialResolved = special[key as S] as K[] | undefined;
+    // // try to resolve key as regular key
+    // const keyResolved = resolveKey(key, keys);
 
-    // throw if key can't be resolved as special key
-    if (!specialResolved) throw errorInvalidKey(key);
+    // // extend regular key data if regular key resolved
+    // if (keyResolved) {
+    //   const item = createResult(keyResolved, validatedValue);
+    //   const newKeysData = [...keysData, item];
+    //   return [override, newKeysData, specialData];
+    // }
 
-    // extend special key data if special key resolved
-    const item = createResult(specialResolved, validatedValue);
-    const newSpecialData = [...specialData, item];
-    return [override, keysData, newSpecialData];
+    // // throw if special is not defined at this point
+    // if (!special) throw errorInvalidKey(key);
+
+    // // try to resolve key as special key
+    // const specialResolved = special[key as S] as K[] | undefined;
+
+    // // throw if key can't be resolved as special key
+    // if (!specialResolved) throw errorInvalidKey(key);
+
+    // // extend special key data if special key resolved
+    // const item = createResult(specialResolved, validatedValue);
+    // const newSpecialData = [...specialData, item];
+    // return [override, keysData, newSpecialData];
 
   }, [defaultValue, [], []]);
 
