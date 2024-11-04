@@ -4,9 +4,10 @@ import globals from 'globals';
 import { config, configs as typescriptConfigs } from 'typescript-eslint';
 
 const eslintRules = normalizeRules({
-  'no-useless-rename': 'error',
   'object-shorthand': 'error',
+  'no-useless-rename': 'error',
   'prefer-template': 'error',
+  'no-useless-concat': 'error',
 });
 
 const stylisticRules = normalizeRules('@stylistic', {
