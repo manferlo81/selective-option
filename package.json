@@ -29,6 +29,7 @@
     "clean": "run-p clean:*",
     "lint:test": "eslint __test__",
     "lint:src": "eslint src",
+    "lint:config": "eslint *.config.mjs",
     "lint": "run-p lint:*",
     "build": "bundlib -d",
     "dev": "bundlib -dw",
