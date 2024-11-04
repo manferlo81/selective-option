@@ -108,10 +108,16 @@ jobs:
         run: npm pack
 
       - name: Create Release
+        id: create-release
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
           files: ./selective-option-*.tgz
+
+      - name: Show Release URL
+        run: echo "### GitHub Release Create! ( ${{ env.RELEASE_URL }} )" >> $GITHUB_STEP_SUMMARY
+        env:
+          RELEASE_URL: ${{ steps.create-release.outputs.url }}
 
   job_publish_to_npm:
     name: Publish to npm registry
