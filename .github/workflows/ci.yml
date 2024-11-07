@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - '*'
+      - v*.*.*
 
   pull_request:
     branches:
@@ -14,63 +14,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  job_lint:
-    name: Lint
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout, Setup Node.js v20.x and Install dependencies
-        uses: manferlo81/action-checkout-node-install@initial
-        with:
-          node-version: 20.x
-
-      - name: Lint code
-        run: npm run lint
-
-  job_ci:
-    strategy:
-      matrix:
-        os:
-          - name: Ubuntu
-            machine: ubuntu-latest
-          - name: Window
-            machine: windows-latest
-          - name: MacOS
-            machine: macos-latest
-        node-version:
-          - 18.x
-          - 20.x
-          - 21.x
-          - 22.x
-
-    name: Test and Build (${{ matrix.os.name }}, NodeJS v${{ matrix.node-version }})
-
-    runs-on: ${{ matrix.os.machine }}
-    needs: job_lint
-
-    steps:
-      - name: Checkout, Setup Node.js v${{ matrix.node-version }} and Install dependencies
-        uses: manferlo81/action-checkout-node-install@initial
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Run tests
-        run: npm test
-
-      - name: Build
-        run: npm run build
+  job_lint_and_test:
+    name: Lint, Test and Build
+    uses: ./.github/workflows/lint-and-test.yml
 
   job_upload_coverage:
     name: Upload Coverage to Codecov
 
     runs-on: ubuntu-latest
     if: ${{ github.ref_type == 'branch' }}
-    needs: job_ci
+    needs: job_lint_and_test
 
     steps:
       - name: Checkout, Setup Node.js v20.x and Install dependencies
-        uses: manferlo81/action-checkout-node-install@initial
+        uses: manferlo81/action-checkout-node-install@v0
         with:
           node-version: 20.x
 
@@ -89,15 +46,15 @@ jobs:
     name: Create GitHub Release
 
     runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name,'v') }}
-    needs: job_ci
+    if: ${{ github.ref_type == 'tag' }}
+    needs: job_lint_and_test
 
     permissions:
       contents: write
 
     steps:
       - name: Checkout, Setup Node.js v20.x and Install dependencies
-        uses: manferlo81/action-checkout-node-install@initial
+        uses: manferlo81/action-checkout-node-install@v0
         with:
           node-version: 20.x
 
@@ -115,20 +72,21 @@ jobs:
           files: ./selective-option-*.tgz
 
       - name: Show Release URL
-        run: echo "### GitHub Release Create! ( ${{ env.RELEASE_URL }} )" >> $GITHUB_STEP_SUMMARY
-        env:
-          RELEASE_URL: ${{ steps.create-release.outputs.url }}
+        run: |
+          echo "### GitHub Release Create!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.create-release.outputs.url }}" >> $GITHUB_STEP_SUMMARY
 
   job_publish_to_npm:
     name: Publish to npm registry
 
     runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name,'v') }}
-    needs: job_ci
+    if: ${{ github.ref_type == 'tag' }}
+    needs: job_lint_and_test
 
     steps:
       - name: Checkout, Setup Node.js v20.x and Install dependencies
-        uses: manferlo81/action-checkout-node-install@initial
+        uses: manferlo81/action-checkout-node-install@v0
         with:
           node-version: 20.x
           registry-url: https://registry.npmjs.org/
@@ -145,15 +103,15 @@ jobs:
     name: Publish to GitHub Packages
 
     runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name,'v') }}
-    needs: job_ci
+    if: ${{ github.ref_type == 'tag' }}
+    needs: job_lint_and_test
 
     permissions:
       packages: write
 
     steps:
       - name: Checkout, Setup Node.js v20.x and Install dependencies
-        uses: manferlo81/action-checkout-node-install@initial
+        uses: manferlo81/action-checkout-node-install@v0
         with:
           node-version: 20.x
           registry-url: https://npm.pkg.github.com/
