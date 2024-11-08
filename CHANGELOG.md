@@ -2,6 +2,22 @@
 
 ## Version History
 
+## [0.2.0](https://github.com/manferlo81/selective-option/compare/v0.1.1...v0.2.0) (2024-11-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* ValueBasedSelectiveOption type now needs 3 generic parameters instead of 2
+* BoolBasedSelectiveOption type now needs 4 generic parameters instead of 3
+
+### Features
+
+* Resolve input as function ([cdd9707](https://github.com/manferlo81/selective-option/commit/cdd9707f437331a525d7ab62d27ac51a64fc0477))
+* **types:** Expose type `PotentiallyResolved` ([92fc36d](https://github.com/manferlo81/selective-option/commit/92fc36d1e063e787e21db31704e49185fef0aa2c))
+
+
+* change ValueBasedSelectiveOption and BoolBasedSelectiveOption generic parameters in preparation for new feature ([c2bd5f3](https://github.com/manferlo81/selective-option/commit/c2bd5f30ff8250b98f4d7976d334da1cef7fce22))
+
 ### [0.1.1](https://github.com/manferlo81/selective-option/compare/v0.1.0...v0.1.1) (2024-07-31)
 
 
