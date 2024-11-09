@@ -90,28 +90,3 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  job_publish_to_gpr:
-    name: Publish to GitHub Packages
-
-    runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' }}
-    needs: job_lint_and_test
-
-    permissions:
-      packages: write
-
-    steps:
-      - name: Checkout, Setup Node.js v20.x and Install dependencies
-        uses: manferlo81/action-checkout-node-install@v0
-        with:
-          node-version: 20.x
-          registry-url: https://npm.pkg.github.com/
-
-      - name: Build
-        run: npm run build
-
-      - name: Publish package
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
