@@ -25,10 +25,10 @@ jobs:
     strategy:
       matrix:
         os:
-          - name: Ubuntu
-            machine: ubuntu-latest
           - name: Window
             machine: windows-latest
+          - name: Ubuntu
+            machine: ubuntu-latest
           - name: MacOS
             machine: macos-latest
         node-version:
