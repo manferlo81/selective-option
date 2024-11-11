@@ -13,23 +13,26 @@ on:
 
   workflow_dispatch:
 
+env:
+  DEFAULT_NODE_VERSION: 20
+
 jobs:
   job_lint_and_test:
     name: Lint, Test and Build
-    uses: ./.github/workflows/lint-and-test.yml
+    uses: ./.github/workflows/lint-test-build.yml
 
   job_upload_coverage:
     name: Upload Coverage to Codecov
 
     runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'branch' }}
+    if: github.event_name == 'push' && github.ref_type == 'branch'
     needs: job_lint_and_test
 
     steps:
-      - name: Checkout, Setup Node.js v20.x and Install dependencies
+      - name: Checkout, Setup Node.js v${{ env.DEFAULT_NODE_VERSION }} and Install dependencies
         uses: manferlo81/action-checkout-node-install@v0
         with:
-          node-version: 20.x
+          node-version: ${{ env.DEFAULT_NODE_VERSION }}
 
       - name: Run tests
         run: npm test
@@ -39,24 +42,24 @@ jobs:
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
+          directory: coverage
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage/coverage-final.json
 
   job_create_release:
     name: Create GitHub Release
 
     runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' }}
+    if: github.ref_type == 'tag'
     needs: job_lint_and_test
 
     permissions:
       contents: write
 
     steps:
-      - name: Checkout, Setup Node.js v20.x and Install dependencies
+      - name: Checkout, Setup Node.js v${{ env.DEFAULT_NODE_VERSION }} and Install dependencies
         uses: manferlo81/action-checkout-node-install@v0
         with:
-          node-version: 20.x
+          node-version: ${{ env.DEFAULT_NODE_VERSION }}
 
       - name: Build
         run: npm run build
@@ -70,23 +73,23 @@ jobs:
           files: selective-option-*.tgz
 
   job_publish_to_npm:
-    name: Publish to npm registry
+    name: Publish Package to npm Registry
 
     runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' }}
+    if: github.ref_type == 'tag'
     needs: job_lint_and_test
 
     steps:
-      - name: Checkout, Setup Node.js v20.x and Install dependencies
+      - name: Checkout, Setup Node.js v${{ env.DEFAULT_NODE_VERSION }} and Install dependencies
         uses: manferlo81/action-checkout-node-install@v0
         with:
-          node-version: 20.x
+          node-version: ${{ env.DEFAULT_NODE_VERSION }}
           registry-url: https://registry.npmjs.org/
 
       - name: Build
         run: npm run build
 
       - name: Publish package
-        run: npm publish
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
