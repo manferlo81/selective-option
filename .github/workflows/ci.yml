@@ -46,7 +46,7 @@ jobs:
           - 21.x
           - 22.x
 
-    name: '${{ matrix.os.name }}: Test and Build, NodeJS v${{ matrix.node-version }}'
+    name: Test and Build
 
     runs-on: ${{ matrix.os.machine }}
     needs: job_lint
