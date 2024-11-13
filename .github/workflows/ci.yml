@@ -14,16 +14,63 @@ on:
   workflow_dispatch:
 
 jobs:
-  job_lint_and_test:
-    name: Lint, Test and Build
-    uses: ./.github/workflows/lint-test-build.yml
+  job_lint:
+    name: Lint
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
+        uses: manferlo81/action-checkout-node-install@v0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+        env:
+          NODE_VERSION: 20.x
+
+      - name: Lint code
+        run: npm run lint
+
+  job_test_and_build:
+    strategy:
+      matrix:
+        os:
+          - name: Window
+            machine: windows-latest
+          - name: Ubuntu
+            machine: ubuntu-latest
+          - name: macOS
+            machine: macos-latest
+        node-version:
+          - 18.x
+          - 20.x
+          - 21.x
+          - 22.x
+
+    name: '${{ matrix.os.name }}: Test and Build, NodeJS v${{ matrix.node-version }}'
+
+    runs-on: ${{ matrix.os.machine }}
+    needs: job_lint
+
+    steps:
+      - name: Checkout, Setup Node.js v${{ matrix.node-version }} and Install dependencies
+        uses: manferlo81/action-checkout-node-install@v0
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run tests
+        run: npm test
+        env:
+          COVERAGE: SKIP
+
+      - name: Build
+        run: npm run build
 
   job_upload_coverage:
     name: Upload Coverage to Codecov
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref_type == 'branch'
-    needs: job_lint_and_test
+    needs: job_test_and_build
 
     steps:
       - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
@@ -49,7 +96,7 @@ jobs:
 
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
-    needs: job_lint_and_test
+    needs: job_test_and_build
 
     permissions:
       contents: write
@@ -78,7 +125,7 @@ jobs:
 
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
-    needs: job_lint_and_test
+    needs: job_test_and_build
 
     steps:
       - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
