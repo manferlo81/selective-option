@@ -13,9 +13,6 @@ on:
 
   workflow_dispatch:
 
-env:
-  DEFAULT_NODE_VERSION: 20
-
 jobs:
   job_lint_and_test:
     name: Lint, Test and Build
@@ -29,15 +26,17 @@ jobs:
     needs: job_lint_and_test
 
     steps:
-      - name: Checkout, Setup Node.js v${{ env.DEFAULT_NODE_VERSION }} and Install dependencies
+      - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
         uses: manferlo81/action-checkout-node-install@v0
         with:
-          node-version: ${{ env.DEFAULT_NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
+        env:
+          NODE_VERSION: 20.x
 
       - name: Run tests
         run: npm test
         env:
-          CI: true
+          COVERAGE: CI
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
@@ -56,10 +55,12 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout, Setup Node.js v${{ env.DEFAULT_NODE_VERSION }} and Install dependencies
+      - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
         uses: manferlo81/action-checkout-node-install@v0
         with:
-          node-version: ${{ env.DEFAULT_NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
+        env:
+          NODE_VERSION: 20.x
 
       - name: Build
         run: npm run build
@@ -80,11 +81,13 @@ jobs:
     needs: job_lint_and_test
 
     steps:
-      - name: Checkout, Setup Node.js v${{ env.DEFAULT_NODE_VERSION }} and Install dependencies
+      - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
         uses: manferlo81/action-checkout-node-install@v0
         with:
-          node-version: ${{ env.DEFAULT_NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: https://registry.npmjs.org/
+        env:
+          NODE_VERSION: 20.x
 
       - name: Build
         run: npm run build

@@ -1,14 +1,16 @@
+const { COVERAGE } = process.env;
+
 /** @type { import("jest").Config } */
 const config = {
   cacheDirectory: 'node_modules/.cache/jest',
   preset: 'ts-jest',
 
-  collectCoverage: !process.env.SKIP_COVERAGE,
+  collectCoverage: COVERAGE !== 'SKIP',
   collectCoverageFrom: [
     'src/**/*.ts',
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: process.env.CI
+  coverageReporters: COVERAGE === 'CI'
     ? ['json', 'clover', 'cobertura']
     : ['html', 'text'],
 

@@ -3,8 +3,7 @@ name: Lint, Test and Build
 on:
   workflow_call:
 
-env:
-  DEFAULT_NODE_VERSION: 20
+
 
 jobs:
   job_lint:
@@ -13,10 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout, Setup Node.js v${{ env.DEFAULT_NODE_VERSION }} and Install dependencies
+      - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
         uses: manferlo81/action-checkout-node-install@v0
         with:
-          node-version: ${{ env.DEFAULT_NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
+        env:
+          NODE_VERSION: 20.x
 
       - name: Lint code
         run: npm run lint
@@ -29,13 +30,13 @@ jobs:
             machine: windows-latest
           - name: Ubuntu
             machine: ubuntu-latest
-          - name: MacOS
+          - name: macOS
             machine: macos-latest
         node-version:
-          - 18
-          - 20
-          - 21
-          - 22
+          - 18.x
+          - 20.x
+          - 21.x
+          - 22.x
 
     name: Test and Build (${{ matrix.os.name }}, NodeJS v${{ matrix.node-version }})
 
@@ -51,7 +52,7 @@ jobs:
       - name: Run tests
         run: npm test
         env:
-          SKIP_COVERAGE: true
+          COVERAGE: SKIP
 
       - name: Build
         run: npm run build
