@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  job_lint:
+  Lint:
     name: Lint
 
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
       - name: Lint code
         run: npm run lint
 
-  job_test_and_build:
+  Test_and_Build:
     strategy:
       matrix:
         os:
@@ -49,7 +49,7 @@ jobs:
     name: Test and Build, ${{ matrix.os.name }}, NodeJS v${{ matrix.node-version }}
 
     runs-on: ${{ matrix.os.machine }}
-    needs: job_lint
+    needs: Lint
 
     steps:
       - name: Checkout, Setup Node.js v${{ matrix.node-version }} and Install dependencies
@@ -65,12 +65,12 @@ jobs:
       - name: Build
         run: npm run build
 
-  job_upload_coverage:
+  Upload_Coverage:
     name: Upload Coverage to Codecov
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref_type == 'branch'
-    needs: job_test_and_build
+    needs: Test_and_Build
 
     steps:
       - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
@@ -91,12 +91,12 @@ jobs:
           directory: coverage
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  job_create_release:
+  Create_Release:
     name: Create GitHub Release
 
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
-    needs: job_test_and_build
+    needs: Test_and_Build
 
     permissions:
       contents: write
@@ -120,12 +120,12 @@ jobs:
         with:
           files: selective-option-*.tgz
 
-  job_publish_to_npm:
+  Publish_to_npm:
     name: Publish Package to npm Registry
 
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
-    needs: job_test_and_build
+    needs: Test_and_Build
 
     steps:
       - name: Checkout, Setup Node.js v${{ env.NODE_VERSION }} and Install dependencies
