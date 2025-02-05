@@ -32,36 +32,37 @@ const stylisticPluginConfig = config({
   }),
 });
 
-const typescriptPluginConfig = config(
-  {
-    extends: [
-      typescriptConfigs.strictTypeChecked,
-      typescriptConfigs.stylisticTypeChecked,
-    ],
-    languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } },
-    rules: normalizeRules('@typescript-eslint', {
-      'array-type': {
-        default: 'array-simple',
-        readonly: 'array-simple',
-      },
-      'restrict-template-expressions': 'off',
-    }),
-  },
-  {
-    files: ['**/*.{js,cjs,mjs}'],
-    extends: [typescriptConfigs.disableTypeChecked],
-  },
-);
+const typescriptPluginConfig = config({
+  extends: [
+    typescriptConfigs.strictTypeChecked,
+    typescriptConfigs.stylisticTypeChecked,
+  ],
+  languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } },
+  rules: normalizeRules('@typescript-eslint', {
+    'array-type': {
+      default: 'array-simple',
+      readonly: 'array-simple',
+    },
+    'restrict-template-expressions': 'off',
+  }),
+});
 
 export default config(
   {
-    files: ['**/*.{js,cjs,mjs,ts}'],
     ignores: ['dist', 'coverage'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
-  javascriptPluginConfig,
-  stylisticPluginConfig,
-  typescriptPluginConfig,
+  {
+    files: ['**/*.{js,cjs,mjs,ts}'],
+    extends: [
+      javascriptPluginConfig,
+      stylisticPluginConfig,
+    ],
+  },
+  {
+    files: ['**/*.ts'],
+    extends: [typescriptPluginConfig],
+  },
 );
 
 function normalizeRuleEntry(entry) {
@@ -86,7 +87,6 @@ function createEntryNormalizer(pluginName) {
 
 function normalizeRules(pluginName, rules) {
   if (!rules && pluginName) return normalizeRules(null, pluginName);
-  const entries = Object.entries(rules);
   const normalizeEntry = createEntryNormalizer(pluginName);
-  return Object.fromEntries(entries.map(normalizeEntry));
+  return Object.fromEntries(Object.entries(rules).map(normalizeEntry));
 }
