@@ -1,10 +1,10 @@
-import js from '@eslint/js';
-import stylistic from '@stylistic/eslint-plugin';
+import pluginJavascript from '@eslint/js';
+import pluginStylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
 import { config, configs as typescriptConfigs } from 'typescript-eslint';
 
 const javascriptPluginConfig = config(
-  js.configs.recommended,
+  pluginJavascript.configs.recommended,
   {
     rules: normalizeRules({
       'object-shorthand': 'error',
@@ -16,7 +16,7 @@ const javascriptPluginConfig = config(
 );
 
 const stylisticPluginConfig = config(
-  stylistic.configs.customize({
+  pluginStylistic.configs.customize({
     quotes: 'single',
     indent: 2,
     semi: true,
