@@ -51,8 +51,8 @@ const typescriptPluginConfig = config(
 );
 
 export default config(
-  { files: ['**/*.{js,mjs,cjs,ts}'] },
   { ignores: ['dist', 'coverage'] },
+  { files: ['**/*.{js,mjs,cjs,ts}'] },
   { languageOptions: { globals: { ...globals.node, ...globals.browser } } },
   javascriptPluginConfig,
   stylisticPluginConfig,
@@ -61,7 +61,7 @@ export default config(
 
 function normalizeRuleEntry(entry) {
   if (Array.isArray(entry)) return entry;
-  if (['off', 'warn', 'error'].includes(entry)) return entry;
+  if (['error', 'off', 'warn'].includes(entry)) return entry;
   return ['error', entry];
 }
 
