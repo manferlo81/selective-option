@@ -38,7 +38,6 @@ const typescriptPluginConfig = config(
   typescriptConfigs.strictTypeChecked,
   typescriptConfigs.stylisticTypeChecked,
   {
-    files: ['**/*.ts'],
     languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } },
     rules: normalizeRules('@typescript-eslint', {
       'array-type': { default: 'array-simple', readonly: 'array-simple' },
@@ -53,7 +52,7 @@ const typescriptPluginConfig = config(
 
 export default config(
   {
-    files: ['**/*.{js,cjs,mjs,ts}'],
+    files: ['**/*.{js,mjs,cjs,ts}'],
     ignores: ['dist', 'coverage'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
