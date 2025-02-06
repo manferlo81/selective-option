@@ -51,11 +51,9 @@ const typescriptPluginConfig = config(
 );
 
 export default config(
-  {
-    files: ['**/*.{js,mjs,cjs,ts}'],
-    ignores: ['dist', 'coverage'],
-    languageOptions: { globals: { ...globals.node, ...globals.browser } },
-  },
+  { files: ['**/*.{js,mjs,cjs,ts}'] },
+  { ignores: ['dist', 'coverage'] },
+  { languageOptions: { globals: { ...globals.node, ...globals.browser } } },
   javascriptPluginConfig,
   stylisticPluginConfig,
   typescriptPluginConfig,
