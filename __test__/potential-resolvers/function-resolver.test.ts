@@ -83,8 +83,8 @@ describe('createFunctionResolver function', () => {
 
   test('Should resolve using input function', () => {
     const cases: Array<{ input: FunctionOption<K, V>; expected: Resolved<K, V | D> }> = [
-      { input: (key) => key == 'chrome' ? false : 'auto', expected: createExpected('auto', ['chrome'], false) },
-      { input: (key) => key == 'deno' || key === 'node' ? true : 'auto', expected: createExpected('auto', ['node', 'deno'], true) },
+      { input: (key) => key === 'chrome' ? false : 'auto', expected: createExpected('auto', ['chrome'], false) },
+      { input: (key) => key === 'deno' || key === 'node' ? true : 'auto', expected: createExpected('auto', ['node', 'deno'], true) },
     ];
     cases.forEach(({ input, expected }) => {
       expect(resolve(input)).toEqual(expected);
