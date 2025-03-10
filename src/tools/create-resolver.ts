@@ -1,7 +1,7 @@
-import type { PotentialResolver, Resolver } from '../types/resolver-types';
-import { errorInvalidValue } from './errors';
+import type { PotentialResolver, Resolver } from '../types/resolver-types'
+import { errorInvalidValue } from './errors'
 
-export function createResolver<K extends string, V, I = unknown>(...resolvers: Array<PotentialResolver<K, V>>): Resolver<K, V, I>;
+export function createResolver<K extends string, V, I = unknown>(...resolvers: Array<PotentialResolver<K, V>>): Resolver<K, V, I>
 export function createResolver<K extends string, V, I = unknown>(...resolvers: Array<PotentialResolver<K, V>>): Resolver<K, V, I> {
 
   // return resolver
@@ -11,15 +11,15 @@ export function createResolver<K extends string, V, I = unknown>(...resolvers: A
     for (const resolve of resolvers) {
 
       // execute resolver
-      const result = resolve(input);
+      const result = resolve(input)
 
       // return result if it's resolved
-      if (result) return result;
+      if (result) return result
     }
 
     // throw Error if input can't be resolved
-    throw errorInvalidValue(input);
+    throw errorInvalidValue(input)
 
-  };
+  }
 
 }

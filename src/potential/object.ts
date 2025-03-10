@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
-import { createResult } from '../tools/create-result';
-import { errorInvalidKey } from '../tools/errors';
-import { is, isArray } from '../tools/is';
-import { resolveKey } from '../tools/resolve-key';
-import { validateValueOrThrow } from '../tools/value-nullish';
-import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types';
-import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types';
+import { createResult } from '../tools/create-result'
+import { errorInvalidKey } from '../tools/errors'
+import { is, isArray } from '../tools/is'
+import { resolveKey } from '../tools/resolve-key'
+import { validateValueOrThrow } from '../tools/value-nullish'
+import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types'
+import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types'
 
-type ObjectProcessed<K extends string, V, D> = [override: V | D, keys: Array<Resolved<K, V>>, special: Array<Resolved<K, V>>];
+type ObjectProcessed<K extends string, V, D> = [override: V | D, keys: Array<Resolved<K, V>>, special: Array<Resolved<K, V>>]
 
 function processInput<K extends string, S extends string, V, D = V>(
   input: object,
@@ -19,40 +19,40 @@ function processInput<K extends string, S extends string, V, D = V>(
 ): ObjectProcessed<K, V, D> {
 
   // get input object keys
-  const objectKeys = Object.keys(input);
+  const objectKeys = Object.keys(input)
 
   // return array containing processed data
   return objectKeys.reduce<ObjectProcessed<K, V, D>>((output, key) => {
 
     // get object key value
-    const value = input[key as never];
+    const value = input[key as never]
 
     // get data from value if it's valid or nullish
-    const [isValid, validatedValue] = validateValueOrThrow(value, isValidValue);
+    const [isValid, validatedValue] = validateValueOrThrow(value, isValidValue)
 
     // return output without changes if value is nullish
-    if (!isValid) return output;
+    if (!isValid) return output
 
     // destructure output array
-    const [override, keysData, specialData] = output;
+    const [override, keysData, specialData] = output
 
     // set override value if key equals override key
-    if (key === overrideKey) return [validatedValue, keysData, specialData];
+    if (key === overrideKey) return [validatedValue, keysData, specialData]
 
-    const keyResolved__ = resolveKey(key, keys, special);
+    const keyResolved__ = resolveKey(key, keys, special)
 
-    if (!keyResolved__) throw errorInvalidKey(key);
+    if (!keyResolved__) throw errorInvalidKey(key)
 
-    const [keyResolved, isSpecial] = keyResolved__;
-    const item = createResult(keyResolved, validatedValue);
+    const [keyResolved, isSpecial] = keyResolved__
+    const item = createResult(keyResolved, validatedValue)
 
     if (isSpecial) {
-      const newSpecialData = [...specialData, item];
-      return [override, keysData, newSpecialData];
+      const newSpecialData = [...specialData, item]
+      return [override, keysData, newSpecialData]
     }
 
-    const newKeysData = [...keysData, item];
-    return [override, newKeysData, specialData];
+    const newKeysData = [...keysData, item]
+    return [override, newKeysData, specialData]
 
     // // try to resolve key as regular key
     // const keyResolved = resolveKey(key, keys);
@@ -78,12 +78,12 @@ function processInput<K extends string, S extends string, V, D = V>(
     // const newSpecialData = [...specialData, item];
     // return [override, keysData, newSpecialData];
 
-  }, [defaultValue, [], []]);
+  }, [defaultValue, [], []])
 
 }
 
 function extendResolved<K extends string, V>(output: Resolved<K, V>, extension: Resolved<K, V>): Resolved<K, V> {
-  return { ...output, ...extension };
+  return { ...output, ...extension }
 }
 
 export function createObjectResolver<K extends string, S extends string, V, O extends string, D = V>(
@@ -92,7 +92,7 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
   defaultValue: D,
   overrideKey: O,
   special: SpecialKeys<S, K>,
-): PotentialResolver<K, V | D>;
+): PotentialResolver<K, V | D>
 
 export function createObjectResolver<K extends string, V, O extends string, D = V>(
   keys: KeyList<K>,
@@ -100,7 +100,7 @@ export function createObjectResolver<K extends string, V, O extends string, D = 
   defaultValue: D,
   overrideKey: O,
   special?: Nullish,
-): PotentialResolver<K, V | D>;
+): PotentialResolver<K, V | D>
 
 export function createObjectResolver<K extends string, S extends string, V, O extends string>(
   keys: KeyList<K>,
@@ -108,7 +108,7 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
   defaultValue: V,
   overrideKey: O,
   special: SpecialKeys<S, K>,
-): PotentialResolver<K, V>;
+): PotentialResolver<K, V>
 
 export function createObjectResolver<K extends string, V, O extends string>(
   keys: KeyList<K>,
@@ -116,7 +116,7 @@ export function createObjectResolver<K extends string, V, O extends string>(
   defaultValue: V,
   overrideKey: O,
   special?: Nullish,
-): PotentialResolver<K, V>;
+): PotentialResolver<K, V>
 
 export function createObjectResolver<K extends string, S extends string, V, O extends string, D = V>(
   keys: KeyList<K>,
@@ -124,7 +124,7 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
   defaultValue: D,
   overrideKey: O,
   special?: AllowNullish<SpecialKeys<S, K>>,
-): PotentialResolver<K, V | D>;
+): PotentialResolver<K, V | D>
 
 export function createObjectResolver<K extends string, S extends string, V, O extends string, D = V>(
   keys: KeyList<K>,
@@ -138,7 +138,7 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
   return (input) => {
 
     // exit if it's not an object
-    if (!input || !is(input, 'object') || isArray(input)) return;
+    if (!input || !is(input, 'object') || isArray(input)) return
 
     // process input object
     const [overrideValue, keysData, specialData] = processInput(
@@ -148,7 +148,7 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
       overrideKey,
       keys,
       special,
-    );
+    )
 
     // return result create from processed input object
     return keysData.reduce(
@@ -157,8 +157,8 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
         extendResolved,
         createResult(keys, overrideValue),
       ),
-    );
+    )
 
-  };
+  }
 
 }
