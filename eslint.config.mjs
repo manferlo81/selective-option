@@ -34,7 +34,7 @@ const stylisticPluginConfig = config(
 const typescriptPluginConfig = config(
   typescriptConfigs.strictTypeChecked,
   typescriptConfigs.stylisticTypeChecked,
-  { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: process.cwd() } } },
+  { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } } },
   normalizeRulesConfig('@typescript-eslint', {
     'array-type': { default: 'array-simple', readonly: 'array-simple' },
     'restrict-template-expressions': {
@@ -45,15 +45,15 @@ const typescriptPluginConfig = config(
     },
   }),
   {
-    files: ['**/*.{js,mjs,cjs}'],
     ...typescriptConfigs.disableTypeChecked,
+    files: ['**/*.{js,mjs,cjs}'],
   },
 );
 
 export default config(
   { ignores: ['dist', 'coverage'] },
-  { files: ['**/*.{js,mjs,cjs,ts}'] },
   { languageOptions: { globals: { ...globals.node, ...globals.browser } } },
+  { files: ['**/*.{js,mjs,cjs,ts}'] },
   javascriptPluginConfig,
   stylisticPluginConfig,
   typescriptPluginConfig,
