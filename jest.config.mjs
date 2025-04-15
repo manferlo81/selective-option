@@ -1,15 +1,23 @@
+import { createDefaultPreset } from 'ts-jest'
+
 const { COVERAGE } = process.env
+const collectCoverage = COVERAGE !== 'SKIP'
+const coverageOnCI = COVERAGE === 'CI'
+
+const typescriptJestPreset = createDefaultPreset({
+  tsconfig: './tsconfig.json',
+})
 
 /** @type { import("ts-jest").JestConfigWithTsJest } */
 const config = {
-  preset: 'ts-jest',
+  ...typescriptJestPreset,
 
-  collectCoverage: COVERAGE !== 'SKIP',
+  collectCoverage,
   collectCoverageFrom: [
     'src/**/*.ts',
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: COVERAGE === 'CI'
+  coverageReporters: coverageOnCI
     ? ['text', 'json', 'clover', 'cobertura']
     : ['text', 'html'],
 
