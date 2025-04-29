@@ -23,6 +23,7 @@ const importPluginConfig = config(
     'no-useless-path-segments': 'error',
     'no-absolute-path': 'error',
     'no-cycle': 'error',
+    'no-nodejs-modules': 'error',
   }),
 )
 
