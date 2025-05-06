@@ -2,11 +2,11 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "CommonJS",
-    "lib": [],
     "moduleResolution": "Node10",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
+    "lib": [],
     "strict": true,
     "noImplicitAny": true,
     "noImplicitOverride": true,
