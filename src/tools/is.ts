@@ -4,7 +4,7 @@ import type { TypeCheckFunction } from '../types/private-types'
 interface IsArrayFunction extends TypeCheckFunction<unknown[]>, TypeCheckFunction<readonly unknown[]> {
   <T extends readonly unknown[]>(value: unknown): value is T
   <T extends unknown[]>(value: unknown): value is T
-  <T>(value: unknown): value is (readonly T[] | T[])
+  <T>(value: unknown): value is readonly T[] | T[]
 }
 
 interface ExtendedArrayConstructor extends ArrayConstructor {
