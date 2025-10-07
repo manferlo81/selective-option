@@ -1,10 +1,6 @@
 import type { KeyList } from './resolver-types'
 
-// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-export type Void = void
-
 export type Nullish = null | undefined
-export type AllowNullish<T> = T | Nullish
 
 export type KeyResolved<K extends string> = [resolvedKeys: KeyList<K>, isSpecial: boolean]
 export type PolarKeyResolved<K extends string> = [resolvedKeys: KeyList<K>, isPositive: boolean]

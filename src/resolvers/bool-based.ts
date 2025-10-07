@@ -5,10 +5,10 @@ import { createKeyResolver } from '../potential/single-key'
 import { createValueResolver } from '../potential/value'
 import { createResolver } from '../tools/create-resolver'
 import type { BoolBasedSelectiveOption } from '../types/input-types'
-import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types'
+import type { Nullish, TypeCheckFunction } from '../types/private-types'
 import type { BoolBasedResolver, KeyList, SpecialKeys } from '../types/resolver-types'
 
-function wrapValueValidator<V>(isValidValue: AllowNullish<TypeCheckFunction<V>>): TypeCheckFunction<V | boolean> {
+function wrapValueValidator<V>(isValidValue: TypeCheckFunction<V> | Nullish): TypeCheckFunction<V | boolean> {
   const isBoolean: TypeCheckFunction<boolean> = (value) => {
     return value === true || value === false
   }
@@ -85,18 +85,18 @@ export function createBoolBasedResolver<K extends string, O extends string>(
 
 export function createBoolBasedResolver<K extends string, S extends string, V, O extends string, D = V>(
   keys: KeyList<K>,
-  isValidValue: AllowNullish<TypeCheckFunction<V>>,
+  isValidValue: TypeCheckFunction<V> | Nullish,
   defaultValue: D,
   overrideKey: O,
-  special?: AllowNullish<SpecialKeys<S, K>>,
+  special?: SpecialKeys<S, K> | Nullish,
 ): BoolBasedResolver<K, S, V | boolean, O, D>
 
 export function createBoolBasedResolver<K extends string, S extends string, V, O extends string, D = V>(
   keys: KeyList<K>,
-  isValidValue: AllowNullish<TypeCheckFunction<V>>,
+  isValidValue: TypeCheckFunction<V> | Nullish,
   defaultValue: D,
   overrideKey: O,
-  special?: AllowNullish<SpecialKeys<S, K>>,
+  special?: SpecialKeys<S, K> | Nullish,
 ): BoolBasedResolver<K, S, V | boolean, O, D> {
 
   // create boolean value validator

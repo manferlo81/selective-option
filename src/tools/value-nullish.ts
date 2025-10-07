@@ -1,11 +1,11 @@
-import type { Nullish, TypeCheckFunction, Void } from '../types/private-types'
+import type { Nullish, TypeCheckFunction } from '../types/private-types'
 import { errorInvalidValue } from './errors'
 
 type ValueOrNullishResult<V extends boolean, T> = [isValid: V, value: T]
 type IsValidResult<V> = ValueOrNullishResult<true, V>
 type IsNullishResult = ValueOrNullishResult<false, Nullish>
 
-export function validateValue<V>(value: unknown, isValidValue: TypeCheckFunction<V>): IsValidResult<V> | IsNullishResult | Void {
+export function validateValue<V>(value: unknown, isValidValue: TypeCheckFunction<V>): IsValidResult<V> | IsNullishResult | ReturnType<() => void> {
 
   // return "valid" result if value is valid
   if (isValidValue(value)) return [true, value]

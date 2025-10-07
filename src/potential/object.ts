@@ -4,7 +4,7 @@ import { errorInvalidKey } from '../tools/errors'
 import { is, isArray } from '../tools/is'
 import { resolveKey } from '../tools/resolve-key'
 import { validateValueOrThrow } from '../tools/value-nullish'
-import type { AllowNullish, Nullish, TypeCheckFunction } from '../types/private-types'
+import type { Nullish, TypeCheckFunction } from '../types/private-types'
 import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types'
 
 type ObjectProcessed<K extends string, V, D> = [override: V | D, keys: Array<Resolved<K, V>>, special: Array<Resolved<K, V>>]
@@ -15,7 +15,7 @@ function processInput<K extends string, S extends string, V, D = V>(
   defaultValue: D,
   overrideKey: string,
   keys: KeyList<K>,
-  special?: AllowNullish<SpecialKeys<S, K>>,
+  special?: SpecialKeys<S, K> | Nullish,
 ): ObjectProcessed<K, V, D> {
 
   // get input object keys
@@ -123,7 +123,7 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   overrideKey: O,
-  special?: AllowNullish<SpecialKeys<S, K>>,
+  special?: SpecialKeys<S, K> | Nullish,
 ): PotentialResolver<K, V | D>
 
 export function createObjectResolver<K extends string, S extends string, V, O extends string, D = V>(
@@ -131,7 +131,7 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   overrideKey: O,
-  special?: AllowNullish<SpecialKeys<S, K>>,
+  special?: SpecialKeys<S, K> | Nullish,
 ): PotentialResolver<K, V | D> {
 
   // return object resolver

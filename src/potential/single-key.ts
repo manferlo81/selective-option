@@ -1,6 +1,6 @@
 import { createResult } from '../tools/create-result'
 import { resolvePolarKey } from '../tools/resolve-polar-key'
-import type { AllowNullish, Nullish } from '../types/private-types'
+import type { Nullish } from '../types/private-types'
 import type { KeyList, PotentialResolver, SpecialKeys } from '../types/resolver-types'
 
 export function createKeyResolver<K extends string, S extends string>(
@@ -15,12 +15,12 @@ export function createKeyResolver<K extends string>(
 
 export function createKeyResolver<K extends string, S extends string>(
   keys: KeyList<K>,
-  special?: AllowNullish<SpecialKeys<S, K>>,
+  special?: SpecialKeys<S, K> | Nullish,
 ): PotentialResolver<K, boolean>
 
 export function createKeyResolver<K extends string, S extends string>(
   keys: KeyList<K>,
-  special?: AllowNullish<SpecialKeys<S, K>>,
+  special?: SpecialKeys<S, K> | Nullish,
 ): PotentialResolver<K, boolean> {
 
   // return string resolver

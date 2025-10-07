@@ -7,6 +7,7 @@ export { createBoolBasedResolver } from './resolvers/bool-based'
 export { createValueBasedResolver } from './resolvers/value-based'
 export { createResolver } from './tools/create-resolver'
 export { deprecatedCreateResult as createResult } from './tools/create-result'
+
 export type {
   BoolBasedSelectiveOption,
   FunctionOption,
@@ -16,6 +17,7 @@ export type {
   SingleKeyOption,
   ValueBasedSelectiveOption,
 } from './types/input-types'
+
 export type {
   BoolBasedResolver,
   KeyList,
