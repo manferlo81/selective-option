@@ -1,8 +1,8 @@
 import { createResultGetValue } from '../tools/create-result'
 import { is } from '../tools/is'
 import { validateValueOrThrow } from '../tools/value-nullish'
+import type { TypeCheckFunction } from '../types/helper-types'
 import type { FunctionOption } from '../types/input-types'
-import type { TypeCheckFunction } from '../types/private-types'
 import type { KeyList, PotentialResolver } from '../types/resolver-types'
 
 export function createFunctionResolver<K extends string, V>(

@@ -2,10 +2,11 @@ import { createResult } from '../tools/create-result'
 import { errorInvalidKey } from '../tools/errors'
 import { isArray } from '../tools/is'
 import { resolvePolarKey } from '../tools/resolve-polar-key'
-import type { Nullish, PolarKeyResolved } from '../types/private-types'
+import type { Nullish } from '../types/helper-types'
+import type { PolarKeyResolved } from '../types/private-types'
 import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types'
 
-function resolveKeyOrThrow<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: SpecialKeys<S, K> | Nullish): PolarKeyResolved<K> {
+function resolveKeyOrThrow<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: Nullish<SpecialKeys<S, K>>): PolarKeyResolved<K> {
 
   // try to resolve key
   const resolvedKey = resolvePolarKey(key, keys, special)
@@ -30,12 +31,12 @@ export function createKeyListResolver<K extends string>(
 
 export function createKeyListResolver<K extends string, S extends string>(
   keys: KeyList<K>,
-  special?: SpecialKeys<S, K> | Nullish,
+  special?: Nullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, boolean>
 
 export function createKeyListResolver<K extends string, S extends string>(
   keys: KeyList<K>,
-  special?: SpecialKeys<S, K> | Nullish,
+  special?: Nullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, boolean> {
 
   // return array resolver

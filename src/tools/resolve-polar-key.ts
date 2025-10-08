@@ -1,11 +1,12 @@
-import type { NegativeKeyPrefix, Nullish, PolarKeyResolved, PositiveKeyPrefix } from '../types/private-types'
+import type { Nullish } from '../types/helper-types'
+import type { NegativeKeyPrefix, PolarKeyResolved, PositiveKeyPrefix } from '../types/private-types'
 import type { KeyList, SpecialKeys } from '../types/resolver-types'
 import { is } from './is'
 import { resolveKey } from './resolve-key'
 
 const polarityPrefixes = ['!', '+', '-'] as ReadonlyArray<PositiveKeyPrefix | NegativeKeyPrefix>
 
-export function resolvePolarKey<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: SpecialKeys<S, K> | Nullish): PolarKeyResolved<K> | undefined {
+export function resolvePolarKey<K extends string, S extends string>(key: unknown, keys: KeyList<K>, special?: Nullish<SpecialKeys<S, K>>): PolarKeyResolved<K> | undefined {
 
   // throw if item is not a string
   if (!is(key, 'string')) return

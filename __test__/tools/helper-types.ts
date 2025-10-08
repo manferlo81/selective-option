@@ -1,1 +1,1 @@
-export type ArrayItemType<T extends unknown[] | readonly unknown[]> = T[number]
+export type ArrayItemType<T extends readonly unknown[]> = T[number]

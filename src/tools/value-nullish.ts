@@ -1,4 +1,4 @@
-import type { Nullish, TypeCheckFunction } from '../types/private-types'
+import type { Nullish, TypeCheckFunction } from '../types/helper-types'
 import { errorInvalidValue } from './errors'
 
 type ValueOrNullishResult<V extends boolean, T> = [isValid: V, value: T]

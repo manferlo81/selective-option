@@ -2,8 +2,8 @@ import { createFunctionResolver } from '../potential/function'
 import { createObjectResolver } from '../potential/object'
 import { createValueResolver } from '../potential/value'
 import { createResolver } from '../tools/create-resolver'
+import type { Nullish, TypeCheckFunction } from '../types/helper-types'
 import type { ValueBasedSelectiveOption } from '../types/input-types'
-import type { Nullish, TypeCheckFunction } from '../types/private-types'
 import type { KeyList, SpecialKeys, ValueBasedResolver } from '../types/resolver-types'
 
 export function createValueBasedResolver<K extends string, S extends string, V, O extends string, D = V>(
@@ -43,7 +43,7 @@ export function createValueBasedResolver<K extends string, S extends string, V, 
   isValidValue: TypeCheckFunction<V>,
   defaultValue: V,
   overrideKey: O,
-  special?: SpecialKeys<S, K> | Nullish,
+  special?: Nullish<SpecialKeys<S, K>>,
 ): ValueBasedResolver<K, S | O, V>
 
 export function createValueBasedResolver<K extends string, S extends string, V, O extends string, D = V>(
@@ -51,7 +51,7 @@ export function createValueBasedResolver<K extends string, S extends string, V, 
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   overrideKey: O,
-  special?: SpecialKeys<S, K> | Nullish,
+  special?: Nullish<SpecialKeys<S, K>>,
 ): ValueBasedResolver<K, S | O, V, D> {
 
   // create potential resolvers

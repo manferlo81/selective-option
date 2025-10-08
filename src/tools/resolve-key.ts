@@ -1,7 +1,8 @@
-import type { KeyResolved, Nullish } from '../types/private-types'
+import type { Nullish } from '../types/helper-types'
+import type { KeyResolved } from '../types/private-types'
 import type { KeyList, SpecialKeys } from '../types/resolver-types'
 
-export function resolveKey<K extends string>(key: string, keys: KeyList<K>, special: Partial<SpecialKeys<string, K>> | Nullish): KeyResolved<K> | undefined {
+export function resolveKey<K extends string>(key: string, keys: KeyList<K>, special: Nullish<Partial<SpecialKeys<string, K>>>): KeyResolved<K> | undefined {
   if (keys.includes(key as never)) return [[key as K], false]
   if (!special) return
   const specialResolved = special[key]

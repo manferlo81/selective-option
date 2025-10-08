@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
-import type { TypeCheckFunction } from '../types/private-types'
+import type { SomeArray, TypeCheckFunction, UnknownArray } from '../types/helper-types'
 
-interface IsArrayFunction extends TypeCheckFunction<unknown[]>, TypeCheckFunction<readonly unknown[]> {
+interface IsArrayFunction extends TypeCheckFunction<UnknownArray> {
   <T extends readonly unknown[]>(value: unknown): value is T
   <T extends unknown[]>(value: unknown): value is T
-  <T>(value: unknown): value is readonly T[] | T[]
+  <T>(value: unknown): value is SomeArray<T>
 }
 
 interface ExtendedArrayConstructor extends ArrayConstructor {

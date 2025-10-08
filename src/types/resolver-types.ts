@@ -1,12 +1,12 @@
+import type { ImmutableDictionary, Nullish } from './helper-types'
 import type { BoolBasedSelectiveOption, ValueBasedSelectiveOption } from './input-types'
-import type { Nullish, ReadonlyObject } from './private-types'
 
 export type KeyList<K extends string> = readonly K[]
-export type SpecialKeys<S extends string, K extends string> = ReadonlyObject<S, KeyList<K>>
+export type SpecialKeys<S extends string, K extends string> = ImmutableDictionary<KeyList<K>, S>
 
-export type Resolved<K extends string, V> = ReadonlyObject<K, V>
+export type Resolved<K extends string, V> = ImmutableDictionary<V, K>
 
-export type PotentiallyResolved<K extends string, V> = Resolved<K, V> | Nullish
+export type PotentiallyResolved<K extends string, V> = Nullish<Resolved<K, V>>
 export interface PotentialResolver<K extends string, V> {
   (input: unknown): PotentiallyResolved<K, V>
   (input: unknown): void

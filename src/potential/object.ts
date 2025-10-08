@@ -4,7 +4,7 @@ import { errorInvalidKey } from '../tools/errors'
 import { is, isArray } from '../tools/is'
 import { resolveKey } from '../tools/resolve-key'
 import { validateValueOrThrow } from '../tools/value-nullish'
-import type { Nullish, TypeCheckFunction } from '../types/private-types'
+import type { Nullish, TypeCheckFunction } from '../types/helper-types'
 import type { KeyList, PotentialResolver, Resolved, SpecialKeys } from '../types/resolver-types'
 
 type ObjectProcessed<K extends string, V, D> = [override: V | D, keys: Array<Resolved<K, V>>, special: Array<Resolved<K, V>>]
@@ -15,7 +15,7 @@ function processInput<K extends string, S extends string, V, D = V>(
   defaultValue: D,
   overrideKey: string,
   keys: KeyList<K>,
-  special?: SpecialKeys<S, K> | Nullish,
+  special?: Nullish<SpecialKeys<S, K>>,
 ): ObjectProcessed<K, V, D> {
 
   // get input object keys
@@ -53,30 +53,6 @@ function processInput<K extends string, S extends string, V, D = V>(
 
     const newKeysData = [...keysData, item]
     return [override, newKeysData, specialData]
-
-    // // try to resolve key as regular key
-    // const keyResolved = resolveKey(key, keys);
-
-    // // extend regular key data if regular key resolved
-    // if (keyResolved) {
-    //   const item = createResult(keyResolved, validatedValue);
-    //   const newKeysData = [...keysData, item];
-    //   return [override, newKeysData, specialData];
-    // }
-
-    // // throw if special is not defined at this point
-    // if (!special) throw errorInvalidKey(key);
-
-    // // try to resolve key as special key
-    // const specialResolved = special[key as S] as K[] | undefined;
-
-    // // throw if key can't be resolved as special key
-    // if (!specialResolved) throw errorInvalidKey(key);
-
-    // // extend special key data if special key resolved
-    // const item = createResult(specialResolved, validatedValue);
-    // const newSpecialData = [...specialData, item];
-    // return [override, keysData, newSpecialData];
 
   }, [defaultValue, [], []])
 
@@ -123,7 +99,7 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   overrideKey: O,
-  special?: SpecialKeys<S, K> | Nullish,
+  special?: Nullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, V | D>
 
 export function createObjectResolver<K extends string, S extends string, V, O extends string, D = V>(
@@ -131,7 +107,7 @@ export function createObjectResolver<K extends string, S extends string, V, O ex
   isValidValue: TypeCheckFunction<V>,
   defaultValue: D,
   overrideKey: O,
-  special?: SpecialKeys<S, K> | Nullish,
+  special?: Nullish<SpecialKeys<S, K>>,
 ): PotentialResolver<K, V | D> {
 
   // return object resolver
