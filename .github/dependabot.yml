@@ -8,8 +8,9 @@ updates:
 
     schedule:
       interval: weekly
-      timezone: "Asia/Jakarta"
+      day: monday
       time: "07:00"
+      timezone: "Asia/Jakarta"
 
     assignees:
       - manferlo81
