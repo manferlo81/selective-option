@@ -1,7 +1,7 @@
 import type { PotentialResolver } from '../src'
 import { createResolver, createResult } from '../src'
 import { createExpectedCreator } from './tools/create-expected'
-import { ArrayItemType } from './tools/helper-types'
+import type { ArrayItemType } from './tools/helper-types'
 
 describe('', () => {
 

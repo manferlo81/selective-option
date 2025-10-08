@@ -45,10 +45,7 @@ export function createKeyListResolver<K extends string, S extends string>(
     if (!isArray(input)) return
 
     // resolve to false if input array is empty
-    if (input.length === 0) return createResult(
-      keys,
-      false,
-    )
+    if (input.length === 0) return createResult(keys, false)
 
     // get first key independently from the rest
     const [first, ...rest] = input

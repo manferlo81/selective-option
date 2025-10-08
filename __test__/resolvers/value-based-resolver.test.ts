@@ -1,4 +1,5 @@
-import { createValueBasedResolver, FunctionOption, ObjectOption, Resolved } from '../../src'
+import type { FunctionOption, ObjectOption, Resolved } from '../../src'
+import { createValueBasedResolver } from '../../src'
 import { createExpectedCreator } from '../tools/create-expected'
 
 describe('createValueBasedResolver function', () => {

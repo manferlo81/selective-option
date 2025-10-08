@@ -1,4 +1,5 @@
-import { createFunctionResolver, FunctionOption, Resolved } from '../../src'
+import type { FunctionOption, Resolved } from '../../src'
+import { createFunctionResolver } from '../../src'
 import { createExpectedCreator } from '../tools/create-expected'
 import type { ArrayItemType } from '../tools/helper-types'
 

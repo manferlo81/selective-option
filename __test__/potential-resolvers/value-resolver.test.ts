@@ -1,6 +1,6 @@
 import { createValueResolver } from '../../src'
 import { createExpectedCreator } from '../tools/create-expected'
-import { ArrayItemType } from '../tools/helper-types'
+import type { ArrayItemType } from '../tools/helper-types'
 
 describe('createValueResolver function', () => {
 

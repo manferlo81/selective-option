@@ -34,10 +34,7 @@ export function createValueResolver<K extends string, V, D = V>(
     const [isValid, validatedValue] = validated
 
     // return result using value if it's valid
-    if (isValid) return createResult(
-      keys,
-      validatedValue,
-    )
+    if (isValid) return createResult(keys, validatedValue)
 
     // return result using default value
     return createResult(

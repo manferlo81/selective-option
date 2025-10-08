@@ -1,6 +1,7 @@
-import { createObjectResolver, ObjectOption, Resolved } from '../../src'
+import type { ObjectOption, Resolved } from '../../src'
+import { createObjectResolver } from '../../src'
 import { createExpectedCreator } from '../tools/create-expected'
-import { ArrayItemType } from '../tools/helper-types'
+import type { ArrayItemType } from '../tools/helper-types'
 
 describe('createObjectResolver function', () => {
 

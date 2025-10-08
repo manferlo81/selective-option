@@ -1,4 +1,5 @@
-import { createKeyListResolver, KeyListOption } from '../../src'
+import type { KeyListOption } from '../../src'
+import { createKeyListResolver } from '../../src'
 import { createExpectedCreator } from '../tools/create-expected'
 import type { ArrayItemType } from '../tools/helper-types'
 
