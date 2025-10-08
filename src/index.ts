@@ -6,6 +6,8 @@ export { createValueResolver } from './potential/value'
 export { createBoolBasedResolver } from './resolvers/bool-based'
 export { createValueBasedResolver } from './resolvers/value-based'
 export { createResolver } from './tools/create-resolver'
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export { deprecatedCreateResult as createResult } from './tools/create-result'
 
 export type {
