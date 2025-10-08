@@ -7,9 +7,61 @@ updates:
     open-pull-requests-limit: 10
 
     schedule:
-      interval: "daily"
+      interval: weekly
       timezone: "Asia/Jakarta"
       time: "07:00"
 
     assignees:
-      - "manferlo81"
+      - manferlo81
+
+    groups:
+      lint:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+        patterns:
+          - eslint
+          - globals
+          - typescript-eslint
+          - "@eslint/*"
+          - "@*/eslint-plugin"
+          - eslint-plugin-*
+          - eslint-*
+
+      test:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+        patterns:
+          - jest
+          - ts-jest
+
+      types:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+        patterns:
+          - "@types/*"
+
+      babel:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+        patterns:
+          - "@babel/*"
+          - core-js
+
+      others:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+        patterns:
+          - rimraf
+          - chokidar
+          - husky
+          - npm-run-all
